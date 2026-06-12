@@ -1,6 +1,6 @@
 import { z } from "zod";
+import { identifier } from "./primitives.js";
 
-const identifier = z.string().regex(/^[a-z][a-z0-9_-]{0,63}$/);
 const tags = z.array(identifier).max(12);
 
 export const generatedEventCandidateSchema = z.object({
