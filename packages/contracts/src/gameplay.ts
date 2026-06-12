@@ -1,8 +1,5 @@
 import { z } from "zod";
-
-const id = z.string().uuid();
-const timestamp = z.string().datetime({ offset: true });
-const nonNegativeInteger = z.number().int().nonnegative();
+import { id, identifier, nonNegativeInteger, timestamp } from "./primitives.js";
 
 export const playerGameplayStateSchema = z.object({
   playerId: id,
@@ -25,7 +22,7 @@ export const assignedEventSchema = z.object({
   assignedAt: timestamp,
   expiresAt: timestamp,
   choices: z.array(z.object({
-    id: z.string().regex(/^[a-z][a-z0-9_-]{0,63}$/),
+    id: identifier,
     label: z.string().min(1).max(160)
   }).strict()).min(2).max(4),
   resolvedChoiceId: z.string().optional()
@@ -44,11 +41,11 @@ const asyncJobBaseSchema = z.object({
 }).strict();
 
 export const asyncJobStatusSchema = z.discriminatedUnion("status", [
-  asyncJobBaseSchema.extend({ status: z.literal("queued") }).strict(),
-  asyncJobBaseSchema.extend({ status: z.literal("running") }).strict(),
-  asyncJobBaseSchema.extend({ status: z.literal("succeeded"), resultReference: id }).strict(),
-  asyncJobBaseSchema.extend({ status: z.literal("failed"), errorCode: z.string().min(1).max(128) }).strict(),
-  asyncJobBaseSchema.extend({ status: z.literal("dead_letter"), errorCode: z.string().min(1).max(128) }).strict()
+  asyncJobBaseSchema.extend({ status: z.literal("queued") }),
+  asyncJobBaseSchema.extend({ status: z.literal("running") }),
+  asyncJobBaseSchema.extend({ status: z.literal("succeeded"), resultReference: id }),
+  asyncJobBaseSchema.extend({ status: z.literal("failed"), errorCode: z.string().min(1).max(128) }),
+  asyncJobBaseSchema.extend({ status: z.literal("dead_letter"), errorCode: z.string().min(1).max(128) })
 ]);
 
 export const idempotencyHeadersSchema = z.object({
@@ -59,7 +56,7 @@ export const eventInstanceParamsSchema = z.object({ eventInstanceId: id }).stric
 export const itemInstanceParamsSchema = z.object({ itemInstanceId: id }).strict();
 export const jobParamsSchema = z.object({ jobId: id }).strict();
 
-export const exploreRequestSchema = z.object({ schemaVersion: z.literal("1"), actionType: z.enum(["explore"])}).strict();
+export const exploreRequestSchema = z.object({ schemaVersion: z.literal("1") }).strict();
 
 export const exploreResponseSchema = z.object({
   schemaVersion: z.literal("1"),
@@ -74,7 +71,7 @@ export const generationPendingResponseSchema = z.object({
   generationJob: asyncJobStatusSchema
 }).strict();
 
-export const resolveEventRequestSchema = z.object({ schemaVersion: z.literal("1"), choiceId: z.string().regex(/^[a-z][a-z0-9_-]{0,63}$/) }).strict();
+export const resolveEventRequestSchema = z.object({ schemaVersion: z.literal("1"), choiceId: identifier }).strict();
 
 export const rewardSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("currency"), amount: z.number().int().positive() }).strict(),
@@ -89,6 +86,7 @@ export const rewardSchema = z.discriminatedUnion("type", [
 export const resolveEventResponseSchema = z.object({
   schemaVersion: z.literal("1"),
   gameplayState: playerGameplayStateSchema,
+  event: assignedEventSchema,
   rewards: z.array(rewardSchema).max(16)
 }).strict();
 

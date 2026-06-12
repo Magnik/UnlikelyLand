@@ -1,11 +1,14 @@
 {
   "name": "@unlikelyland/contracts",
   "version": "0.1.0",
+  "type": "module",
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "ollama": "^3.0.0"
+    "zod": "^3.23.0"
   }
 }
