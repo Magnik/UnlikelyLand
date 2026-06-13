@@ -1,5 +1,15 @@
 # UnlikelyLand — Roadmap
 
+## Update (post-MVP iteration)
+
+Shipped beyond the original slice: **equip/unequip + use consumables** (equipped
+modifiers now apply in combat/checks), **leaderboards** (level/wealth/reputation),
+**guilds** (create/join/leave/view), and **global chat** (moderated, rate-limited,
+respects blocking). Plus CI that builds & publishes Docker images to GHCR and a
+self-contained Hostinger compose-URL deploy (see [DEPLOY-HOSTINGER.md](DEPLOY-HOSTINGER.md)).
+Still pending: friends/blocking endpoints, market listings, achievement awarding,
+mail, prestige.
+
 ## Status: first playable vertical slice — COMPLETE
 
 The acceptance criteria from the brief are met by the current build:
