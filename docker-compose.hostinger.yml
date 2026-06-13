@@ -1,0 +1,99 @@
+# Self-contained production stack for Hostinger's "Docker Manager → Compose → URL"
+# deploy flow. It pulls PRE-BUILT images from GHCR (no building on the VPS) and
+# needs no other files from the repo (Caddy is configured inline, not via a
+# mounted Caddyfile), so pasting the raw URL of THIS file is enough.
+#
+# Raw URL to paste into Hostinger (after merging to main so :latest exists):
+#   https://raw.githubusercontent.com/Magnik/UnlikelyLand/main/docker-compose.hostinger.yml
+#
+# Set the environment variables below in Hostinger's deploy form (or via the
+# VPS Terminal in a .env beside this file). See deploy/hostinger.env.example.
+
+name: unlikelyland
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-unlikely}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-unlikelyland}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-unlikely} -d ${POSTGRES_DB:-unlikelyland}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    command: ['redis-server', '--save', '60', '1', '--loglevel', 'warning']
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  api:
+    image: ghcr.io/magnik/unlikelyland-api:latest
+    pull_policy: always
+    environment:
+      NODE_ENV: production
+      API_PORT: '4000'
+      DATABASE_URL: postgresql://${POSTGRES_USER:-unlikely}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-unlikelyland}?schema=public
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-30d}
+      CORS_ORIGINS: ${CORS_ORIGINS:-}
+      # AI is off by default on the VPS (no Ollama here) so encounters are instant
+      # seeded content. Flip to true + point OLLAMA_BASE_URL at a model to enable.
+      AI_ENABLED: ${AI_ENABLED:-false}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-llama3.1:8b}
+      AI_TIMEOUT_MS: ${AI_TIMEOUT_MS:-25000}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  web:
+    image: ghcr.io/magnik/unlikelyland-web:latest
+    pull_policy: always
+    environment:
+      NODE_ENV: production
+      API_INTERNAL_URL: http://api:4000
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  # Inline reverse proxy with automatic HTTPS — no Caddyfile needed.
+  # DOMAIN must resolve to this VPS (e.g. your hostname or a custom domain).
+  caddy:
+    image: caddy:2-alpine
+    command: caddy reverse-proxy --from ${DOMAIN} --to web:3000
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - web
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  redisdata:
+  caddy_data:
+  caddy_config:

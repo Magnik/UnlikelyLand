@@ -86,7 +86,8 @@ npm run build         # build contracts → api → web
 
 ## Deployment & operations
 
-- VPS deployment (Hostinger Docker): [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
+- **Hostinger one-click (Compose URL + prebuilt images): [docs/DEPLOY-HOSTINGER.md](docs/DEPLOY-HOSTINGER.md)**
+- VPS deployment from source (build on the box): [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
 - Postgres backups: `scripts/backup-postgres.sh` / `scripts/restore-postgres.sh`
 - Future Android (Capacitor) packaging: [docs/ANDROID.md](docs/ANDROID.md)
 - Roadmap & milestones: [docs/ROADMAP.md](docs/ROADMAP.md)
