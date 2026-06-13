@@ -7,8 +7,19 @@ modifiers now apply in combat/checks), **leaderboards** (level/wealth/reputation
 **guilds** (create/join/leave/view), and **global chat** (moderated, rate-limited,
 respects blocking). Plus CI that builds & publishes Docker images to GHCR and a
 self-contained Hostinger compose-URL deploy (see [DEPLOY-HOSTINGER.md](DEPLOY-HOSTINGER.md)).
-Still pending: friends/blocking endpoints, market listings, achievement awarding,
-mail, prestige.
+Then completed in a second wave: **market** (list/buy/cancel with escrow + Clams
+ledger), **friends + blocking**, **private mail**, **achievement awarding**
+(surfaced on profile), **prestige/escape** (level-gated run reset with permanent
+legacy stats), **AI item-concept intake**, **admin NPC promotion**, **story-memory
+compaction**, **regions seeded + used in prompts**, and a **background worker
+container** that injects ambient async "while you were away" events.
+
+Genuinely remaining (need external tooling or are upgrades over a brief-approved
+choice): a **signed Android APK** (requires Android Studio + a keystore + Play
+Console — see [ANDROID.md](ANDROID.md); the web is Capacitor-ready) and **WebSocket
+real-time** chat (polling is implemented and the brief explicitly allows it). Some
+listed tests remain integration-level rather than unit (the engine + DTO schemas
+are unit-tested).
 
 ## Status: first playable vertical slice — COMPLETE
 
