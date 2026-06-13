@@ -13,7 +13,7 @@ import {
 import { PrismaService } from '../common/prisma.service';
 import { computeStamina, regenPerHour } from '../engine/stamina';
 import { levelFromXp } from '../engine/leveling';
-import { DEATH } from '../engine/rules';
+import { CONSUMABLE, DEATH } from '../engine/rules';
 
 type StatsRow = Record<string, number> & { id: string; characterId: string };
 
@@ -158,7 +158,82 @@ export class CharactersService {
       rarity: i.itemDefinition.rarity,
       quantity: i.quantity,
       equipped: i.equipped,
+      statModifiers: (i.itemDefinition.statModifiers ?? {}) as Record<string, number>,
     }));
+  }
+
+  /** Base stats plus the sum of equipped items' modifiers — used in checks/combat. */
+  async getEffectiveStats(characterId: string): Promise<StatBlock> {
+    const c = await this.prisma.character.findUniqueOrThrow({
+      where: { id: characterId },
+      include: { stats: true, inventory: { where: { equipped: true }, include: { itemDefinition: true } } },
+    });
+    const block = this.statBlockFromRow(c.stats as unknown as StatsRow);
+    for (const inv of c.inventory) {
+      const mods = (inv.itemDefinition.statModifiers ?? {}) as Record<string, number>;
+      for (const [k, v] of Object.entries(mods)) {
+        if (k in block) block[k as keyof StatBlock] += v;
+      }
+    }
+    return block;
+  }
+
+  /** Equip an item, unequipping anything else already in that slot. */
+  async equip(characterId: string, inventoryItemId: string): Promise<CharacterView> {
+    const item = await this.prisma.inventoryItem.findUnique({
+      where: { id: inventoryItemId },
+      include: { itemDefinition: true },
+    });
+    if (!item || item.characterId !== characterId) throw new NotFoundException('Item not found');
+    if (item.itemDefinition.slot === 'consumable') throw new BadRequestException('Consumables are used, not equipped');
+
+    await this.prisma.$transaction(async (tx) => {
+      const sameSlot = await tx.inventoryItem.findMany({
+        where: { characterId, equipped: true, itemDefinition: { slot: item.itemDefinition.slot } },
+        select: { id: true },
+      });
+      for (const s of sameSlot) {
+        await tx.inventoryItem.update({ where: { id: s.id }, data: { equipped: false } });
+      }
+      await tx.inventoryItem.update({ where: { id: inventoryItemId }, data: { equipped: true } });
+    });
+    return this.buildView(characterId);
+  }
+
+  async unequip(characterId: string, inventoryItemId: string): Promise<CharacterView> {
+    const item = await this.prisma.inventoryItem.findUnique({ where: { id: inventoryItemId } });
+    if (!item || item.characterId !== characterId) throw new NotFoundException('Item not found');
+    await this.prisma.inventoryItem.update({ where: { id: inventoryItemId }, data: { equipped: false } });
+    return this.buildView(characterId);
+  }
+
+  /** Use a consumable: restore stamina and decrement (or remove) the stack. */
+  async useConsumable(characterId: string, inventoryItemId: string): Promise<CharacterView> {
+    const item = await this.prisma.inventoryItem.findUnique({
+      where: { id: inventoryItemId },
+      include: { itemDefinition: true },
+    });
+    if (!item || item.characterId !== characterId) throw new NotFoundException('Item not found');
+    if (item.itemDefinition.slot !== 'consumable') throw new BadRequestException('That item is not consumable');
+
+    await this.prisma.$transaction(async (tx) => {
+      const c = await tx.character.findUniqueOrThrow({
+        where: { id: characterId },
+        select: { staminaCurrent: true, staminaMax: true, staminaLastUpdatedAt: true },
+      });
+      const s = computeStamina(c.staminaCurrent, c.staminaMax, c.staminaLastUpdatedAt.getTime(), Date.now());
+      const restored = Math.min(c.staminaMax, s.current + CONSUMABLE.STAMINA_RESTORE);
+      await tx.character.update({
+        where: { id: characterId },
+        data: { staminaCurrent: restored, staminaLastUpdatedAt: new Date(s.lastUpdatedAtMs) },
+      });
+      if (item.quantity > 1) {
+        await tx.inventoryItem.update({ where: { id: inventoryItemId }, data: { quantity: { decrement: 1 } } });
+      } else {
+        await tx.inventoryItem.delete({ where: { id: inventoryItemId } });
+      }
+    });
+    return this.buildView(characterId);
   }
 
   /**

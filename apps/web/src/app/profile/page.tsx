@@ -1,32 +1,45 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CURRENCY_LABEL, type CharacterView } from '@unlikelyland/contracts';
+import { CURRENCY_LABEL, type CharacterView, type InventoryItemView } from '@unlikelyland/contracts';
 import { api, ApiError, getToken } from '@/lib/api';
 import { TopNav } from '@/components/top-nav';
 import { StatGrid } from '@/components/stat-grid';
 
-type InventoryItem = { id: string; name: string; description: string; slot: string; rarity: string; quantity: number; equipped: boolean };
-
 export default function ProfilePage() {
   const router = useRouter();
   const [character, setCharacter] = useState<CharacterView | null>(null);
-  const [inventory, setInventory] = useState<InventoryItem[]>([]);
+  const [inventory, setInventory] = useState<InventoryItemView[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const refresh = useCallback(async () => {
+    const [c, inv] = await Promise.all([api.character(), api.inventory()]);
+    setCharacter(c);
+    setInventory(inv);
+  }, []);
 
   useEffect(() => {
     if (!getToken()) {
       router.replace('/login');
       return;
     }
-    Promise.all([api.character(), api.inventory()])
-      .then(([c, inv]) => {
-        setCharacter(c);
-        setInventory(inv);
-      })
-      .catch((e) => setError(e instanceof ApiError ? e.message : 'Failed to load'));
-  }, [router]);
+    refresh().catch((e) => setError(e instanceof ApiError ? e.message : 'Failed to load'));
+  }, [router, refresh]);
+
+  async function act(fn: () => Promise<unknown>) {
+    setBusy(true);
+    setError(null);
+    try {
+      await fn();
+      await refresh();
+    } catch (e) {
+      setError(e instanceof ApiError ? e.message : 'Action failed');
+    } finally {
+      setBusy(false);
+    }
+  }
 
   if (!character) {
     return (
@@ -61,6 +74,9 @@ export default function ProfilePage() {
 
         <div className="card">
           <h2>Stats</h2>
+          <p className="tiny muted" style={{ marginTop: 0 }}>
+            Equipped gear adds to these during expeditions.
+          </p>
           <StatGrid stats={character.stats} />
         </div>
 
@@ -70,15 +86,45 @@ export default function ProfilePage() {
             <div className="empty">Nothing yet. Go find some Useful Junk.</div>
           ) : (
             <div className="col">
-              {inventory.map((i) => (
-                <div className="stat" key={i.id} style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 4 }}>
-                  <div className="row between" style={{ width: '100%' }}>
-                    <b>{i.name}{i.quantity > 1 ? ` ×${i.quantity}` : ''}</b>
-                    <span className="badge">{i.rarity} · {i.slot}</span>
+              {inventory.map((i) => {
+                const mods = Object.entries(i.statModifiers)
+                  .filter(([, v]) => v)
+                  .map(([k, v]) => `+${v} ${k}`)
+                  .join(', ');
+                return (
+                  <div className="stat" key={i.id} style={{ flexDirection: 'column', alignItems: 'stretch', gap: 6 }}>
+                    <div className="row between">
+                      <b>
+                        {i.name}
+                        {i.quantity > 1 ? ` ×${i.quantity}` : ''}
+                        {i.equipped ? ' · equipped' : ''}
+                      </b>
+                      <span className="badge">
+                        {i.rarity} · {i.slot}
+                      </span>
+                    </div>
+                    <span className="tiny muted">
+                      {i.description}
+                      {mods ? ` (${mods})` : ''}
+                    </span>
+                    <div className="row">
+                      {i.slot === 'consumable' ? (
+                        <button className="btn inline" disabled={busy} onClick={() => act(() => api.useItem(i.id))}>
+                          Use
+                        </button>
+                      ) : i.equipped ? (
+                        <button className="btn inline" disabled={busy} onClick={() => act(() => api.unequip(i.id))}>
+                          Unequip
+                        </button>
+                      ) : (
+                        <button className="btn inline btn-primary" disabled={busy} onClick={() => act(() => api.equip(i.id))}>
+                          Equip
+                        </button>
+                      )}
+                    </div>
                   </div>
-                  <span className="tiny muted">{i.description}</span>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

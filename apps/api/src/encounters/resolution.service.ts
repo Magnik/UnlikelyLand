@@ -86,7 +86,8 @@ export class ResolutionService {
     const choice = payload.choices.find((c) => c.id === dto.choiceId);
     if (!choice) throw new BadRequestException('Unknown choice for this encounter');
 
-    const stats = this.characters.statBlockFromRow(character.stats as never);
+    // Effective stats include equipped-item modifiers.
+    const stats = await this.characters.getEffectiveStats(characterId);
     const level = levelFromXp(character.xp).level;
     const rng = rngFor(encounter.id, choice.id);
 

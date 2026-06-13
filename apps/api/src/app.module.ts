@@ -8,6 +8,9 @@ import { ExpeditionsModule } from './expeditions/expeditions.module';
 import { EncountersModule } from './encounters/encounters.module';
 import { DeathModule } from './death/death.module';
 import { AdminModule } from './admin/admin.module';
+import { LeaderboardsModule } from './leaderboards/leaderboards.module';
+import { GuildsModule } from './guilds/guilds.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -21,6 +24,9 @@ import { AdminModule } from './admin/admin.module';
     EncountersModule,
     DeathModule,
     AdminModule,
+    LeaderboardsModule,
+    GuildsModule,
+    ChatModule,
   ],
   controllers: [HealthController],
 })

@@ -1,10 +1,15 @@
 import type {
   AiSettingsView,
   AuthResponse,
+  ChatMessageView,
   CharacterView,
   DeathStatusView,
   EncounterView,
   ExpeditionView,
+  GuildSummary,
+  GuildView,
+  InventoryItemView,
+  LeaderboardEntry,
   ResolutionView,
 } from '@unlikelyland/contracts';
 
@@ -78,8 +83,30 @@ export const api = {
   character: () => req<CharacterView>('/characters/me'),
   updateCharacter: (body: { bio?: string; contentRating?: string; storyStylePreferences?: string }) =>
     req<CharacterView>('/characters/me', { method: 'PATCH', body: JSON.stringify(body) }),
-  inventory: () =>
-    req<Array<{ id: string; name: string; description: string; slot: string; rarity: string; quantity: number; equipped: boolean }>>('/characters/me/inventory'),
+  inventory: () => req<InventoryItemView[]>('/characters/me/inventory'),
+  equip: (inventoryItemId: string) =>
+    req<CharacterView>('/characters/equip', { method: 'POST', body: JSON.stringify({ inventoryItemId }) }),
+  unequip: (inventoryItemId: string) =>
+    req<CharacterView>('/characters/unequip', { method: 'POST', body: JSON.stringify({ inventoryItemId }) }),
+  useItem: (inventoryItemId: string) =>
+    req<CharacterView>('/characters/use', { method: 'POST', body: JSON.stringify({ inventoryItemId }) }),
+
+  leaderboard: (type: 'level' | 'wealth' | 'reputation') => req<LeaderboardEntry[]>(`/leaderboards/${type}`),
+
+  guilds: {
+    list: () => req<GuildSummary[]>('/guilds'),
+    mine: () => req<GuildView | null>('/guilds/mine'),
+    view: (id: string) => req<GuildView>(`/guilds/${id}`),
+    create: (body: { name: string; description?: string }) =>
+      req<GuildView>('/guilds', { method: 'POST', body: JSON.stringify(body) }),
+    join: (id: string) => req<GuildView>(`/guilds/${id}/join`, { method: 'POST' }),
+    leave: () => req<{ left: boolean }>('/guilds/leave', { method: 'POST' }),
+  },
+
+  chat: {
+    list: () => req<ChatMessageView[]>('/chat'),
+    send: (body: string) => req<ChatMessageView>('/chat', { method: 'POST', body: JSON.stringify({ body }) }),
+  },
 
   expeditionTypes: () => req<ExpeditionTypeInfo[]>('/expeditions/types'),
   activeExpedition: () => req<ActiveExpedition>('/expeditions/active'),

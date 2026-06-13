@@ -241,3 +241,84 @@ export interface AiSettingsView {
   timeoutMs: number;
   effectivelyOn: boolean;
 }
+
+// ── Inventory actions ────────────────────────────────────────────────────────
+
+export const ItemActionSchema = z.object({
+  inventoryItemId: z.string().uuid(),
+});
+export type ItemActionInput = z.infer<typeof ItemActionSchema>;
+
+export interface InventoryItemView {
+  id: string;
+  name: string;
+  description: string;
+  slot: ItemSlot;
+  rarity: Rarity;
+  quantity: number;
+  equipped: boolean;
+  statModifiers: Partial<Record<StatKey, number>>;
+}
+
+// ── Leaderboards ─────────────────────────────────────────────────────────────
+
+export const LeaderboardTypeSchema = z.enum(['level', 'wealth', 'reputation']);
+export type LeaderboardType = z.infer<typeof LeaderboardTypeSchema>;
+
+export interface LeaderboardEntry {
+  rank: number;
+  characterId: string;
+  displayName: string;
+  level: number;
+  value: number;
+}
+
+// ── Guilds ───────────────────────────────────────────────────────────────────
+
+export const CreateGuildSchema = z.object({
+  name: z.string().min(3).max(32),
+  description: z.string().max(300).optional(),
+});
+export type CreateGuildInput = z.infer<typeof CreateGuildSchema>;
+
+export interface GuildMemberView {
+  characterId: string;
+  displayName: string;
+  role: 'owner' | 'officer' | 'member';
+  level: number;
+  joinedAt: string;
+}
+
+export interface GuildView {
+  id: string;
+  name: string;
+  description: string;
+  ownerCharacterId: string;
+  memberCount: number;
+  createdAt: string;
+  members: GuildMemberView[];
+  isMine: boolean;
+}
+
+export interface GuildSummary {
+  id: string;
+  name: string;
+  description: string;
+  memberCount: number;
+}
+
+// ── Chat ─────────────────────────────────────────────────────────────────────
+
+export const SendChatSchema = z.object({
+  body: z.string().min(1).max(300),
+});
+export type SendChatInput = z.infer<typeof SendChatSchema>;
+
+export interface ChatMessageView {
+  id: string;
+  characterId: string;
+  displayName: string;
+  body: string;
+  createdAt: string;
+  mine: boolean;
+}

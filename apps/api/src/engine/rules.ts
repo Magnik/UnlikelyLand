@@ -129,6 +129,11 @@ export const DEATH = {
   FREE_REVIVE_CHANCE: 0.15,
 } as const;
 
+export const CONSUMABLE = {
+  /** Stamina restored when a consumable item is used. */
+  STAMINA_RESTORE: 25,
+} as const;
+
 /**
  * Personality stat focuses drift the character's personality when chosen; combat
  * and social focuses don't. This is how "helping NPCs raises honor/empathy,

@@ -6,6 +6,10 @@ import { clearToken } from '@/lib/api';
 
 const LINKS = [
   { href: '/play', label: 'Play' },
+  { href: '/chat', label: 'Chat' },
+  { href: '/guilds', label: 'Guilds' },
+  { href: '/leaderboards', label: 'Ranks' },
+  { href: '/profile', label: 'You' },
   { href: '/settings', label: 'Settings' },
 ];
 
@@ -32,7 +36,7 @@ export function TopNav({ showAdmin = false }: { showAdmin?: boolean }) {
           </Link>
         ))}
         <a onClick={logout} style={{ cursor: 'pointer' }}>
-          Log out
+          Out
         </a>
       </div>
     </nav>
