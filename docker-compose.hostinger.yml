@@ -77,6 +77,17 @@ services:
       - api
     restart: unless-stopped
 
+  worker:
+    image: ghcr.io/magnik/unlikelyland-worker:latest
+    pull_policy: always
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER:-unlikely}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-unlikelyland}?schema=public
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
   # Inline reverse proxy with automatic HTTPS — no Caddyfile needed.
   # DOMAIN must resolve to this VPS (e.g. your hostname or a custom domain).
   caddy:

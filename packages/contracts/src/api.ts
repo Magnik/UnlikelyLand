@@ -322,3 +322,121 @@ export interface ChatMessageView {
   createdAt: string;
   mine: boolean;
 }
+
+// ── Market ───────────────────────────────────────────────────────────────────
+
+export const CreateListingSchema = z.object({
+  inventoryItemId: z.string().uuid(),
+  priceAmount: z.number().int().min(1).max(1_000_000),
+  quantity: z.number().int().min(1).max(999).default(1),
+});
+export type CreateListingInput = z.infer<typeof CreateListingSchema>;
+
+export const ListingActionSchema = z.object({ listingId: z.string().uuid() });
+export type ListingActionInput = z.infer<typeof ListingActionSchema>;
+
+export interface MarketListingView {
+  id: string;
+  itemName: string;
+  itemSlot: ItemSlot;
+  itemRarity: Rarity;
+  quantity: number;
+  priceAmount: number;
+  priceCurrency: 'normal';
+  sellerCharacterId: string;
+  sellerName: string;
+  status: 'active' | 'sold' | 'cancelled' | 'expired';
+  createdAt: string;
+  mine: boolean;
+}
+
+// ── Social: friends, requests, blocking, directory search ────────────────────
+
+export const TargetCharacterSchema = z.object({ characterId: z.string().uuid() });
+export type TargetCharacterInput = z.infer<typeof TargetCharacterSchema>;
+
+export const FriendRequestActionSchema = z.object({ requestId: z.string().uuid() });
+export type FriendRequestActionInput = z.infer<typeof FriendRequestActionSchema>;
+
+export interface DirectoryEntry {
+  characterId: string;
+  displayName: string;
+  level: number;
+}
+
+export interface FriendRequestView {
+  id: string;
+  characterId: string;
+  displayName: string;
+  createdAt: string;
+}
+
+export interface SocialView {
+  friends: DirectoryEntry[];
+  incoming: FriendRequestView[];
+  outgoing: FriendRequestView[];
+  blocked: DirectoryEntry[];
+}
+
+// ── Mail ─────────────────────────────────────────────────────────────────────
+
+export const SendMailSchema = z.object({
+  recipientName: z.string().min(1).max(32),
+  subject: z.string().max(120).optional(),
+  body: z.string().min(1).max(2000),
+});
+export type SendMailInput = z.infer<typeof SendMailSchema>;
+
+export const MailActionSchema = z.object({ mailId: z.string().uuid() });
+export type MailActionInput = z.infer<typeof MailActionSchema>;
+
+export interface MailView {
+  id: string;
+  subject: string;
+  body: string;
+  otherCharacterId: string;
+  otherName: string;
+  direction: 'in' | 'out';
+  read: boolean;
+  createdAt: string;
+}
+
+export interface MailboxView {
+  inbox: MailView[];
+  outbox: MailView[];
+  unread: number;
+}
+
+// ── Achievements ─────────────────────────────────────────────────────────────
+
+export interface AchievementView {
+  key: string;
+  name: string;
+  description: string;
+  unlockedAt: string | null;
+}
+
+// ── Prestige / escape ────────────────────────────────────────────────────────
+
+export interface EscapeStatusView {
+  eligible: boolean;
+  requiredLevel: number;
+  level: number;
+  escapeCount: number;
+  legacyLevel: number;
+}
+
+export interface EscapeResultView {
+  escaped: boolean;
+  escapeCount: number;
+  legacyLevel: number;
+  character: CharacterView;
+}
+
+// ── Admin: NPC promotion ─────────────────────────────────────────────────────
+
+export const PromoteNpcSchema = z.object({
+  npcId: z.string().uuid(),
+  status: z.enum(['private', 'shared_candidate', 'shared', 'global']),
+});
+export type PromoteNpcInput = z.infer<typeof PromoteNpcSchema>;

@@ -86,6 +86,8 @@ model Character {
   guildsOwned      Guild[]                @relation("guildOwner")
   escapes          EscapeRecord[]
   aiLogs           AiGenerationLog[]
+  sentMail         MailMessage[]          @relation("mailSender")
+  receivedMail     MailMessage[]          @relation("mailRecipient")
 
   @@index([level])
   @@index([reputation])
@@ -318,6 +320,24 @@ model ChatMessage {
   character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
 
   @@index([channel, createdAt])
+}
+
+model MailMessage {
+  id                   String    @id @default(uuid())
+  senderCharacterId    String
+  recipientCharacterId String
+  subject              String    @default("")
+  body                 String
+  readAt               DateTime?
+  deletedBySender      Boolean   @default(false)
+  deletedByRecipient   Boolean   @default(false)
+  createdAt            DateTime  @default(now())
+
+  sender    Character @relation("mailSender", fields: [senderCharacterId], references: [id], onDelete: Cascade)
+  recipient Character @relation("mailRecipient", fields: [recipientCharacterId], references: [id], onDelete: Cascade)
+
+  @@index([recipientCharacterId, createdAt])
+  @@index([senderCharacterId, createdAt])
 }
 
 model FriendRequest {

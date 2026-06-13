@@ -11,6 +11,11 @@ import { AdminModule } from './admin/admin.module';
 import { LeaderboardsModule } from './leaderboards/leaderboards.module';
 import { GuildsModule } from './guilds/guilds.module';
 import { ChatModule } from './chat/chat.module';
+import { MarketModule } from './market/market.module';
+import { SocialModule } from './social/social.module';
+import { MailModule } from './mail/mail.module';
+import { AchievementsModule } from './achievements/achievements.module';
+import { PrestigeModule } from './prestige/prestige.module';
 
 @Module({
   imports: [
@@ -27,6 +32,11 @@ import { ChatModule } from './chat/chat.module';
     LeaderboardsModule,
     GuildsModule,
     ChatModule,
+    MarketModule,
+    SocialModule,
+    MailModule,
+    AchievementsModule,
+    PrestigeModule,
   ],
   controllers: [HealthController],
 })

@@ -1,16 +1,24 @@
 import type {
+  AchievementView,
   AiSettingsView,
   AuthResponse,
   ChatMessageView,
   CharacterView,
   DeathStatusView,
+  DirectoryEntry,
   EncounterView,
+  EscapeResultView,
+  EscapeStatusView,
   ExpeditionView,
   GuildSummary,
   GuildView,
   InventoryItemView,
   LeaderboardEntry,
+  MailView,
+  MailboxView,
+  MarketListingView,
   ResolutionView,
+  SocialView,
 } from '@unlikelyland/contracts';
 
 /**
@@ -106,6 +114,41 @@ export const api = {
   chat: {
     list: () => req<ChatMessageView[]>('/chat'),
     send: (body: string) => req<ChatMessageView>('/chat', { method: 'POST', body: JSON.stringify({ body }) }),
+  },
+
+  achievements: () => req<AchievementView[]>('/achievements'),
+
+  market: {
+    list: () => req<MarketListingView[]>('/market'),
+    mine: () => req<MarketListingView[]>('/market/mine'),
+    create: (body: { inventoryItemId: string; priceAmount: number; quantity: number }) =>
+      req<MarketListingView>('/market', { method: 'POST', body: JSON.stringify(body) }),
+    buy: (listingId: string) => req<MarketListingView>('/market/buy', { method: 'POST', body: JSON.stringify({ listingId }) }),
+    cancel: (listingId: string) => req<{ cancelled: boolean }>('/market/cancel', { method: 'POST', body: JSON.stringify({ listingId }) }),
+  },
+
+  social: {
+    overview: () => req<SocialView>('/social'),
+    search: (q: string) => req<DirectoryEntry[]>(`/social/search?q=${encodeURIComponent(q)}`),
+    request: (characterId: string) => req<unknown>('/social/request', { method: 'POST', body: JSON.stringify({ characterId }) }),
+    accept: (requestId: string) => req<unknown>('/social/accept', { method: 'POST', body: JSON.stringify({ requestId }) }),
+    reject: (requestId: string) => req<unknown>('/social/reject', { method: 'POST', body: JSON.stringify({ requestId }) }),
+    remove: (characterId: string) => req<unknown>('/social/remove', { method: 'POST', body: JSON.stringify({ characterId }) }),
+    block: (characterId: string) => req<unknown>('/social/block', { method: 'POST', body: JSON.stringify({ characterId }) }),
+    unblock: (characterId: string) => req<unknown>('/social/unblock', { method: 'POST', body: JSON.stringify({ characterId }) }),
+  },
+
+  mail: {
+    box: () => req<MailboxView>('/mail'),
+    send: (body: { recipientName: string; subject?: string; body: string }) =>
+      req<MailView>('/mail', { method: 'POST', body: JSON.stringify(body) }),
+    read: (mailId: string) => req<unknown>('/mail/read', { method: 'POST', body: JSON.stringify({ mailId }) }),
+    remove: (mailId: string) => req<unknown>('/mail/delete', { method: 'POST', body: JSON.stringify({ mailId }) }),
+  },
+
+  prestige: {
+    status: () => req<EscapeStatusView>('/prestige/status'),
+    escape: () => req<EscapeResultView>('/prestige/escape', { method: 'POST' }),
   },
 
   expeditionTypes: () => req<ExpeditionTypeInfo[]>('/expeditions/types'),

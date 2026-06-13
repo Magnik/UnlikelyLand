@@ -55,6 +55,24 @@ async function main(): Promise<void> {
   }
   console.log(`Seeded ${REGION_SETS.length} region sets`);
 
+  // Seed a few regions inside each set (idempotent: only when the set has none).
+  const REGIONS_BY_SET: Record<string, string[]> = {
+    'damply-heroic-coast': ['Barnacle Bureau', 'The Weeping Pier', 'Lowtide Court'],
+    'bureaucratic-jungle': ['Form 7 Clearing', 'The Triplicate Canopy', 'Permit Falls'],
+    'unfortunately-magical-suburbs': ['Cul-de-Sac of Minor Curses', 'HOA Standing Stones', 'The Enchanted Driveway'],
+    'mountain-of-mild-inconvenience': ['Gentle Switchbacks', 'The Slightly Steep Bit', 'Mildly Scenic Overlook'],
+    'soup-scented-badlands': ['Broth Mesa', 'The Simmering Flats', 'Crouton Gulch'],
+  };
+  for (const set of await prisma.regionSet.findMany()) {
+    const existing = await prisma.region.count({ where: { regionSetId: set.id } });
+    if (existing > 0) continue;
+    const names = REGIONS_BY_SET[set.key] ?? [];
+    if (names.length) {
+      await prisma.region.createMany({ data: names.map((name) => ({ regionSetId: set.id, name, blurb: '' })) });
+    }
+  }
+  console.log('Seeded regions for each region set');
+
   for (const item of ITEMS) {
     await prisma.itemDefinition.upsert({
       where: { key: item.key },

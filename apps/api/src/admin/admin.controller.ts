@@ -63,4 +63,14 @@ export class AdminController {
   reject(@Param('id') id: string, @Body() body: { notes?: string }) {
     return this.admin.rejectConcept(id, body?.notes);
   }
+
+  @Get('npcs')
+  npcs(@Query('status') status?: string) {
+    return this.admin.npcs(status);
+  }
+
+  @Post('npcs/:id/promote')
+  promote(@Param('id') id: string, @Body() body: { status?: string }) {
+    return this.admin.promoteNpc(id, body?.status ?? 'shared_candidate');
+  }
 }

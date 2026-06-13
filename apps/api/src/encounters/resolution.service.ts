@@ -20,6 +20,7 @@ import { CharactersService } from '../characters/characters.service';
 import { EconomyService } from '../economy/economy.service';
 import { StoryMemoryService } from '../story-memory/story-memory.service';
 import { EncountersService } from './encounters.service';
+import { AchievementsService } from '../achievements/achievements.service';
 import { rngFor } from '../engine/rng';
 import { resolveCheck } from '../engine/checks';
 import { makeEnemy, makePlayerCombatant, resolveCombat, type CombatResult } from '../engine/combat';
@@ -58,6 +59,7 @@ export class ResolutionService {
     private readonly economy: EconomyService,
     private readonly memory: StoryMemoryService,
     private readonly encounters: EncountersService,
+    private readonly achievements: AchievementsService,
   ) {}
 
   async resolve(characterId: string, dto: ResolveChoiceInput): Promise<ResolutionView> {
@@ -243,6 +245,13 @@ export class ResolutionService {
       await this.memory.recordSuggestions(tx, characterId, payload.memorySuggestions, character.regionSetId);
       await this.memory.upsertNpcs(tx, characterId, payload.npcSuggestions, character.regionSetId);
 
+      // Public achievements (idempotent).
+      const achievementKeys: string[] = ['first-steps'];
+      if (!died && choice.riskLevel === 'ridiculous') achievementKeys.push('survived-something-ridiculous');
+      if (died) achievementKeys.push('first-death');
+      if (!died && levelFromXp(character.xp + reward.xp).level >= 10) achievementKeys.push('reached-level-10');
+      await this.achievements.award(tx, characterId, achievementKeys);
+
       // Expedition advancement (terminal states only; next encounter is generated
       // outside the transaction because it may call the AI provider).
       if (encounter.expeditionId) {
@@ -274,6 +283,9 @@ export class ResolutionService {
     if (encounter.expeditionId && !died && !expeditionCompleted) {
       nextEncounter = await this.advanceToNextStep(characterId, encounter.expeditionId);
     }
+
+    // Best-effort memory compaction (keeps Story Memory bounded; never blocks).
+    await this.memory.compactIfNeeded(characterId).catch(() => undefined);
 
     const characterView = await this.characters.buildView(characterId);
     const expeditionView = encounter.expeditionId ? await this.expeditionView(encounter.expeditionId) : null;

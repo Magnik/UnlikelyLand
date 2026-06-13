@@ -134,6 +134,22 @@ export const CONSUMABLE = {
   STAMINA_RESTORE: 25,
 } as const;
 
+export const PRESTIGE = {
+  /** Level required before a character may attempt to escape the island. */
+  REQUIRED_LEVEL: 10,
+  /** Permanent stat bonus to every stat per successful escape. */
+  LEGACY_STAT_BONUS: 1,
+  /** Escape Tokens granted per escape (scaled by escape count). */
+  ESCAPE_TOKENS_PER_ESCAPE: 1,
+} as const;
+
+export const MEMORY = {
+  /** Above this many non-summary memories, the oldest are compacted. */
+  MAX_BEFORE_COMPACT: 40,
+  /** How many old memories fold into one summary per compaction. */
+  COMPACT_BATCH: 20,
+} as const;
+
 /**
  * Personality stat focuses drift the character's personality when chosen; combat
  * and social focuses don't. This is how "helping NPCs raises honor/empathy,

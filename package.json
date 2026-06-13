@@ -11,12 +11,12 @@
     "node": ">=20"
   },
   "scripts": {
-    "build": "npm run build -w @unlikelyland/contracts && npm run build -w @unlikelyland/api && npm run build -w @unlikelyland/web",
+    "build": "npm run build -w @unlikelyland/contracts && npm run build -w @unlikelyland/api && npm run build -w @unlikelyland/web && npm run build -w @unlikelyland/worker",
     "build:contracts": "npm run build -w @unlikelyland/contracts",
     "dev:api": "npm run start:dev -w @unlikelyland/api",
     "dev:web": "npm run dev -w @unlikelyland/web",
     "test": "npm run test -w @unlikelyland/contracts && npm run test -w @unlikelyland/api",
-    "typecheck": "npm run typecheck -w @unlikelyland/contracts && npm run typecheck -w @unlikelyland/api && npm run typecheck -w @unlikelyland/web",
+    "typecheck": "npm run typecheck -w @unlikelyland/contracts && npm run typecheck -w @unlikelyland/api && npm run typecheck -w @unlikelyland/web && npm run typecheck -w @unlikelyland/worker",
     "prisma:generate": "npm run prisma:generate -w @unlikelyland/api",
     "prisma:migrate": "npm run prisma:migrate -w @unlikelyland/api",
     "prisma:deploy": "npm run prisma:deploy -w @unlikelyland/api",

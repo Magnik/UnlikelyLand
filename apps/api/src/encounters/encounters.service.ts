@@ -4,6 +4,7 @@ import {
   type EncounterView,
   type Encounter,
   type ChoiceView,
+  type ItemConceptSuggestion,
 } from '@unlikelyland/contracts';
 import { PrismaService } from '../common/prisma.service';
 import { AiGatewayService } from '../ai/ai-gateway.service';
@@ -47,11 +48,18 @@ export class EncountersService {
     const cfg = EXPEDITIONS[expedition.type as ExpeditionType];
     const stats = this.characters.statBlockFromRow(character.stats as never);
     const memories = await this.memory.recentForPrompt(characterId);
+    const regions = await this.prisma.region.findMany({
+      where: { regionSetId: character.regionSetId },
+      select: { name: true },
+    });
+    const regionName = regions.length ? regions[stepIndex % regions.length].name : '';
 
     const { encounter, source } = await this.ai.generateEncounter({
       characterId,
       regionSetName: character.regionSet.name,
-      regionSetBlurb: character.regionSet.blurb,
+      regionSetBlurb: regionName
+        ? `${character.regionSet.blurb} You're somewhere around ${regionName}.`
+        : character.regionSet.blurb,
       expeditionType: expedition.type as ExpeditionType,
       desiredEncounterType: cfg.encounterType,
       fallbackPool: cfg.fallbackPool,
@@ -75,7 +83,46 @@ export class EncountersService {
       select: { id: true, source: true, resolved: true, payload: true },
     });
 
+    await this.ingestItemConcepts(characterId, encounter.itemConceptSuggestions);
     return this.toView(row);
+  }
+
+  /** Persist AI item-concept proposals; auto-approve safe low-power common/uncommon. */
+  private async ingestItemConcepts(characterId: string, suggestions: ItemConceptSuggestion[]): Promise<void> {
+    for (const s of suggestions.slice(0, 2)) {
+      try {
+        const concept = await this.prisma.pendingItemConcept.create({
+          data: {
+            proposedByCharacterId: characterId,
+            name: s.name,
+            description: s.description,
+            intendedRarity: s.intendedRarity,
+            intendedSlot: s.intendedSlot,
+            narrativePurpose: s.narrativePurpose,
+            status: 'pending',
+          },
+        });
+        if (s.intendedRarity === 'common' || s.intendedRarity === 'uncommon') {
+          const item = await this.prisma.itemDefinition.create({
+            data: {
+              key: `ai-${concept.id.slice(0, 12)}`,
+              name: s.name,
+              description: s.description,
+              slot: s.intendedSlot,
+              rarity: s.intendedRarity,
+              powerBudget: s.intendedRarity === 'uncommon' ? 6 : 3,
+              source: 'ai_approved',
+            },
+          });
+          await this.prisma.pendingItemConcept.update({
+            where: { id: concept.id },
+            data: { status: 'auto_approved', createdItemId: item.id },
+          });
+        }
+      } catch {
+        // best-effort — a concept failing to ingest must not break encounter generation
+      }
+    }
   }
 
   /** The current unresolved encounter for a character, if any. */

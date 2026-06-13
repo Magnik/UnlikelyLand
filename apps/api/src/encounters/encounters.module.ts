@@ -6,9 +6,10 @@ import { AiModule } from '../ai/ai.module';
 import { CharactersModule } from '../characters/characters.module';
 import { EconomyModule } from '../economy/economy.module';
 import { StoryMemoryModule } from '../story-memory/story-memory.module';
+import { AchievementsModule } from '../achievements/achievements.module';
 
 @Module({
-  imports: [AiModule, CharactersModule, EconomyModule, StoryMemoryModule],
+  imports: [AiModule, CharactersModule, EconomyModule, StoryMemoryModule, AchievementsModule],
   controllers: [EncountersController],
   providers: [EncountersService, ResolutionService],
   exports: [EncountersService],

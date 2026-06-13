@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import type { MemorySuggestion, NpcSuggestion } from '@unlikelyland/contracts';
 import { PrismaService } from '../common/prisma.service';
+import { MEMORY } from '../engine/rules';
 
 /**
  * Hidden, server-side Story Memory. Players never read or edit it directly; it
@@ -84,5 +85,37 @@ export class StoryMemoryService {
       select: { content: true },
     });
     return memories.map((m) => m.content);
+  }
+
+  /**
+   * Keep Story Memory bounded: once non-summary memories exceed a threshold,
+   * fold the oldest low-importance ones into a single compressed summary.
+   */
+  async compactIfNeeded(characterId: string): Promise<void> {
+    const total = await this.prisma.storyMemory.count({
+      where: { characterId, memoryType: { not: 'summary' } },
+    });
+    if (total <= MEMORY.MAX_BEFORE_COMPACT) return;
+
+    const oldest = await this.prisma.storyMemory.findMany({
+      where: { characterId, memoryType: { not: 'summary' } },
+      orderBy: [{ importance: 'asc' }, { createdAt: 'asc' }],
+      take: MEMORY.COMPACT_BATCH,
+      select: { id: true, regionSetId: true },
+    });
+    if (oldest.length === 0) return;
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.storyMemory.deleteMany({ where: { id: { in: oldest.map((o) => o.id) } } });
+      await tx.storyMemory.create({
+        data: {
+          characterId,
+          memoryType: 'summary',
+          content: `Earlier adventures, condensed: ${oldest.length} smaller moments now blur into a general sense of having Been Through Things.`,
+          importance: 2,
+          regionSetId: oldest[0].regionSetId ?? undefined,
+        },
+      });
+    });
   }
 }

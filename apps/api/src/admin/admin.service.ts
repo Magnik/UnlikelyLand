@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import type { AiSettingsUpdateInput } from '@unlikelyland/contracts';
 import { PrismaService } from '../common/prisma.service';
 import { AiGatewayService } from '../ai/ai-gateway.service';
-import { RARITIES } from '@unlikelyland/contracts';
+import { NpcStatusSchema, RARITIES } from '@unlikelyland/contracts';
 
 /** Power budget granted to an auto-created item, by rarity tier. */
 const POWER_BY_RARITY: Record<string, number> = {
@@ -130,5 +130,21 @@ export class AdminService {
       where: { id },
       data: { status: 'rejected', reviewNotes: notes },
     });
+  }
+
+  npcs(status?: string) {
+    return this.prisma.npcRecord.findMany({
+      where: status ? { status } : undefined,
+      orderBy: { referenceCount: 'desc' },
+      take: 200,
+    });
+  }
+
+  /** Promote (or demote) an NPC's shared-world status: private → shared_candidate → shared → global. */
+  async promoteNpc(id: string, status: string) {
+    const npc = await this.prisma.npcRecord.findUnique({ where: { id } });
+    if (!npc) throw new NotFoundException('NPC not found');
+    const parsed = NpcStatusSchema.catch('shared_candidate').parse(status);
+    return this.prisma.npcRecord.update({ where: { id }, data: { status: parsed } });
   }
 }

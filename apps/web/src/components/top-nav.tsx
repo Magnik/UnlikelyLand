@@ -6,9 +6,8 @@ import { clearToken } from '@/lib/api';
 
 const LINKS = [
   { href: '/play', label: 'Play' },
-  { href: '/chat', label: 'Chat' },
-  { href: '/guilds', label: 'Guilds' },
-  { href: '/leaderboards', label: 'Ranks' },
+  { href: '/social', label: 'Social' },
+  { href: '/market', label: 'Market' },
   { href: '/profile', label: 'You' },
   { href: '/settings', label: 'Settings' },
 ];
