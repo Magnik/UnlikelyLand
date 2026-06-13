@@ -1,0 +1,21 @@
+# Automatic HTTPS via Let's Encrypt. Caddy terminates TLS and proxies all
+# traffic to the Next.js web container, which in turn proxies /api/* to the
+# API container internally. DOMAIN and ACME_EMAIL come from the environment.
+{
+	email {$ACME_EMAIL}
+}
+
+{$DOMAIN} {
+	encode zstd gzip
+
+	# Reasonable security headers; tune as needed.
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		X-Frame-Options "SAMEORIGIN"
+		-Server
+	}
+
+	reverse_proxy web:3000
+}

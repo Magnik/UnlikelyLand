@@ -1,0 +1,379 @@
+[
+  {
+    "title": "The Committee of Free Weights",
+    "description": "You push open the gym door and a gavel bangs. The free weights have formed a committee, and lifting anything now requires a motion, a second, and demonstrably good form. The Chairman — a vast iron dumbbell on a velvet cushion — peers at you over reading glasses it does not technically have. 'New member,' it rumbles. 'State your business and your warm-up routine.'",
+    "encounterType": "training",
+    "allowGoHome": true,
+    "goHomeLabel": "Cite a prior engagement with gravity",
+    "choices": [
+      {
+        "id": "lift_chairman",
+        "label": "Lift the Chairman without a permit",
+        "description": "Walk past procedure, chalk your hands, and deadlift the head of the committee mid-sentence. Bold. Possibly contemptuous of the bylaws. Definitely heavy.",
+        "statFocus": "strength",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "petition_reps",
+        "label": "File a motion for a supervised set",
+        "description": "Follow the bylaws: submit your routine in triplicate and request a seconded, fully sanctioned workout with committee oversight and a designated spotter.",
+        "statFocus": "negotiation",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "nominate_self",
+        "label": "Nominate yourself as honorary equipment",
+        "description": "Stand very straight, declare a maximum weight rating, and offer your services to the gym as a piece of equipment with full voting rights.",
+        "statFocus": "weirdness",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Last meeting's minutes already list a member called 'You (pending)'."
+      },
+      {
+        "id": "spot_rookie",
+        "label": "Reassure the trembling kettlebell",
+        "description": "A junior kettlebell is terrified of being swung. Take it aside and talk it through proper arc technique with patience and kindness.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "world_fact",
+        "content": "A gym exists where the free weights have formed a committee; lifting anything requires a seconded motion and demonstrably good form.",
+        "importance": 2
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "The Chairman",
+        "description": "An enormous iron dumbbell on a velvet cushion who chairs the gym equipment committee. Respects good form above all and bangs a gavel he keeps on a towel.",
+        "role": "Gym committee chairman",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:training:0"
+  },
+  {
+    "title": "Sensei Door Will See You Now",
+    "description": "The dojo is empty except for a freestanding door in the middle of the floor, worn smooth by centuries of respectful knocking. A plaque identifies it as Sensei Door, master of the Hinged Fist style. 'Defense,' it creaks, 'is knowing when to open and when to hold. Most students get this backwards for years.' Several pupils bow to it from a careful distance, waiting for the slamming portion of the lesson.",
+    "encounterType": "training",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "hold_stance",
+        "label": "Hold the doorframe stance against charging students",
+        "description": "Plant your feet, raise your guard, and become the door. Students will run at you in waves until you either hold or learn precisely why you didn't.",
+        "statFocus": "defense",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "take_slam",
+        "label": "Volunteer for the slamming portion",
+        "description": "Sensei Door teaches humility at speed. Stand in the frame and let it slam you, repeatedly, for educational purposes.",
+        "statFocus": "toughness",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "oil_hinges",
+        "label": "Oil the master's creaky hinge as tribute",
+        "description": "An old master deserves care. Kneel, produce oil, and respectfully tend the squeak that every other student is too polite to mention.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "ask_riddle",
+        "label": "Ask the door what it guards",
+        "description": "Doors keep things out, but also in. Ask the question no student has dared: what exactly is on the other side of a freestanding door?",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "world_fact",
+        "content": "A dojo is run by Sensei Door, an ancient freestanding door who teaches the Hinged Fist style of defense.",
+        "importance": 2
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "Sensei Door",
+        "description": "An ancient freestanding door, master of the Hinged Fist defensive style. Teaches students when to open and when to hold; conducts lessons partly by slamming.",
+        "role": "Dojo master",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:training:1"
+  },
+  {
+    "title": "Obstacle Course by an Architect Who Has Never Seen Legs",
+    "description": "You arrive at a training course advertised as 'ergonomic for most body plans.' The designer, judging by the blueprints pinned nearby, has heard legs described but never actually witnessed any. The hurdles hang from the ceiling, the balance beam is a spiral, and the finish line is somehow behind the starting line. A clipboard on a post politely asks you to rate your experience before you begin.",
+    "encounterType": "training",
+    "allowGoHome": true,
+    "goHomeLabel": "Pretend your laces need a permit",
+    "choices": [
+      {
+        "id": "run_course",
+        "label": "Run the course exactly as designed",
+        "description": "Ceiling hurdles, spiral beam, backwards finish line. Commit fully. Whatever a body plan is, prove yours wrong.",
+        "statFocus": "agility",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "exploit_flaw",
+        "label": "Study the blueprints for a design flaw",
+        "description": "Somewhere in these drawings is a shortcut only a creature with legs would notice. Find it and finish in record time.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The blueprints appear to be studying you back."
+      },
+      {
+        "id": "refuse_safety",
+        "label": "Refuse on documented safety grounds",
+        "description": "Fill out the comment card in advance, cite the ceiling hurdles specifically, and demand a supervised walkthrough with appropriate padding.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "dance_demo",
+        "label": "Explain legs to the architect via interpretive dance",
+        "description": "Someone has to bridge this knowledge gap. Perform an exhaustive demonstration of knees, ankles, and jumping at the blueprints until understanding dawns.",
+        "statFocus": "weirdness",
+        "riskLevel": "ridiculous",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "The Architect",
+        "description": "An unseen designer of training facilities who has heard legs described secondhand but never observed any. Builds courses rated 'ergonomic for most body plans'.",
+        "role": "Training course designer",
+        "privateOrSharedPotential": "private"
+      }
+    ],
+    "templateId": "fallback:training:2"
+  },
+  {
+    "title": "An Extremely Apologetic Duel",
+    "description": "A knight made entirely of polite gray fog materializes in the practice yard, already bowing. 'Terribly sorry to ask,' he murmurs, 'but I require one honorable spar per day or I dissipate, and you look sturdy.' He offers you a waiver, a spare helmet, and a pre-written apology for any bruises, signed and dated. His sword is real. His remorse appears to be, too.",
+    "encounterType": "training",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "accept_spar",
+        "label": "Accept the honorable spar",
+        "description": "Sign nothing, bow deeply, and meet the fog knight blade to blade. He needs this to keep existing; you need the practice.",
+        "statFocus": "bravery",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "dodge_lesson",
+        "label": "Request a dodge-only lesson",
+        "description": "Propose a compromise: he swings, you evade, and nobody needs the apology. His footwork is rumored to be excellent for someone without feet.",
+        "statFocus": "agility",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "read_waiver",
+        "label": "Read every clause of the waiver first",
+        "description": "Forty pages of remorse and indemnity. Somewhere in the fine print may lie the truth of what happened to his last sparring partner.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Clause 12 has been redacted with apologetic ink."
+      },
+      {
+        "id": "compliment_duel",
+        "label": "Counter-challenge him to a compliment duel",
+        "description": "Honor is honor. Flattery at ten paces, kindest remark wins, and nobody has to dissipate unappreciated.",
+        "statFocus": "charisma",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "unresolved_thread",
+        "content": "Sir Condolences, a fog knight, needs one honorable spar per day to keep existing. What happened to his previous sparring partners is unclear; clause 12 of his waiver is redacted.",
+        "importance": 3
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "Sir Condolences",
+        "description": "A knight made of polite gray fog who must spar honorably once a day or dissipate. Carries pre-signed apologies for bruises and a forty-page waiver.",
+        "role": "Sparring partner",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:training:3"
+  },
+  {
+    "title": "The Bullseye Would Rather Not",
+    "description": "The archery range is in mild chaos because the targets have become self-aware, and the bullseye, specifically, would rather not be shot today. It keeps shuffling sideways on little wooden legs while the range master — an owl holding a literally curved grading ruler — deducts style points from everyone on principle. 'Marksmanship,' the owl announces, 'is ten percent aim and ninety percent paperwork.'",
+    "encounterType": "training",
+    "allowGoHome": true,
+    "goHomeLabel": "Recall an urgent appointment with standing still",
+    "choices": [
+      {
+        "id": "shoot_movers",
+        "label": "Shoot the wandering targets anyway",
+        "description": "Moving targets are just advanced targets. Track the shuffling bullseye and put an arrow where it is going to be, not where it is sulking.",
+        "statFocus": "accuracy",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "herd_targets",
+        "label": "Herd the targets back onto their posts",
+        "description": "Chase down a dozen pieces of indignant wooden furniture and shepherd them back into regulation positions before the owl deducts more points.",
+        "statFocus": "agility",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "soothe_bullseye",
+        "label": "Sweet-talk the bullseye into one last round",
+        "description": "Crouch to its level, acknowledge its feelings, and charm it into exactly three ceremonial shots — none of them, per its one condition, in the face.",
+        "statFocus": "charisma",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "ricochet_shot",
+        "label": "Attempt the forbidden ricochet shot",
+        "description": "Bank an arrow off the grading ruler, the weathervane, and a passing breeze so the bullseye never sees it coming. Strictly against range rules.",
+        "statFocus": "mischief",
+        "riskLevel": "ridiculous",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The owl is already filling out an incident report."
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "Range Master Hoot",
+        "description": "An owl archery instructor who grades on a curve using a literally curved ruler and believes marksmanship is ninety percent paperwork.",
+        "role": "Archery range master",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:training:4"
+  },
+  {
+    "title": "Community Service Cardio",
+    "description": "Behind a hand-painted sign reading ENDURANCE CLASS — TUITION: PATIENCE, a large troll checks names off a community service roster. He explains, with great dignity, that he is working off a fine and that today's workout is 'being mildly sat on while reciting your personal goals.' Several students are already underneath him, muffled but visibly improving. He gestures to an open slot.",
+    "encounterType": "training",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "endure_sit",
+        "label": "Take your turn under the troll",
+        "description": "Lie down, recite your personal goals clearly, and endure the most motivational furniture experience of your life.",
+        "statFocus": "toughness",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "carry_troll",
+        "label": "Offer to carry the troll instead",
+        "description": "Flip the curriculum. If you can lug the instructor one full lap of the yard, that has to count as double credit. He seems intrigued and slightly flattered.",
+        "statFocus": "strength",
+        "riskLevel": "ridiculous",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "ask_fine",
+        "label": "Ask what the fine was for",
+        "description": "Community service implies an offense. He seems very dignified about it, which somehow makes it more intriguing. Get the story.",
+        "statFocus": "curiosity",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "haggle_hours",
+        "label": "Haggle his service hours down for private lessons",
+        "description": "Strike a deal: you vouch for him with the authorities and he teaches you the secret techniques he reserves for paying students.",
+        "statFocus": "negotiation",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "recurring_npc",
+        "content": "Instructor Gravel, a dignified troll, is working off a mysterious fine by teaching an endurance class where he mildly sits on students. The nature of the fine is unknown.",
+        "importance": 2
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "Instructor Gravel",
+        "description": "A large, dignified troll repaying a mysterious fine through community service as living gym equipment. Sits on students motivationally and keeps a tidy roster.",
+        "role": "Endurance instructor",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:training:5"
+  }
+]

@@ -1,0 +1,43 @@
+{
+  "name": "@unlikelyland/api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "prisma generate && tsc -p tsconfig.build.json && node -e \"const fs=require('fs'),p=require('path');const s=p.join('src','content','fallback'),d=p.join('dist','content','fallback');fs.mkdirSync(d,{recursive:true});for(const f of fs.readdirSync(s))fs.copyFileSync(p.join(s,f),p.join(d,f));console.log('copied fallback content')\"",
+    "start": "node dist/main.js",
+    "start:dev": "nest start --watch",
+    "start:prod": "node dist/main.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy",
+    "prisma:seed": "ts-node prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
+  "dependencies": {
+    "@nestjs/common": "^10.4.4",
+    "@nestjs/config": "^3.2.3",
+    "@nestjs/core": "^10.4.4",
+    "@nestjs/jwt": "^10.2.0",
+    "@nestjs/platform-express": "^10.4.4",
+    "@prisma/client": "^5.20.0",
+    "@unlikelyland/contracts": "*",
+    "bcryptjs": "^2.4.3",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^10.4.5",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20.16.5",
+    "prisma": "^5.20.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4",
+    "vitest": "^2.1.9"
+  }
+}

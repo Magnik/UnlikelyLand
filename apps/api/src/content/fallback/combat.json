@@ -1,0 +1,665 @@
+[
+  {
+    "title": "The Recliner Has Gone Feral",
+    "description": "You round a corner and find an overstuffed recliner crouched in the middle of the path, growling softly through its cushions. Its footrest snaps open and shut like a jaw, and a half-digested throw pillow dangles from one armrest. Someone has nailed a hand-painted sign to a nearby tree: DO NOT SIT. IT REMEMBERS. The recliner shifts its weight and creaks toward you with intent.",
+    "encounterType": "combat",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "wrestle",
+        "label": "Wrestle it into the closed position",
+        "description": "Grab the footrest and force it shut. Every recliner has a lever. You just have to survive long enough to find it.",
+        "statFocus": "strength",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "soothe",
+        "label": "Compliment its lumbar support",
+        "description": "Speak gently. No furniture goes feral by choice. Somewhere under the snarling is a chair that just wants to be appreciated.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "sit",
+        "label": "Sit on it to assert dominance",
+        "description": "The sign says do not sit. The sign is not the boss of you.",
+        "statFocus": "bravery",
+        "riskLevel": "ridiculous",
+        "rewardProfile": "strange",
+        "mayStartCombat": true,
+        "isHiddenConsequence": true,
+        "visibleHint": "It does look suspiciously comfortable."
+      },
+      {
+        "id": "retreat",
+        "label": "Back away without breaking eye contact",
+        "description": "Predator furniture respects confidence. Probably. Walk backwards until it is a problem for someone else.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "The Feral Recliner",
+        "description": "An overstuffed recliner that escaped domestication and now hunts along footpaths. Snaps its footrest like a jaw and hoards throw pillows as trophies.",
+        "role": "enemy",
+        "privateOrSharedPotential": "private"
+      }
+    ],
+    "templateId": "fallback:combat:0"
+  },
+  {
+    "title": "Brigadier Honk's Toll Road",
+    "description": "A regiment of geese blocks the trail in parade formation, each one wearing a pinecone strapped to its head like a helmet. Their commander struts forward, chest feathers decorated with bottle caps, and honks a single devastating note that clearly means TOLL. A smaller goose holds up a slate listing the price: one shiny object, non-negotiable. The regiment fans out to flank you with alarming discipline.",
+    "encounterType": "combat",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "charge",
+        "label": "Charge the goose vanguard",
+        "description": "They are geese. You are a person. The math feels favorable right up until the first wing hits you.",
+        "statFocus": "toughness",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "haggle",
+        "label": "Negotiate the toll down to one button",
+        "description": "Everything is negotiable, even to a goose. Argue that buttons are technically shiny and considerably easier to swallow.",
+        "statFocus": "negotiation",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "honk",
+        "label": "Honk back with parade-ground authority",
+        "description": "Outrank them. Honk like a goose who has seen things. Hold the final note until someone salutes.",
+        "statFocus": "weirdness",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "Brigadier Honk",
+        "description": "Decorated commander of a goose toll regiment. Wears bottle-cap medals, respects discipline, despises fare evasion. Holds grudges with military precision.",
+        "role": "enemy",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "world_fact",
+        "content": "A goose regiment under Brigadier Honk operates toll checkpoints on island trails, charging one shiny object per crossing.",
+        "importance": 2
+      }
+    ],
+    "templateId": "fallback:combat:1"
+  },
+  {
+    "title": "Notice of Intent to Trample",
+    "description": "A golem assembled entirely from filing cabinets grinds onto the path, drawers slamming like war drums. It extends one drawer and serves you Form 88-C: NOTICE OF INTENT TO TRAMPLE, effective in two minutes, signature optional. A second drawer opens to reveal a complimentary pen. It begins stamping the ground in preparation, each stomp leaving a perfect APPROVED mark in the dirt.",
+    "encounterType": "combat",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "dodge",
+        "label": "Dodge through its stamping arms",
+        "description": "Time the stomps, slip between the drawers, and get behind it where the paperwork can't reach.",
+        "statFocus": "agility",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "slam",
+        "label": "Slam its drawers shut mid-monologue",
+        "description": "A filing cabinet with closed drawers is just a heavy box. Close them all before it finishes reading you your rights.",
+        "statFocus": "strength",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "forge",
+        "label": "Forge an extension stamp on Form 88-C",
+        "description": "Two minutes is plenty of time to commit light document fraud. Backdate the trampling to never.",
+        "statFocus": "deception",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "confuse",
+        "label": "Feed it two contradictory forms at once",
+        "description": "File a Request to Trample and a Trampling Objection simultaneously and watch its drawers argue.",
+        "statFocus": "mischief",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "Form Golem 7-B",
+        "description": "A walking filing-cabinet construct that serves official notice before every act of violence. Procedurally flawless, emotionally drawerless.",
+        "role": "enemy",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:combat:2"
+  },
+  {
+    "title": "The Slow Advance of Chowder",
+    "description": "You crest a small rise and discover the entire low ground ahead is chowder, and the chowder is gaining elevation. It advances with terrible patience, apologizing in soft burbles each time it engulfs a shrub. A wooden sign floats past reading DO NOT FEED, which raises several questions. The broth steams politely as it begins to surround your boots.",
+    "encounterType": "combat",
+    "allowGoHome": true,
+    "goHomeLabel": "Suddenly recall you left soup unsupervised",
+    "choices": [
+      {
+        "id": "ladle",
+        "label": "Fight it ladle-first",
+        "description": "Find the thickest part of the broth and disperse it. Every soup has a structural weakness. Probably the croutons.",
+        "statFocus": "accuracy",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "outrun",
+        "label": "Outrun it uphill, where soup fears to tread",
+        "description": "Chowder is bound by the laws of gravy-ty. Higher ground is safe ground.",
+        "statFocus": "agility",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "critique",
+        "label": "Critique its seasoning until it loses confidence",
+        "description": "Loudly declare it under-salted. No chowder can advance through that kind of public review.",
+        "statFocus": "charisma",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "eat",
+        "label": "Eat your way through",
+        "description": "It is, technically, lunch. Lunch on an unprecedented scale.",
+        "statFocus": "bravery",
+        "riskLevel": "ridiculous",
+        "rewardProfile": "strange",
+        "mayStartCombat": true,
+        "isHiddenConsequence": true,
+        "visibleHint": "It does smell genuinely delicious."
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "The Unending Chowder",
+        "description": "A vast, slow-moving body of sentient chowder that engulfs terrain while apologizing. Origin unknown. Seasoning contested.",
+        "role": "enemy",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:combat:3"
+  },
+  {
+    "title": "Freelance Punching Services",
+    "description": "A burlap training dummy on a wheeled post rolls into your path, a hand-lettered rate card hanging from its neck: PUNCHES — 3 COPPER EACH, BULK DISCOUNTS, NO REFUNDS. It cracks its canvas knuckles, which should not be possible, and explains that it left the training dummy union to go freelance. Then it clarifies the business model: it punches first, and invoices after.",
+    "encounterType": "combat",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "brawl",
+        "label": "Accept a full ten-round bout",
+        "description": "It was built to be hit. You were not. See whose design philosophy wins.",
+        "statFocus": "toughness",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "contract",
+        "label": "Offer it a better contract, with dental",
+        "description": "Freelancers are perpetually under-benefited. Lure it away from violence with the promise of stable cushioning.",
+        "statFocus": "negotiation",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "freeze",
+        "label": "Stand so still it cannot bill you",
+        "description": "Its rate card covers punches thrown at customers. Become legally indistinguishable from scenery.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "Jab, Freelance Dummy",
+        "description": "A training dummy that quit the union to punch professionally. Aggressive billing practices, surprisingly fair bulk rates, deep resentment of salaried dummies.",
+        "role": "enemy",
+        "privateOrSharedPotential": "private"
+      }
+    ],
+    "templateId": "fallback:combat:4"
+  },
+  {
+    "title": "The Chest Demands Its Cut",
+    "description": "A treasure chest squats in the path wearing a tiny green visor, and before you can speak it announces an inspection of your belongings for tax purposes. A long paper receipt unspools from between its teeth, itemizing everything you own plus a processing fee for being itemized. Its lid creaks open just wide enough to show rows of polished teeth and a small stamp that says PAST DUE.",
+    "encounterType": "combat",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "pry",
+        "label": "Pry it open and collect YOUR cut",
+        "description": "Mimics keep what they collect. Audit the auditor, with a crowbar if necessary.",
+        "statFocus": "strength",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "license",
+        "label": "Demand to see its tax-collection license",
+        "description": "Loom over it. Real collectors carry credentials. Chests with teeth usually do not.",
+        "statFocus": "intimidation",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "lint",
+        "label": "Pay confidently in pocket lint",
+        "description": "Present the lint like it is currency. Maintain eye contact with the lock. Confidence is nine tenths of counterfeiting.",
+        "statFocus": "deception",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "decline",
+        "label": "Politely decline to be itemized",
+        "description": "Step backwards off its receipt. You cannot be taxed if you are not on the paperwork.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "Withholding Agent Chestworth",
+        "description": "A mimic that reinvented itself as a freelance tax collector. Issues receipts from between its teeth and considers biting a form of escrow.",
+        "role": "enemy",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:combat:5"
+  },
+  {
+    "title": "The Wardrobe Is Hungry Again",
+    "description": "You notice the wardrobe a moment too late, because wardrobes are not supposed to follow people. It stands at the edge of the trees, doors slightly ajar, hangers clinking inside like teeth. Local carvings warn it has eaten three complete outfits this week, allegedly with the adventurers still in them. It takes one slow, deliberate step toward you on its little clawed feet.",
+    "encounterType": "combat",
+    "allowGoHome": true,
+    "goHomeLabel": "Announce you're between outfits anyway",
+    "choices": [
+      {
+        "id": "slam",
+        "label": "Slam its doors shut and hold them",
+        "description": "A wardrobe cannot eat with its mouth closed. Hold on through the rattling and hope it tires before you do.",
+        "statFocus": "strength",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "tribute",
+        "label": "Sacrifice one deeply unfashionable sock",
+        "description": "Offer tribute. Everyone owns one sock they would feed to a predator without hesitation.",
+        "statFocus": "negotiation",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "enter",
+        "label": "Climb in to see where the clothes go",
+        "description": "Three outfits went in. Somewhere in there is a destination.",
+        "statFocus": "curiosity",
+        "riskLevel": "ridiculous",
+        "rewardProfile": "strange",
+        "mayStartCombat": true,
+        "isHiddenConsequence": true,
+        "visibleHint": "It smells faintly of winter in there."
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "The Peckish Wardrobe",
+        "description": "An ambulatory wardrobe with clawed feet and a taste for complete outfits. Stalks travelers politely, like a butler with ulterior motives.",
+        "role": "enemy",
+        "privateOrSharedPotential": "private"
+      }
+    ],
+    "templateId": "fallback:combat:6"
+  },
+  {
+    "title": "Audit Swarm Inbound",
+    "description": "A low droning fills the air, and a swarm of clipboard wasps rises from a hollow stump — each one a tiny winged clipboard with a stinger where the clip should be. Every sting, the locals say, leaves an itemized comment about your life choices, and the comments are accurate. The swarm forms a slowly rotating column and begins assigning you a case number.",
+    "encounterType": "combat",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "swat",
+        "label": "Swat the queen's clipboard out of the sky",
+        "description": "Every audit has a lead auditor. Find the biggest clipboard and unseat management.",
+        "statFocus": "accuracy",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "comply",
+        "label": "Stand still and submit to the audit",
+        "description": "Accept the stings with dignity. Cooperate fully. Honest people have nothing to fear except several specific welts.",
+        "statFocus": "honor",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "appeal",
+        "label": "File a verbal appeal, loudly, to the sky",
+        "description": "State your name, dispute all findings, and demand a hearing before the swarm's oversight committee, which surely exists.",
+        "statFocus": "weirdness",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "withdraw",
+        "label": "Withdraw slowly under cover of foliage",
+        "description": "Audits lapse if the subject cannot be located. Become difficult to locate.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "world_fact",
+        "content": "Clipboard wasps nest in hollow stumps and audit anyone who lingers; their sting-comments are itemized and unsettlingly accurate.",
+        "importance": 2
+      }
+    ],
+    "templateId": "fallback:combat:7"
+  },
+  {
+    "title": "High Noon, Says the Rooster",
+    "description": "A rooster in a hand-stitched vest struts into the clearing, a burr stuck to his chest like a badge, and declares that you have violated the peace of his jurisdiction. He demands satisfaction: a duel at dawn. You point out it is mid-afternoon, and he counters, with terrifying legal confidence, that it is always dawn somewhere. His spurs glint as he begins pacing out ten steps.",
+    "encounterType": "combat",
+    "allowGoHome": true,
+    "goHomeLabel": "Claim you're due at a different duel",
+    "choices": [
+      {
+        "id": "duel",
+        "label": "Accept the dawn duel",
+        "description": "Ten paces, turn, and survive whatever a rooster sheriff does at close range. The spurs are not ceremonial.",
+        "statFocus": "agility",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "flatter",
+        "label": "Compliment his magnificent spurs",
+        "description": "Lawmen are vain. Rooster lawmen are roosters AND lawmen. Lay it on thick.",
+        "statFocus": "charisma",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "dusk",
+        "label": "Declare it legally dusk",
+        "description": "If it is always dawn somewhere, it is also always dusk somewhere, and duels at dusk are famously unenforceable.",
+        "statFocus": "deception",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "Sheriff Bantam",
+        "description": "A self-appointed rooster lawman in a stitched vest who challenges trespassers to dawn duels under his own flexible definition of dawn.",
+        "role": "enemy",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "recurring_npc",
+        "content": "Sheriff Bantam, a duel-obsessed rooster lawman, patrols a self-declared jurisdiction and remembers anyone who dodged a duel.",
+        "importance": 3
+      }
+    ],
+    "templateId": "fallback:combat:8"
+  },
+  {
+    "title": "Bernard Takes the Shape Seriously",
+    "description": "The garden path ahead is guarded by a hedge trimmed into the shape of a bear, which would be charming if the hedge had not fully committed to the role. It rears up in a shower of leaves, growls in a voice like rustling, and rakes the air with branch claws. A small plaque at its base reads BERNARD, and beneath that, in newer carving, BEWARE.",
+    "encounterType": "combat",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "prune",
+        "label": "Prune him back into a polite shrub",
+        "description": "Precise cuts only. The goal is topiary, not lumber. Aim for the attitude.",
+        "statFocus": "accuracy",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "impersonate",
+        "label": "Stand very still and impersonate a hedge",
+        "description": "Arms out, fingers splayed, think leafy thoughts. Bears do not fight shrubbery. Probably neither do hedge bears.",
+        "statFocus": "deception",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "water",
+        "label": "Offer him a refreshing watering",
+        "description": "Beneath the bear is a thirsty plant. Address the root cause.",
+        "statFocus": "empathy",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "roar",
+        "label": "Roar first",
+        "description": "Establish that of the two of you, YOU are the bear. Volume is everything.",
+        "statFocus": "intimidation",
+        "riskLevel": "ridiculous",
+        "rewardProfile": "strange",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "Bernard the Topiary Bear",
+        "description": "A garden hedge sculpted into a bear who took the assignment literally. Territorial, deciduous, slightly thirsty.",
+        "role": "enemy",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:combat:9"
+  },
+  {
+    "title": "The Mattress That Would Be King",
+    "description": "A king-size mattress wearing a crown of bent coat hangers blocks the road, propped upright with unmistakable menace. It declares this stretch of path a sovereign realm and demands you kneel, then clarifies that being flattened counts as kneeling. Several flattened-grass silhouettes nearby suggest previous travelers accepted the terms. The mattress leans forward, preparing the royal flop.",
+    "encounterType": "combat",
+    "allowGoHome": true,
+    "goHomeLabel": "Take your bedtime elsewhere",
+    "choices": [
+      {
+        "id": "flip",
+        "label": "Flip the monarch",
+        "description": "Every mattress must be flipped eventually. It is tradition. It is also, in this case, regicide.",
+        "statFocus": "strength",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "fealty",
+        "label": "Swear extremely conditional fealty",
+        "description": "Pledge loyalty with enough subclauses that you owe nothing. Monarchs rarely read the fine print of their own vassals.",
+        "statFocus": "negotiation",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "nap",
+        "label": "Call its bluff and nap on it",
+        "description": "It is a mattress. You are tired. Some conflicts resolve themselves horizontally.",
+        "statFocus": "mischief",
+        "riskLevel": "ridiculous",
+        "rewardProfile": "strange",
+        "mayStartCombat": true,
+        "isHiddenConsequence": true,
+        "visibleHint": "It is, admittedly, very soft."
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "King Plush the First",
+        "description": "A self-crowned king-size mattress that rules a stretch of road by flopping on dissenters. Wears a coat-hanger crown. Counts flattening as fealty.",
+        "role": "enemy",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:combat:10"
+  },
+  {
+    "title": "Complimentary Duel, Limited Time Only",
+    "description": "A knight in door-to-door salesman armor intercepts you with a practiced smile audible through his visor. He is offering, today only, a complimentary introductory duel — no obligation, though most customers do continue to the full package. He produces a punch card: ten duels and the eleventh is free. When you hesitate, he draws his sword in a way he insists is part of the demonstration.",
+    "encounterType": "combat",
+    "allowGoHome": true,
+    "goHomeLabel": "Slam a door you do not own",
+    "choices": [
+      {
+        "id": "duel",
+        "label": "Accept the free trial duel",
+        "description": "It is free. He is enormous. These facts are probably related.",
+        "statFocus": "bravery",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "ordinance",
+        "label": "Cite the island-wide no-soliciting ordinance",
+        "description": "There may not be one, but he cannot prove that, and knights respect ordinances on principle.",
+        "statFocus": "negotiation",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "countersell",
+        "label": "Counter-sell him something, anything",
+        "description": "Nobody pitches a pitchman. Offer him a rock, a story, an exciting investment opportunity. Reverse the funnel.",
+        "statFocus": "charisma",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "manager",
+        "label": "Ask to speak to the manager of duels",
+        "description": "Somewhere above this knight is a regional duel supervisor. Escalate until the org chart collapses.",
+        "statFocus": "weirdness",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "Sir Reginald the Persistent",
+        "description": "A door-to-door duelist knight working on commission. Carries a duel punch card, never accepts the first no, and considers drawn steel a sales aid.",
+        "role": "enemy",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "recurring_npc",
+        "content": "Sir Reginald the Persistent, a duel-selling knight, tracks his punch-card customers and follows up relentlessly on incomplete cards.",
+        "importance": 3
+      }
+    ],
+    "templateId": "fallback:combat:11"
+  }
+]

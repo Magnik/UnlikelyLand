@@ -1,0 +1,673 @@
+[
+  {
+    "title": "The Staircase Marked Down (Arrow Points Up)",
+    "description": "You crest a rise and find a stone spiral staircase standing alone in the grass, corkscrewing down into the earth. A brass plaque reads DOWN, with an arrow pointing firmly up. The steps are freshly swept, and a clipboard chained to the railing holds a visitor log whose last entry, dated decades ago, simply says 'still climbing.'",
+    "encounterType": "exploration",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "descend_stairs",
+        "label": "Descend the stairs anyway",
+        "description": "Down is down, probably, whatever the plaque thinks. The sweeping has to be coming from somewhere.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "sign_log",
+        "label": "Sign the visitor log first",
+        "description": "Proper expeditions are documented expeditions. You print your name neatly, note the time, and leave a forwarding address just in case.",
+        "statFocus": "honor",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "slide_banister",
+        "label": "Slide down the banister",
+        "description": "The banister spirals into darkness at an extremely inviting angle. What could be waiting at the bottom besides glory?",
+        "statFocus": "agility",
+        "riskLevel": "ridiculous",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "yell_hello",
+        "label": "Yell 'HELLO' down the middle",
+        "description": "You lean over the central gap and formally introduce yourself to whatever has been sweeping the steps all these years.",
+        "statFocus": "weirdness",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "templateId": "fallback:exploration:0"
+  },
+  {
+    "title": "The Lighthouse That Lost Something",
+    "description": "A full-sized lighthouse stands in the middle of a meadow, nowhere near any water, its great lamp tilted downward and sweeping the grass in slow, anxious circles. A handwritten note is pinned to the door: OUT SEARCHING. BACK WHEN FOUND. Every few minutes the beam pauses on a patch of clover, somehow sighs, and moves on.",
+    "encounterType": "exploration",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "join_search",
+        "label": "Help the beam search the grass",
+        "description": "You walk the swept circle with your eyes down, looking for anything a lighthouse might be able to lose.",
+        "statFocus": "accuracy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "open_door",
+        "label": "Try the lighthouse door",
+        "description": "The note says nobody is home, which is traditionally when buildings are at their most interesting.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "stand_in_beam",
+        "label": "Stand in the beam and wave",
+        "description": "Perhaps it is searching for company. Perhaps it is searching for you, specifically, and has been for some time.",
+        "statFocus": "weirdness",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "climb_tower",
+        "label": "Climb the outside to the lamp room",
+        "description": "The rungs are rusty and the lamp swivels without warning, but the view from inside a worried lighthouse must be remarkable.",
+        "statFocus": "agility",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "world_fact",
+        "content": "A lighthouse stands far inland with its beam aimed at the ground, searching the grass for something it lost. Door note: OUT SEARCHING. BACK WHEN FOUND.",
+        "importance": 2
+      }
+    ],
+    "templateId": "fallback:exploration:1"
+  },
+  {
+    "title": "A Door to Nowhere, Hinged Both Ways",
+    "description": "In the middle of a clearing stands a polished oak door in its own frame, attached to nothing. Both sides are labeled PULL. Through the keyhole you can hear the unmistakable sound of filing cabinets opening and closing, though the gap underneath shows only more clearing. Slightly tidier clearing.",
+    "encounterType": "exploration",
+    "allowGoHome": true,
+    "goHomeLabel": "Decide doors are a scam",
+    "choices": [
+      {
+        "id": "pull_door",
+        "label": "Pull the door open",
+        "description": "Both sides say PULL, so for once in your life you cannot get this wrong.",
+        "statFocus": "strength",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "peek_keyhole",
+        "label": "Peer through the keyhole first",
+        "description": "Reconnaissance before entry. You press your eye to the brass and assess the paperwork situation on the other side.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "knock_announce",
+        "label": "Knock and state your business",
+        "description": "Doors with filing cabinets behind them appreciate procedure. You knock twice and announce yourself in your most administrative voice.",
+        "statFocus": "charisma",
+        "riskLevel": "low",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "walk_through_frame",
+        "label": "Step around the door, through the frame",
+        "description": "Technically the doorway is right there. Technically.",
+        "statFocus": "weirdness",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The grass on the other side looks recently audited."
+      }
+    ],
+    "templateId": "fallback:exploration:2"
+  },
+  {
+    "title": "You Are Not Here",
+    "description": "A weathered map kiosk stands at a fork in the path, its YOU ARE HERE dot placed somewhere you have definitely never been. When you tap the correct spot, the dot scuttles two inches further away and pretends it has always been there. Fine print at the bottom reads: MAP ACCURACY GUARANTEED. REALITY MAY VARY.",
+    "encounterType": "exploration",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "annotate_map",
+        "label": "Correct the map in pen",
+        "description": "Somebody has to maintain cartographic standards, and the dot has clearly stopped trying.",
+        "statFocus": "accuracy",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "debate_dot",
+        "label": "Debate the dot directly",
+        "description": "It is a dot of few words, but it listens. You present your case for where you currently are, with supporting evidence.",
+        "statFocus": "negotiation",
+        "riskLevel": "low",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "go_where_dot_says",
+        "label": "Travel to where the dot claims you are",
+        "description": "If the map refuses to match reality, then reality can jolly well match the map.",
+        "statFocus": "weirdness",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "sketch_copy",
+        "label": "Sketch your own copy and move on",
+        "description": "You trust your own pencil more than a dot with a guilty conscience. You copy the useful parts and leave the lies.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "world_fact",
+        "content": "The island's map kiosks are unreliable: the YOU ARE HERE dot moves to avoid being corrected, and the fine print disclaims reality.",
+        "importance": 2
+      }
+    ],
+    "templateId": "fallback:exploration:3"
+  },
+  {
+    "title": "The Crabs Have a Permit for One Square",
+    "description": "You step into a clearing trimmed into a perfect square, every blade of grass at regulation height. A dozen small crabs in tiny high-visibility vests are hard at work with shears, and a laminated permit nailed to a post authorizes ONE (1) ORNAMENTAL SQUARE. The crabs are, you can't help noticing, about halfway through trimming a second square.",
+    "encounterType": "exploration",
+    "allowGoHome": true,
+    "goHomeLabel": "Develop a sudden, very specific allergy",
+    "choices": [
+      {
+        "id": "cite_permit",
+        "label": "Point out the permit violation",
+        "description": "The permit says one square. That is not a gray area. You clear your throat in an official manner.",
+        "statFocus": "honor",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "help_trim",
+        "label": "Borrow shears and pitch in",
+        "description": "The crabs work to exacting tolerances. You keep your lines straight and your questions to yourself.",
+        "statFocus": "accuracy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "ask_purpose",
+        "label": "Ask what the squares are for",
+        "description": "Nobody trims two regulation squares in the middle of the wilderness without a reason. You would very much like to hear it.",
+        "statFocus": "curiosity",
+        "riskLevel": "low",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "pocket_shears",
+        "label": "Pocket a tiny pair of shears",
+        "description": "They are very small and very sharp and there are so many pairs. Surely no one is counting.",
+        "statFocus": "mischief",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": true,
+        "visibleHint": "The foreman crab counts the equipment twice an hour."
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "Foreman Pinch",
+        "role": "Crab landscaping foreman",
+        "description": "Head crab of a permitted topiary crew. Wears the largest high-visibility vest, trims to regulation height, and trusts absolutely no one near the equipment.",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:exploration:4"
+  },
+  {
+    "title": "Scenic Overlook: The Hole",
+    "description": "You arrive at a velvet rope encircling an extremely deep hole. There is a turnstile, a suggestion box, and an unstaffed gift shop selling postcards that are simply pictures of darkness. A polite sign reads: PLEASE DO NOT THROW COINS. THE HOLE IS SAVING UP FOR SOMETHING.",
+    "encounterType": "exploration",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "toss_coin",
+        "label": "Throw a coin in anyway",
+        "description": "The sign asked nicely, which makes it worse, which somehow makes it better.",
+        "statFocus": "mischief",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "listen_edge",
+        "label": "Lean over the edge and listen",
+        "description": "From very far below comes a sound that might be wind, or might be counting.",
+        "statFocus": "bravery",
+        "riskLevel": "high",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "buy_postcard",
+        "label": "Leave payment and take a postcard",
+        "description": "The till is unattended and the price list trusts you completely. You decide to be worthy of a gift shop's trust.",
+        "statFocus": "honor",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "read_suggestions",
+        "label": "Read the suggestion box entries",
+        "description": "The box is stuffed full. Someone, or something, has a great deal of feedback about this attraction.",
+        "statFocus": "curiosity",
+        "riskLevel": "low",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "world_fact",
+        "content": "A roped-off bottomless hole operates as a tourist attraction with an unstaffed gift shop. Signage insists the hole is saving up for something.",
+        "importance": 2
+      }
+    ],
+    "templateId": "fallback:exploration:5"
+  },
+  {
+    "title": "A Bridge Over Absolutely Nothing",
+    "description": "An ornate stone bridge arcs grandly over a stretch of completely dry meadow. A municipal notice explains: RIVER RELOCATED PENDING DISPUTE. BRIDGE REMAINS OPEN FOR BUSINESS. A toll basket sits at the near end, hopeful and empty, and beneath the bridge the grass is flattened into a large, suspiciously warm, troll-shaped dent.",
+    "encounterType": "exploration",
+    "allowGoHome": true,
+    "goHomeLabel": "Claim you forgot your bridge pass",
+    "choices": [
+      {
+        "id": "pay_and_cross",
+        "label": "Pay the toll and cross properly",
+        "description": "There may be no river and no toll keeper, but standards do not relocate.",
+        "statFocus": "honor",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "duck_under",
+        "label": "Walk underneath instead",
+        "description": "Crossing under a bridge is free, traditional, and only occasionally an ambush.",
+        "statFocus": "mischief",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "track_river",
+        "label": "Go find the relocated river",
+        "description": "Rivers do not just leave. Somebody moved it, and somewhere it is still flowing, possibly resentfully.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "haggle_basket",
+        "label": "Haggle with the empty toll basket",
+        "description": "You open negotiations with a piece of woven wicker. It drives a surprisingly hard bargain by saying nothing at all.",
+        "statFocus": "weirdness",
+        "riskLevel": "low",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "unresolved_thread",
+        "content": "A river has been officially relocated pending a dispute. Its abandoned bridge still collects tolls, and something troll-shaped sleeps underneath.",
+        "importance": 3
+      }
+    ],
+    "templateId": "fallback:exploration:6"
+  },
+  {
+    "title": "The Cave of Constructive Feedback",
+    "description": "You find a cave mouth ringed with ferns and shout a test 'hello.' The echo returns a moment later as 'Hello — though one typically introduces oneself first.' Every sound you make comes back corrected, polished, and ten percent more condescending. From deep inside, something clears its throat in a way that suggests it has been preparing a statement for centuries.",
+    "encounterType": "exploration",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "enter_cave",
+        "label": "Venture inside",
+        "description": "Whatever edits the echoes lives in the dark, and it is clearly dying for a proper conversation.",
+        "statFocus": "bravery",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "praise_echo",
+        "label": "Compliment the echo's diction",
+        "description": "Flattery may get you everywhere, or at the very least a complete sentence about everywhere.",
+        "statFocus": "charisma",
+        "riskLevel": "low",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "shout_gibberish",
+        "label": "Bellow ungrammatical gibberish",
+        "description": "No grammar means nothing to correct. You are about to hand this cave a syntax error.",
+        "statFocus": "weirdness",
+        "riskLevel": "ridiculous",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "take_notes",
+        "label": "Transcribe the corrections from a safe distance",
+        "description": "Free elocution lessons are free elocution lessons. You stay in the daylight and write everything down.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "templateId": "fallback:exploration:7"
+  },
+  {
+    "title": "Forty Signposts, One Abstention",
+    "description": "You push through the brush into a clearing crowded with dozens of signposts, every one of them pointing inward at a single blank signpost in the center. They read THIS WAY, NO, THIS WAY, IGNORE HIM, and ASK THE BLANK ONE. The blank signpost trembles faintly, like a witness who never wanted to be called.",
+    "encounterType": "exploration",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "approach_blank",
+        "label": "Approach the blank signpost gently",
+        "description": "Something that nervous knows something. You crouch down to its eye level, if it has eyes, and speak softly.",
+        "statFocus": "empathy",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "It trembles harder the closer you get."
+      },
+      {
+        "id": "chair_meeting",
+        "label": "Call the signposts to order",
+        "description": "Forty directions and zero consensus. What this clearing needs is a moderator with a firm agenda.",
+        "statFocus": "negotiation",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "add_own_sign",
+        "label": "Nail up your own sign",
+        "description": "You have opinions about direction too, and a sturdy bit of board.",
+        "statFocus": "mischief",
+        "riskLevel": "low",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "triangulate",
+        "label": "Calculate where they actually point",
+        "description": "Strip away the arguing and the geometry remains. You take bearings like a sensible person.",
+        "statFocus": "accuracy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "templateId": "fallback:exploration:8"
+  },
+  {
+    "title": "Welcome Center, Visitors to Date: Zero",
+    "description": "You discover a pristine visitor welcome center with sparkling windows, a fully stocked brochure rack, and a guest book containing zero names. The brochures advertise attractions you are fairly sure do not exist. As you enter, an animatronic greeter whirs to life mid-sentence — '—AND THAT CONCLUDES OUR SAFETY ORIENTATION' — and beams at you with the joy of someone who has waited decades for this exact moment.",
+    "encounterType": "exploration",
+    "allowGoHome": true,
+    "goHomeLabel": "Take one brochure and leave forever",
+    "choices": [
+      {
+        "id": "accept_tour",
+        "label": "Accept the guided tour",
+        "description": "Gleeda — her name tag says GLEEDA — knows seventeen points of interest. None of them appear to be real. The tour departs immediately.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "oil_elbow",
+        "label": "Oil the greeter's squeaking elbow",
+        "description": "Her wave has been squeaking for decades and nobody ever came. The least you can do is fix the wave.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "quiz_brochures",
+        "label": "Ask detailed questions about a fake attraction",
+        "description": "The Crystal Staircase of Mild Regret apparently has a gift shop. You ask about parking.",
+        "statFocus": "weirdness",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "back_room",
+        "label": "Slip into the staff-only back room",
+        "description": "A welcome center with no staff still has a staff room. Someone stocked those brochures.",
+        "statFocus": "mischief",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The STAFF ONLY paint looks suspiciously fresh."
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "recurring_npc",
+        "content": "Gleeda, the animatronic greeter at the island's never-visited welcome center, has finally received her first visitor.",
+        "importance": 3
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "Gleeda",
+        "role": "Welcome center greeter",
+        "description": "An animatronic greeter who waited decades for her first visitor. Relentlessly cheerful, mid-orientation at all times, and an expert on seventeen attractions that do not exist.",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:exploration:9"
+  },
+  {
+    "title": "The Hill Is Running Late",
+    "description": "Ahead of you, an entire grassy hill is inching across the landscape at walking pace, fitted with reflective markers and a large WIDE LOAD sign. A mole in a tiny safety helmet trots ahead of it, shouting clearance measurements. According to the mole, the hill is late for an appointment it made nine hundred years ago, and would appreciate it if everyone stopped asking questions.",
+    "encounterType": "exploration",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "ride_hill",
+        "label": "Scramble aboard the moving hill",
+        "description": "It is going somewhere with enormous purpose, and hills so rarely offer lifts.",
+        "statFocus": "agility",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "interview_mole",
+        "label": "Walk alongside and chat with the mole",
+        "description": "Furlong — the helmet has his name on it — has escorted this hill for three generations of moles and is absolutely bursting with grievances.",
+        "statFocus": "charisma",
+        "riskLevel": "low",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "push_hill",
+        "label": "Get behind the hill and push",
+        "description": "Nine hundred years late is no excuse to be later. You put your shoulder into geography.",
+        "statFocus": "strength",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "scout_ahead",
+        "label": "Scout the route for obstacles",
+        "description": "Hills cannot brake. Somebody responsible should check what is downhill of the hill.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "unresolved_thread",
+        "content": "A migrating hill is nine hundred years late for an unknown appointment, escorted by a mole named Furlong who shouts clearance measurements.",
+        "importance": 3
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "Furlong",
+        "role": "Hill escort mole",
+        "description": "A mole in a tiny safety helmet whose family has escorted a migrating hill for three generations. Professional, weary, and full of grievances about pedestrian right-of-way.",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:exploration:10"
+  },
+  {
+    "title": "The Obelisk Issues Receipts",
+    "description": "A smooth black obelisk hums quietly in a clearing, with a single slot at chest height. Feed it any object and it returns the object unharmed, along with a printed, itemized receipt for experiences you have not had yet. A line of crows waits patiently in front of it, each holding one pebble. The crow at the front nods at you, then pointedly at the back of the queue.",
+    "encounterType": "exploration",
+    "allowGoHome": true,
+    "goHomeLabel": "Back away, nodding respectfully at the crows",
+    "choices": [
+      {
+        "id": "feed_slot",
+        "label": "Feed it something from your pack",
+        "description": "You will get the item back, supposedly. It is the receipt you are really after.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The crows pay very close attention to what you choose."
+      },
+      {
+        "id": "skip_queue",
+        "label": "Stride past the crows to the front",
+        "description": "They are only crows, you reason, incorrectly perhaps.",
+        "statFocus": "intimidation",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "wait_turn",
+        "label": "Join the queue behind the crows",
+        "description": "The line exists for a reason. You take your place and study queueing etiquette among corvids.",
+        "statFocus": "honor",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "read_litter",
+        "label": "Study discarded receipts on the ground",
+        "description": "Fine print is fine print. Somebody ought to audit what this thing has been promising people.",
+        "statFocus": "accuracy",
+        "riskLevel": "low",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "world_fact",
+        "content": "A humming black obelisk returns any object fed into it along with an itemized receipt for experiences not yet had. Crows queue for it with pebbles.",
+        "importance": 2
+      }
+    ],
+    "templateId": "fallback:exploration:11"
+  }
+]

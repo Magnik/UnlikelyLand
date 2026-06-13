@@ -5,6 +5,15 @@ bundle.js
 **/*.js.map
 dist/
 *.tsbuildinfo
+# Next.js
+.next/
+out/
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+# Database backups
+backups/
 # Local-only Claude settings
 .claude/settings.local.json
 # Agent worktrees

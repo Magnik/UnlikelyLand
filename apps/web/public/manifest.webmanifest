@@ -1,0 +1,14 @@
+{
+  "name": "UnlikelyLand",
+  "short_name": "UnlikelyLand",
+  "description": "A persistent weird-comedy multiplayer text adventure RPG.",
+  "start_url": "/play",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0e1014",
+  "theme_color": "#0e1014",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

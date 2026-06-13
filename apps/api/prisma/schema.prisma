@@ -1,0 +1,456 @@
+// UnlikelyLand database schema.
+//
+// MVP-active models are fully wired into services. Models for later milestones
+// (market, social graph, guilds, prestige, AI item review) are included now so
+// the schema anticipates them and migrations stay additive. Enum-like columns
+// are stored as String and validated by zod at the API boundary, keeping value
+// sets evolvable without an enum migration each time.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Auth ─────────────────────────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  displayName  String
+  passwordHash String
+  role         String   @default("player") // player | moderator | admin
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  character Character?
+}
+
+// ── Character ────────────────────────────────────────────────────────────────
+
+model Character {
+  id          String  @id @default(uuid())
+  userId      String  @unique
+  displayName String
+  bio         String  @default("")
+
+  level Int @default(1)
+  xp    Int @default(0)
+
+  // Currencies (see CURRENCY_LABEL in contracts): normal=Clams, premium=Escape
+  // Tokens, crafting=Oddments, reputation=Notoriety.
+  normalMoney       Int @default(25)
+  premiumMoney      Int @default(0)
+  craftingResources Int @default(0)
+  reputation        Int @default(0)
+
+  staminaCurrent       Int      @default(100)
+  staminaMax           Int      @default(100)
+  staminaLastUpdatedAt DateTime @default(now())
+
+  regionSetId           String
+  contentRating         String  @default("pg13") // family | pg13 | r
+  storyStylePreferences String  @default("")
+
+  // Death state
+  isDead              Boolean   @default(false)
+  deathStartedAt      DateTime?
+  reviveAvailableAt   DateTime?
+  deathReason         String?
+  freeReviveAvailable Boolean   @default(false)
+  deathCount          Int       @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  regionSet RegionSet       @relation(fields: [regionSetId], references: [id])
+  stats     CharacterStats?
+
+  expeditions      Expedition[]
+  encounters       Encounter[]
+  memories         StoryMemory[]
+  npcs             NpcRecord[]
+  inventory        InventoryItem[]
+  transactions     EconomyTransaction[]
+  deaths           DeathRecord[]
+  achievements     CharacterAchievement[]
+  chatMessages     ChatMessage[]
+  listings         MarketListing[]        @relation("seller")
+  purchases        MarketListing[]        @relation("buyer")
+  conceptsProposed PendingItemConcept[]
+  guildMembership  GuildMember?
+  guildsOwned      Guild[]                @relation("guildOwner")
+  escapes          EscapeRecord[]
+  aiLogs           AiGenerationLog[]
+
+  @@index([level])
+  @@index([reputation])
+  @@index([normalMoney])
+}
+
+model CharacterStats {
+  id          String @id @default(uuid())
+  characterId String @unique
+
+  // combat
+  strength  Int @default(5)
+  agility   Int @default(5)
+  toughness Int @default(5)
+  accuracy  Int @default(5)
+  defense   Int @default(5)
+  // social
+  charisma     Int @default(5)
+  intimidation Int @default(5)
+  deception    Int @default(5)
+  empathy      Int @default(5)
+  negotiation  Int @default(5)
+  // personality
+  weirdness Int @default(5)
+  bravery   Int @default(5)
+  caution   Int @default(5)
+  curiosity Int @default(5)
+  mischief  Int @default(5)
+  honor     Int @default(5)
+
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+}
+
+// ── World ────────────────────────────────────────────────────────────────────
+
+model RegionSet {
+  id    String @id @default(uuid())
+  key   String @unique
+  name  String
+  blurb String @default("")
+  order Int    @default(0)
+
+  regions    Region[]
+  characters Character[]
+}
+
+model Region {
+  id          String @id @default(uuid())
+  regionSetId String
+  name        String
+  blurb       String @default("")
+
+  regionSet RegionSet @relation(fields: [regionSetId], references: [id], onDelete: Cascade)
+}
+
+// ── Expeditions & encounters ─────────────────────────────────────────────────
+
+model Expedition {
+  id             String    @id @default(uuid())
+  characterId    String
+  type           String // explore | fight | scavenge | socialize | investigate | train | work
+  status         String    @default("active") // active | completed | abandoned | failed
+  step           Int       @default(0)
+  maxSteps       Int
+  staminaPerStep Int
+  summary        String?
+  startedAt      DateTime  @default(now())
+  endedAt        DateTime?
+
+  character  Character   @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  encounters Encounter[]
+
+  @@index([characterId, status])
+}
+
+model Encounter {
+  id            String  @id @default(uuid())
+  characterId   String
+  expeditionId  String?
+  regionSetId   String
+  source        String // ai | fallback
+  encounterType String
+  // The full validated encounter.v1 payload (title, description, choices, ...).
+  payload       Json
+  resolved      Boolean @default(false)
+  resolvedChoiceId String?
+  // Outcome snapshot (narrative, check, combat, rewards) once resolved.
+  resolution    Json?
+  // Idempotency: a client-supplied id makes double-submit a no-op.
+  clientRequestId String?
+
+  createdAt  DateTime  @default(now())
+  resolvedAt DateTime?
+
+  character  Character   @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  expedition Expedition? @relation(fields: [expeditionId], references: [id], onDelete: SetNull)
+
+  @@unique([characterId, clientRequestId])
+  @@index([characterId, resolved])
+}
+
+// ── Story memory & NPCs ──────────────────────────────────────────────────────
+
+model StoryMemory {
+  id          String   @id @default(uuid())
+  characterId String
+  memoryType  String
+  content     String
+  importance  Int      @default(1)
+  regionSetId String?
+  npcId       String?
+  createdAt   DateTime @default(now())
+
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  @@index([characterId, importance])
+}
+
+model NpcRecord {
+  id             String   @id @default(uuid())
+  characterId    String? // owner for private NPCs; null once global
+  name           String
+  description    String   @default("")
+  role           String   @default("")
+  status         String   @default("private") // private | shared_candidate | shared | global
+  regionSetId    String?
+  referenceCount Int      @default(1)
+  createdAt      DateTime @default(now())
+
+  character Character? @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+}
+
+// ── Items & economy ──────────────────────────────────────────────────────────
+
+model ItemDefinition {
+  id            String   @id @default(uuid())
+  key           String   @unique
+  name          String
+  description   String   @default("")
+  slot          String // weapon | armor | tool | trinket | consumable | companion
+  rarity        String // common | uncommon | rare | epic | legendary | absurd
+  statModifiers Json     @default("{}")
+  powerBudget   Int      @default(0)
+  source        String   @default("seed") // seed | ai_approved | admin
+  createdAt     DateTime @default(now())
+
+  inventory InventoryItem[]
+  listings  MarketListing[]
+}
+
+model InventoryItem {
+  id               String   @id @default(uuid())
+  characterId      String
+  itemDefinitionId String
+  quantity         Int      @default(1)
+  equipped         Boolean  @default(false)
+  acquiredAt       DateTime @default(now())
+
+  character      Character      @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  itemDefinition ItemDefinition @relation(fields: [itemDefinitionId], references: [id])
+
+  @@index([characterId])
+}
+
+model PendingItemConcept {
+  id                    String   @id @default(uuid())
+  proposedByCharacterId String?
+  name                  String
+  description           String   @default("")
+  intendedRarity        String
+  intendedSlot          String
+  narrativePurpose      String   @default("")
+  status                String   @default("pending") // pending | approved | rejected | auto_approved
+  reviewNotes           String?
+  createdItemId         String?
+  createdAt             DateTime @default(now())
+
+  proposedBy Character? @relation(fields: [proposedByCharacterId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+}
+
+model EconomyTransaction {
+  id          String   @id @default(uuid())
+  characterId String
+  currency    String // normal | premium | crafting | reputation | xp
+  amount      Int // signed
+  reason      String
+  refType     String?
+  refId       String?
+  createdAt   DateTime @default(now())
+
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  @@index([characterId, createdAt])
+}
+
+model MarketListing {
+  id                String    @id @default(uuid())
+  sellerCharacterId String
+  itemDefinitionId  String
+  quantity          Int       @default(1)
+  priceCurrencyType String    @default("normal")
+  priceAmount       Int
+  status            String    @default("active") // active | sold | cancelled | expired
+  buyerCharacterId  String?
+  createdAt         DateTime  @default(now())
+  expiresAt         DateTime?
+  soldAt            DateTime?
+
+  seller         Character      @relation("seller", fields: [sellerCharacterId], references: [id], onDelete: Cascade)
+  buyer          Character?     @relation("buyer", fields: [buyerCharacterId], references: [id], onDelete: SetNull)
+  itemDefinition ItemDefinition @relation(fields: [itemDefinitionId], references: [id])
+
+  @@index([status])
+}
+
+// ── Social ───────────────────────────────────────────────────────────────────
+
+model ChatMessage {
+  id          String   @id @default(uuid())
+  characterId String
+  channel     String   @default("global")
+  body        String
+  deleted     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  @@index([channel, createdAt])
+}
+
+model FriendRequest {
+  id              String   @id @default(uuid())
+  fromCharacterId String
+  toCharacterId   String
+  status          String   @default("pending") // pending | accepted | rejected
+  createdAt       DateTime @default(now())
+
+  @@unique([fromCharacterId, toCharacterId])
+}
+
+model Friendship {
+  id           String   @id @default(uuid())
+  characterAId String
+  characterBId String
+  createdAt    DateTime @default(now())
+
+  @@unique([characterAId, characterBId])
+}
+
+model BlockedUser {
+  id                 String   @id @default(uuid())
+  characterId        String
+  blockedCharacterId String
+  createdAt          DateTime @default(now())
+
+  @@unique([characterId, blockedCharacterId])
+}
+
+// ── Guilds ───────────────────────────────────────────────────────────────────
+
+model Guild {
+  id               String   @id @default(uuid())
+  name             String   @unique
+  description      String   @default("")
+  ownerCharacterId String
+  createdAt        DateTime @default(now())
+
+  owner   Character     @relation("guildOwner", fields: [ownerCharacterId], references: [id])
+  members GuildMember[]
+}
+
+model GuildMember {
+  id          String   @id @default(uuid())
+  guildId     String
+  characterId String   @unique
+  role        String   @default("member") // owner | officer | member
+  joinedAt    DateTime @default(now())
+
+  guild     Guild     @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  @@index([guildId])
+}
+
+// ── Achievements ─────────────────────────────────────────────────────────────
+
+model Achievement {
+  id          String  @id @default(uuid())
+  key         String  @unique
+  name        String
+  description String  @default("")
+  isPublic    Boolean @default(true)
+
+  unlocks CharacterAchievement[]
+}
+
+model CharacterAchievement {
+  id            String   @id @default(uuid())
+  characterId   String
+  achievementId String
+  unlockedAt    DateTime @default(now())
+
+  character   Character   @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@unique([characterId, achievementId])
+}
+
+// ── AI ───────────────────────────────────────────────────────────────────────
+
+model AiGenerationLog {
+  id              String   @id @default(uuid())
+  characterId     String?
+  kind            String   @default("encounter")
+  provider        String
+  model           String
+  latencyMs       Int      @default(0)
+  outcome         String // ok | invalid_schema | unsafe | timeout | error | fallback
+  validationError String?
+  rawResponse     String? // dev/admin-only raw output for debugging
+  createdAt       DateTime @default(now())
+
+  character Character? @relation(fields: [characterId], references: [id], onDelete: SetNull)
+
+  @@index([outcome, createdAt])
+}
+
+model AiSettings {
+  id            String   @id @default("singleton")
+  enabled       Boolean  @default(true)
+  forceFallback Boolean  @default(false)
+  baseUrl       String
+  model         String
+  timeoutMs     Int      @default(25000)
+  updatedAt     DateTime @updatedAt
+}
+
+// ── Death & prestige ─────────────────────────────────────────────────────────
+
+model DeathRecord {
+  id                  String    @id @default(uuid())
+  characterId         String
+  reason              String
+  diedAt              DateTime  @default(now())
+  revivedAt           DateTime?
+  method              String? // wait | pay | free
+  freeReviveAvailable Boolean   @default(false)
+
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  @@index([characterId])
+}
+
+// Prestige / escape — schema present, not implemented in MVP.
+model EscapeRecord {
+  id          String   @id @default(uuid())
+  characterId String
+  escapeCount Int      @default(1)
+  legacyLevel Int      @default(0)
+  summary     String   @default("")
+  createdAt   DateTime @default(now())
+
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+}

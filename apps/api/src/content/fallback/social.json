@@ -1,0 +1,685 @@
+[
+  {
+    "title": "The Compliment Audit",
+    "description": "You round a corner and a small official in an enormous hat stops you with a raised quill. He introduces himself as the District Compliment Inspector and informs you that a compliment you gave three days ago — 'nice rock' — has been flagged as potentially insincere. He produces a form with your name on it, spelled wrong, and a checkbox labeled 'MEANT IT (Y/N)'. The penalty for compliment fraud, he notes pleasantly, is delivering ten certified-genuine compliments under supervision.",
+    "encounterType": "social",
+    "allowGoHome": true,
+    "goHomeLabel": "Claim your compliments are in another jurisdiction",
+    "choices": [
+      {
+        "id": "defend_rock",
+        "label": "Insist it was a genuinely nice rock",
+        "description": "Stand by your assessment. It was a nice rock, you meant it, and you are prepared to describe its qualities under oath.",
+        "statFocus": "honor",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "flatter_hat",
+        "label": "Compliment his enormous hat with overwhelming sincerity",
+        "description": "The hat is enormous. There is material to work with here, if you can deliver a compliment so sincere it audits itself.",
+        "statFocus": "charisma",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "forge_receipt",
+        "label": "Forge a sincerity receipt on the spot",
+        "description": "Sincerity receipts are surely just paper with feelings on it. How hard can the official watermark be?",
+        "statFocus": "deception",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Forgery has a way of resurfacing in later paperwork."
+      },
+      {
+        "id": "ask_him",
+        "label": "Ask when someone last complimented HIM",
+        "description": "Behind every compliment auditor is someone nobody has ever complimented. You can see it in the way he grips the quill.",
+        "statFocus": "empathy",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "Inspector Plumb",
+        "description": "A small, earnest official in an enormous hat who audits compliments for sincerity. Has never received a compliment himself and grips his quill very tightly.",
+        "role": "Compliment Auditor",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:social:0"
+  },
+  {
+    "title": "The Eleven-Year Hedge War",
+    "description": "Two hermits who moved to opposite ends of a meadow specifically to avoid people are now locked in a property dispute over the single hedge between them. Each one insists the OTHER must keep the hedge, since owning it would mean acknowledging a neighbor. They have communicated exclusively through aggressively neutral notes pinned to the hedge for eleven years. Both turn to you, the first third party either has seen in a decade, and demand a ruling.",
+    "encounterType": "social",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "split_hedge",
+        "label": "Propose joint custody of the hedge",
+        "description": "Draft a joint custody schedule: alternating weeks of hedge ownership, with a neutral observer for trimming season.",
+        "statFocus": "negotiation",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "hear_both",
+        "label": "Listen to eleven years of hedge grievances",
+        "description": "Eleven years of notes means eleven years of material. Settle in and let them each present their case in full.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "claim_hedge",
+        "label": "Declare the hedge yours and walk off with it",
+        "description": "If neither hermit will own it, the hedge is legally abandoned. Probably. You could simply take it and let them unite against you.",
+        "statFocus": "mischief",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "order_shake",
+        "label": "Order them to shake hands immediately",
+        "description": "These two have wasted a decade. Sometimes mediation is just a loud voice and a firm pointing gesture.",
+        "statFocus": "intimidation",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "unresolved_thread",
+        "content": "Two hermits have feuded for eleven years over who must own the hedge between them; neither will acknowledge having a neighbor.",
+        "importance": 2
+      }
+    ],
+    "templateId": "fallback:social:1"
+  },
+  {
+    "title": "The Secondhand Apology Market",
+    "description": "You wander into a bustling market where every stall sells secondhand apologies: 'Sorry I'm late' (lightly used), 'Sorry about your fence' (fence not included), and one ominous 'Sorry in advance' kept under glass. The merchant explains that islanders trade apologies they never delivered, and that yours — the ones you still owe — are worth a fortune right now. She slides a contract across the counter and asks, very politely, who you have wronged.",
+    "encounterType": "social",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "haggle_sorry",
+        "label": "Haggle over the price of 'Sorry in advance'",
+        "description": "'Sorry in advance' is the only apology that works on things you haven't done yet. That has to be worth negotiating for.",
+        "statFocus": "negotiation",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "ask_origin",
+        "label": "Ask where the apologies come from",
+        "description": "Secondhand implies a first hand. Someone, somewhere, is generating all this remorse, and you would like to know how.",
+        "statFocus": "curiosity",
+        "riskLevel": "low",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "sell_secret",
+        "label": "Sell an apology you've been hoarding for years",
+        "description": "You have been carrying an undelivered apology for a long time. The merchant's eyes say she already knows which one.",
+        "statFocus": "weirdness",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Sold things stop belonging to you."
+      },
+      {
+        "id": "decline_politely",
+        "label": "Decline and back away from the contract",
+        "description": "Markets that deal in remorse run on fine print. Smile, decline, and keep your apologies where you can see them.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "Madame Penance",
+        "description": "A scrupulously polite merchant who buys and sells undelivered apologies. Always seems to know exactly which apology you are still carrying.",
+        "role": "Apology Broker",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:social:2"
+  },
+  {
+    "title": "Do Not Mention the Tentacle",
+    "description": "A teahouse by the water has exactly one rule, painted in tall letters: DO NOT MENTION THE TENTACLE. This is difficult, because an enormous sea-creature tentacle occupies the best table, delicately holding a teacup the size of a thimble. The proprietor seats you directly across from it and whispers that the tentacle comes every week, tips generously, and has never once been spoken to, and frankly everyone is starting to feel rude about it.",
+    "encounterType": "social",
+    "allowGoHome": true,
+    "goHomeLabel": "Remember you take tea at home, actually",
+    "choices": [
+      {
+        "id": "greet_tentacle",
+        "label": "Break the only rule and say hello",
+        "description": "Rules are rules, but loneliness is loneliness, and that teacup grip looks hopeful. Say hello to the tentacle.",
+        "statFocus": "bravery",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "small_talk",
+        "label": "Make pleasant small talk AT the tentacle without mentioning it",
+        "description": "Discuss the weather, the tea, the harbor — anything but the obvious. A masterclass in conversational footwork.",
+        "statFocus": "charisma",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "sip_quietly",
+        "label": "Drink your tea in respectful silence",
+        "description": "It has never spoken to anyone, and you will not be the one to break a perfectly stable arrangement.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "pass_note",
+        "label": "Slide a friendly note across the table",
+        "description": "Write something friendly, fold it twice, and slide it across the table where a tentacle can reach it.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Notes tend to get replies, eventually."
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "The Tentacle",
+        "description": "An enormous, impeccably mannered sea-creature tentacle that takes tea weekly at the same table, tips generously, and has never been spoken to by anyone.",
+        "role": "Polite teahouse regular",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:social:3"
+  },
+  {
+    "title": "The Gossip Toll",
+    "description": "A troll blocks the footpath ahead, but instead of demanding gold, she leans in and asks what you've HEARD. The toll, she explains, is one piece of quality gossip per crossing, and business has been slow since the island's hermits stopped feuding. A small sign lists the exchange rate: one rumor for foot traffic, two for carts, and 'a genuinely scandalous secret' entitles you to a punch card.",
+    "encounterType": "social",
+    "allowGoHome": true,
+    "goHomeLabel": "Mutter that you only carry facts",
+    "choices": [
+      {
+        "id": "invent_gossip",
+        "label": "Invent a scandal about a fictional duke",
+        "description": "A duke, a stolen pudding, a midnight gondola. None of it is true, but it doesn't have to be true — it has to be GOOD.",
+        "statFocus": "deception",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "trade_own",
+        "label": "Confess an embarrassing secret of your own",
+        "description": "Pay the toll honestly with your own most embarrassing moment. It's not gossip if you volunteer it. Probably.",
+        "statFocus": "honor",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "ask_gossip",
+        "label": "Ask what gossip SHE has heard about you",
+        "description": "Tolls flow both ways. Ask what the island has been saying about you, and brace yourself.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "stare_down",
+        "label": "Refuse to pay and hold eye contact",
+        "description": "She's large, but you've met tax forms scarier than this. Refuse to pay and hold eye contact.",
+        "statFocus": "intimidation",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "Brunhilde",
+        "description": "A bridge troll who accepts only quality gossip as toll payment. Keeps an exchange-rate sign and issues punch cards for genuinely scandalous secrets.",
+        "role": "Gossip Toll Troll",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:social:4"
+  },
+  {
+    "title": "A Retirement Party for a Banshee",
+    "description": "Under a striped pavilion, a crowd of islanders is throwing a retirement party for a banshee who has wailed professionally for three hundred years. She sits in the place of honor wearing a sash that reads CONGRATULATIONS ON THE SILENCE, looking deeply uncertain about her future. The party organizer rushes up to you: the scheduled speaker has fled, the cake is melting, and somebody needs to give a toast to a woman whose entire career was screaming.",
+    "encounterType": "social",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "give_toast",
+        "label": "Deliver a heartfelt toast to three centuries of wailing",
+        "description": "Raise a glass to three hundred years of professional screaming. Find the words the fleeing speaker couldn't.",
+        "statFocus": "charisma",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "ask_plans",
+        "label": "Ask the banshee what she'll do now",
+        "description": "Sashes and cake aside, she looks lost. Sit beside her and ask what comes after a lifetime of wailing.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "request_encore",
+        "label": "Request one last professional wail for old times' sake",
+        "description": "One more wail. For posterity. At close range. What's the worst that could happen to your ears?",
+        "statFocus": "weirdness",
+        "riskLevel": "ridiculous",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "start_conga",
+        "label": "Start a conga line to break the tension",
+        "description": "This party needs less existential dread and more rhythm. Grab two mourners — guests — and form a line.",
+        "statFocus": "mischief",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "world_fact",
+        "content": "The island's only professional banshee, Mourna, has retired after 300 years. Official events now lack certified wailing.",
+        "importance": 2
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "Mourna",
+        "description": "A recently retired banshee with three hundred years of professional wailing behind her and no idea what comes next. Wears her retirement sash with quiet dread.",
+        "role": "Retired Banshee",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:social:5"
+  },
+  {
+    "title": "Your Name Has Failed Its Review",
+    "description": "Three clerks at a folding table flag you down and explain, with great sympathy, that your name has failed its annual review. The Committee for the Naming of Things has determined your name lacks 'island character' and proposes alternatives from a typed list, including 'Barnacle Premium', 'The Honourable Soup', and 'Gerald'. They assure you the change is entirely voluntary, in the sense that declining requires a form they have unfortunately run out of.",
+    "encounterType": "social",
+    "allowGoHome": true,
+    "goHomeLabel": "Leave before they rename your kettle too",
+    "choices": [
+      {
+        "id": "demand_form",
+        "label": "Demand they produce the declination form anyway",
+        "description": "Bureaucracies fear one thing: their own procedures. If declining requires a form, they are obligated to produce one.",
+        "statFocus": "negotiation",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "accept_soup",
+        "label": "Become The Honourable Soup",
+        "description": "The Honourable Soup. Say it out loud. It does have a certain dignity.",
+        "statFocus": "weirdness",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Names, once accepted, tend to stick."
+      },
+      {
+        "id": "loom",
+        "label": "Loom over the table until the review is reconsidered",
+        "description": "Lean over the folding table until your shadow covers the typed list. Reviews can be re-reviewed.",
+        "statFocus": "intimidation",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "rename_them",
+        "label": "Inform them their committee name has also failed review",
+        "description": "Point out that 'The Committee for the Naming of Things' is itself a flagrantly uninspired name, and demand to see their paperwork.",
+        "statFocus": "mischief",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "world_fact",
+        "content": "The Committee for the Naming of Things conducts annual name reviews and renames anything it deems lacking in island character.",
+        "importance": 2
+      }
+    ],
+    "templateId": "fallback:social:6"
+  },
+  {
+    "title": "Vote Goat or Vote Fog",
+    "description": "A village square is in the final hour of its mayoral election, and the two candidates are a goat named Alderman Chompers and a patch of fog that has hung around the well for forty years. Campaign posters are everywhere: the goat promises to eat red tape, literally, while the fog's entire platform is a single word: 'CALM'. The election officer spots you and gasps — an undecided voter, the first in living memory. Both campaigns descend on you at once.",
+    "encounterType": "social",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "hear_pitches",
+        "label": "Hear both campaign pitches in full",
+        "description": "Democracy deserves due diligence. Let the goat's campaign manager and the fog's interpreter make their cases.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "back_goat",
+        "label": "Endorse the goat in a rousing public speech",
+        "description": "Red tape consumption is a bold platform with a proven track record. Take the stump for Alderman Chompers.",
+        "statFocus": "charisma",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "back_fog",
+        "label": "Stand in the fog and report its message to the crowd",
+        "description": "Walk into the fog, listen carefully, and emerge to deliver whatever it tells you. The crowd hushes.",
+        "statFocus": "weirdness",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "run_self",
+        "label": "Declare your own last-minute candidacy",
+        "description": "The island clearly has loose ballot requirements. Throw your hat in the ring an hour before the polls close.",
+        "statFocus": "bravery",
+        "riskLevel": "ridiculous",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Winning is a kind of consequence."
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "Alderman Chompers",
+        "description": "A goat running for mayor on a platform of literally eating red tape. Has a surprisingly organized campaign staff and strong polling among fence owners.",
+        "role": "Mayoral candidate (goat)",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:social:7"
+  },
+  {
+    "title": "The Complaint Choir Needs a Baritone",
+    "description": "From a hillside drifts a sound like a grievance set to music: forty islanders in matching robes are singing their complaints in four-part harmony. The conductor explains that the Complaint Choir meets weekly, because complaints sung in harmony are legally considered 'feedback' and cannot be held against anyone. They are short a baritone, and the soloist — whose complaint concerns a neighbor's ostentatious new fence — has lost her nerve.",
+    "encounterType": "social",
+    "allowGoHome": true,
+    "goHomeLabel": "Hum an excuse and back away",
+    "choices": [
+      {
+        "id": "join_choir",
+        "label": "Join in and sing your own grievances",
+        "description": "Everyone has grievances. Yours could use a melody, and the baritone section has a robe in your size.",
+        "statFocus": "charisma",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "conduct",
+        "label": "Take the baton and conduct the grievance crescendo",
+        "description": "Take the baton. Forty singing complainers, one crescendo, and you in the middle of it.",
+        "statFocus": "bravery",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "coach_solo",
+        "label": "Coach the nervous soloist through her fence aria",
+        "description": "The soloist knows the fence aria by heart — what she's missing is nerve. You can lend her some.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "file_noise",
+        "label": "File a complaint about the Complaint Choir, in song",
+        "description": "Technically, the choir itself is a noise grievance. Compose your complaint about the complaints, in their own key.",
+        "statFocus": "mischief",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "templateId": "fallback:social:8"
+  },
+  {
+    "title": "Funeral for a Working Teapot",
+    "description": "You come upon a solemn procession carrying a small velvet cushion, on which rests a perfectly intact teapot. The villagers explain they are holding a funeral because the teapot's whistle has gone flat, and a teapot that cannot announce itself is, ceremonially speaking, gone. The teapot, still quite warm and visibly functional, is accepting final farewells. The officiant asks if you would like to say a few words, and everyone turns to look at you.",
+    "encounterType": "social",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "eulogize",
+        "label": "Deliver a moving eulogy for the functioning teapot",
+        "description": "It is not the teapot's fault its whistle went flat. Speak to what it meant, all those mornings, all that steam.",
+        "statFocus": "empathy",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "object",
+        "label": "Object that the teapot is clearly alive",
+        "description": "Someone has to say it: the deceased is full of hot tea right now. Halt the ceremony on a point of fact.",
+        "statFocus": "honor",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "fix_whistle",
+        "label": "Attempt a graveside whistle repair",
+        "description": "A flat whistle is a mechanical problem, not a spiritual one. Perform the repair right there on the cushion.",
+        "statFocus": "accuracy",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "pay_respects",
+        "label": "Quietly pay your respects and move along",
+        "description": "Every village has its ways. Bow to the teapot, nod to the officiant, and continue down the path.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "templateId": "fallback:social:9"
+  },
+  {
+    "title": "The Cloud Deed Swindle",
+    "description": "At a market stall, a fast-talking pelican in a waistcoat is selling a young farmhand a 'genuine cloud deed' — ownership papers for a cloud that has, the pelican admits, 'recently relocated'. The farmhand is counting out his last coins with the expression of someone who knows better but wants to believe in cloud ownership. The pelican catches your eye over the boy's shoulder and gives you a slow, professional wink, one operator to another.",
+    "encounterType": "social",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "expose_scam",
+        "label": "Expose the cloud deed as worthless paper",
+        "description": "Step in, hold the 'deed' up to the light, and explain to the boy exactly what clouds do when you try to own them.",
+        "statFocus": "honor",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "out_swindle",
+        "label": "Out-swindle the pelican with an even faker deed",
+        "description": "Produce an even more impressive document — a deed to the SKY — and offer to trade. Watch the pelican do the math.",
+        "statFocus": "deception",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "menace_bird",
+        "label": "Loom at the pelican until he refunds the boy",
+        "description": "Walk over, lean down to waistcoat height, and explain the refund process using only your eyebrows.",
+        "statFocus": "intimidation",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "buy_cloud",
+        "label": "Haggle the cloud down to one coin and buy it yourself",
+        "description": "Haggle the cloud down to a single coin and buy it yourself. Somewhere up there, a cloud is yours. Probably that one. Or that one.",
+        "statFocus": "negotiation",
+        "riskLevel": "low",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "recurring_npc",
+        "content": "Reginald Quillfeather, a con-artist pelican in a waistcoat, works the markets selling deeds to things that move.",
+        "importance": 3
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "Reginald Quillfeather",
+        "description": "A fast-talking pelican in a waistcoat who sells ownership papers for clouds, echoes, and other portable phenomena. Considers anyone who spots the scam a professional colleague.",
+        "role": "Con-artist pelican",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:social:10"
+  },
+  {
+    "title": "Welcome, At Last",
+    "description": "Five islanders in matching sashes leap out from behind a fence and shower you with slightly stale confetti. They are the Official Welcoming Committee, and they confess, tearfully, that in twelve years of existence you are the first person they have ever caught in time to welcome. They have a banner, a rehearsed song, a fruit basket of uncertain age, and an enormous guest book with exactly zero signatures. Their leader watches you with the trembling intensity of someone whose entire purpose is on the line.",
+    "encounterType": "social",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "sign_book",
+        "label": "Sign the guest book with a flourish",
+        "description": "Twelve years for one signature. Make it count — big letters, a flourish, maybe a small inspirational quote.",
+        "statFocus": "charisma",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "demand_full",
+        "label": "Request the complete twelve-year welcome ceremony",
+        "description": "They rehearsed for over a decade. You want the song, the banner, the fruit basket presentation, all of it, every verse.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "give_feedback",
+        "label": "Offer gentle, constructive feedback on the welcome",
+        "description": "They will never improve if nobody is honest. Gently workshop the welcome they have waited twelve years to perform.",
+        "statFocus": "empathy",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "forge_crowds",
+        "label": "Secretly backfill the guest book with invented travelers",
+        "description": "While they celebrate, backfill the guest book with a dozen invented travelers. Their morale, their legend.",
+        "statFocus": "mischief",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Guest books are official documents, apparently."
+      }
+    ],
+    "templateId": "fallback:social:11"
+  }
+]

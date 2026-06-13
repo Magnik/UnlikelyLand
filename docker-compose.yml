@@ -1,0 +1,85 @@
+# Base stack — works the same locally and on the VPS.
+#
+#   Local dev:   docker compose up --build
+#                (docker-compose.override.yml publishes web:3000 + api:4000)
+#   Production:  docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+#                (adds the Caddy reverse proxy with automatic HTTPS; only Caddy
+#                 is exposed publicly — postgres, redis, api, web stay internal)
+#
+# Configuration comes entirely from the .env file (copy .env.example → .env).
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    command: ['redis-server', '--save', '60', '1', '--loglevel', 'warning']
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      NODE_ENV: production
+      API_PORT: '4000'
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-30d}
+      CORS_ORIGINS: ${CORS_ORIGINS:-}
+      AI_ENABLED: ${AI_ENABLED:-true}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-llama3.1:8b}
+      AI_TIMEOUT_MS: ${AI_TIMEOUT_MS:-25000}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+    # Lets the API reach an Ollama instance running on the host machine.
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    expose:
+      - '4000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    environment:
+      NODE_ENV: production
+      # Server-side proxy target for /api/* (browser stays same-origin).
+      API_INTERNAL_URL: http://api:4000
+    expose:
+      - '3000'
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  redisdata:

@@ -1,0 +1,333 @@
+[
+  {
+    "title": "The Tide Pool Records Department",
+    "description": "You crest a dune and find a row of tide pools, each labeled with a barnacle-crusted brass plaque: RECEIPTS, CORRESPONDENCE, PENDING. Laminated documents drift in the brine while a small crab in a paper visor stamps each page as it floats past, never once looking up. A notice board reads: 'RETRIEVALS BY APPOINTMENT ONLY. APPOINTMENTS AVAILABLE IN POOL FOUR.' Pool Four is much, much deeper than the others.",
+    "encounterType": "scavenging",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "read_pending",
+        "label": "Skim the PENDING pool for anything useful",
+        "description": "Documents in PENDING are technically still in processing, which means they technically belong to no one. Probably.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "pluck_folder",
+        "label": "Extract the gold-stamped folder without making a ripple",
+        "description": "A folder near the crab gleams with official importance. One ripple and the visor comes up.",
+        "statFocus": "accuracy",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "swap_plaques",
+        "label": "Quietly swap the RECEIPTS and CORRESPONDENCE plaques",
+        "description": "Weeks of filing, undone in one polite act of chaos. The crab will figure it out eventually. Probably never.",
+        "statFocus": "mischief",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The crab's stamping rhythm falters, just slightly."
+      },
+      {
+        "id": "leave_note",
+        "label": "Leave a written retrieval request and step back",
+        "description": "Proper channels. Slow, dignified, and unlikely to end with a crab in your hair.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "world_fact",
+        "content": "A stretch of tide pools operates as a records department run by a crab clerk; retrievals require an appointment booked in the ominously deep Pool Four.",
+        "importance": 2
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "Clerk Pinch",
+        "role": "Tide pool records clerk",
+        "description": "A small crab in a paper visor who stamps drifting documents with total dedication and zero eye contact. Deeply protective of the filing system.",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:scavenging:0"
+  },
+  {
+    "title": "The Machine That Only Says YES",
+    "description": "Half-buried in a drift of junk sits a vending machine with no brand, no prices, and a single button labeled YES. Behind the glass, the spiral racks hold a thermos, a coil of rope, a parcel stamped FRAGILE-ISH, and what is unmistakably a sleeping hermit crab. The machine hums a low note that suggests it has been waiting for you, specifically, for some time. A handwritten maintenance log dangles from the coin slot on a piece of string.",
+    "encounterType": "scavenging",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "read_log",
+        "label": "Read the maintenance log before touching anything",
+        "description": "Forty-one entries, each in different handwriting, each ending mid-sentence. Knowledge is the safest salvage.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "press_yes",
+        "label": "Press the YES button",
+        "description": "It is the only button. It was always going to be pressed. The question is by whom, and you would prefer it be you.",
+        "statFocus": "curiosity",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The hum rises half a step as your finger approaches."
+      },
+      {
+        "id": "fish_flap",
+        "label": "Reach up through the dispenser flap",
+        "description": "Skip the negotiations and go straight for the rope coil. Slim arms and steady nerves required.",
+        "statFocus": "agility",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "hum_back",
+        "label": "Hum the machine's note back at it",
+        "description": "Two can hum. Perhaps it just wants harmony. Perhaps it wants a duet partner. Perhaps it dispenses for friends.",
+        "statFocus": "weirdness",
+        "riskLevel": "low",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "The YES Machine",
+        "role": "Unbranded vending machine",
+        "description": "A humming vending machine with one button, stocked with a thermos, rope, a FRAGILE-ISH parcel, and a sleeping hermit crab. Its maintenance log has 41 unfinished entries.",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:scavenging:1"
+  },
+  {
+    "title": "The Heap of Formerly Important Things",
+    "description": "You find a junk pile organized with alarming care: every bent oar, dented kettle, and one-eyed doll wears a little tag explaining what it used to mean to somebody. A laminated sign declares: 'TAKE ONLY WHAT TAKES YOU BACK. ONE (1) ITEM PER VISITOR. THE HEAP IS WATCHING.' Nothing visibly watches you, which is somehow worse. Near the summit, something glints in a way that tagged items are not supposed to glint.",
+    "encounterType": "scavenging",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "climb_glint",
+        "label": "Scale the heap toward the glint",
+        "description": "The slope is loose kettles and looser dolls all the way up. Whatever glints up there is untagged, unclaimed, and unstable.",
+        "statFocus": "agility",
+        "riskLevel": "high",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "read_tags",
+        "label": "Read tags until one reads you back",
+        "description": "Somewhere in here is an item whose tag describes something you lost. The heap seems to be counting on it.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "take_one",
+        "label": "Take exactly one item, exactly as the sign instructs",
+        "description": "Pick something modest, nod respectfully at the pile, and leave with your conscience and your ankles intact.",
+        "statFocus": "honor",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "pocket_two",
+        "label": "Pocket a second item while the heap isn't watching",
+        "description": "Rules are for people who believe junk piles have eyes. The kettle would fit so nicely next to the doll.",
+        "statFocus": "mischief",
+        "riskLevel": "ridiculous",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The sign did specifically mention that the heap is watching."
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "world_fact",
+        "content": "A meticulously catalogued junk heap allows one item per visitor and claims to be watching; every item is tagged with what it used to mean to someone.",
+        "importance": 2
+      }
+    ],
+    "templateId": "fallback:scavenging:2"
+  },
+  {
+    "title": "Now Serving Number Three",
+    "description": "The shipwreck on the rocks has been refurbished — not repaired, refurbished. Someone bolted a ticket dispenser to the hull, arranged the salvage into a tidy roped queue, and hung a sign reading 'NOW SERVING: 3. YOUR SALVAGE EXPERIENCE MATTERS TO US.' The dispenser offers you ticket number 41. There is no staff, no other customers, and no evidence there ever were any.",
+    "encounterType": "scavenging",
+    "allowGoHome": true,
+    "goHomeLabel": "Mutter that your ticket is for a different wreck",
+    "choices": [
+      {
+        "id": "take_ticket",
+        "label": "Take ticket 41 and sit in the good chair",
+        "description": "The system exists for a reason. Possibly a terrible reason, but a reason. Wait your turn and see what service arrives.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "duck_rope",
+        "label": "Duck under the velvet rope and start salvaging",
+        "description": "The queue is a suggestion. The crowbar-sized gap in the hull is an invitation. Be quick about it.",
+        "statFocus": "agility",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "ask_machine",
+        "label": "Ask the dispenser who exactly is being served right now",
+        "description": "Number 3 is being served by someone, somewhere. The dispenser has a speaker grille, and you have questions.",
+        "statFocus": "weirdness",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "unresolved_thread",
+        "content": "A refurbished shipwreck runs a ticket-queue salvage service permanently stuck at NOW SERVING: 3; who or what actually serves customers remains unknown.",
+        "importance": 2
+      }
+    ],
+    "templateId": "fallback:scavenging:3"
+  },
+  {
+    "title": "Three Out of Ten for Form",
+    "description": "A row of driftwood planks has washed up arranged like a panel of judges, and as you reach for a promising crate beneath them, the longest plank clears its throat. 'Sloppy approach,' it announces. 'Wide stance, no follow-through. Three out of ten.' The other planks creak in agreement. The crate is right there, but apparently your technique is being scored.",
+    "encounterType": "scavenging",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "perfect_pull",
+        "label": "Extract the crate with flawless, judge-worthy technique",
+        "description": "Square the shoulders, soft knees, clean lift. If you must be scored, score a ten.",
+        "statFocus": "accuracy",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "ask_tips",
+        "label": "Sincerely ask the panel for professional feedback",
+        "description": "Everyone started somewhere. The driftwood clearly has opinions, and flattered judges are generous judges.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "heckle_judges",
+        "label": "Heckle the panel about their own washed-up careers",
+        "description": "They are literally washed up. The joke writes itself. Whether the joke ends well is another matter.",
+        "statFocus": "mischief",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "triple_lift",
+        "label": "Attempt the legendary triple-crate lift nobody asked for",
+        "description": "There is one crate. You will find two more. The panel will remember this forever, one way or the other.",
+        "statFocus": "bravery",
+        "riskLevel": "ridiculous",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "npcSuggestions": [
+      {
+        "name": "The Driftwood Panel",
+        "role": "Judges of scavenging technique",
+        "description": "A washed-up row of driftwood planks that scores scavengers' form out loud, holds lifelong grudges, and plays favorites shamelessly.",
+        "privateOrSharedPotential": "shared_candidate"
+      }
+    ],
+    "templateId": "fallback:scavenging:4"
+  },
+  {
+    "title": "The Lost and Found That Found You",
+    "description": "A lost-and-found kiosk stands alone in the scrub, its counter bell ringing as you approach even though nobody touches it. On the counter sits a bin labeled DEFINITELY YOURS, full of objects you have never seen before in your life. The claim form has a single question: 'DESCRIBE THE ITEM YOU LOST (BE HONEST, WE CHECK).' You did not lose anything. The bin strongly disagrees.",
+    "encounterType": "scavenging",
+    "allowGoHome": true,
+    "goHomeLabel": "Declare yourself a lost item and exit the premises",
+    "choices": [
+      {
+        "id": "search_bin",
+        "label": "Rummage through the DEFINITELY YOURS bin",
+        "description": "Maybe one of these strangers' trinkets really is yours. Maybe ownership works differently out here.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "file_honest",
+        "label": "Write 'nothing' on the form and submit it truthfully",
+        "description": "Honesty is its own reward, and occasionally also a processing fee waiver. Let the kiosk sort out the rest.",
+        "statFocus": "honor",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "claim_umbrella",
+        "label": "Invent a sentimental umbrella and describe it convincingly",
+        "description": "Polka dots. A bite mark on the handle from a misunderstanding. If they check, your story had better hold.",
+        "statFocus": "deception",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "memorySuggestions": [
+      {
+        "memoryType": "unresolved_thread",
+        "content": "A self-ringing lost-and-found kiosk insists the player lost something; its DEFINITELY YOURS bin holds unfamiliar objects and the claim form warns 'we check.'",
+        "importance": 3
+      }
+    ],
+    "templateId": "fallback:scavenging:5"
+  }
+]
