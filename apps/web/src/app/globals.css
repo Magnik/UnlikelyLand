@@ -57,6 +57,17 @@ a { color: var(--accent); text-decoration: none; }
 .nav .links { display: flex; gap: 14px; align-items: center; }
 .nav .links a { color: var(--muted); font-size: 0.9rem; }
 .nav .links a.active { color: var(--text); }
+/* Logout is a real <button> (keyboard-accessible) styled to match the nav links. */
+.nav .links button.navlink-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.nav .links button.navlink-button:hover { color: var(--text); }
 
 .card {
   background: var(--card);
@@ -241,3 +252,54 @@ th { color: var(--muted); font-weight: 600; }
 /* The nav has several links — let them wrap to a second row on narrow screens. */
 .nav { flex-wrap: wrap; row-gap: 6px; }
 .nav .links { flex-wrap: wrap; gap: 12px; }
+
+/* ── Milestone 2 additions ─────────────────────────────────────────────────── */
+
+/* Selectable preference toggles (structured story-style settings). */
+.toggle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.toggle-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-soft);
+  color: var(--muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+.toggle-chip.on { border-color: var(--accent); color: var(--text); background: rgba(255, 206, 92, 0.08); }
+.toggle-chip .dot { width: 14px; height: 14px; border-radius: 5px; border: 1px solid var(--border); flex: 0 0 auto; }
+.toggle-chip.on .dot { background: var(--accent); border-color: var(--accent); }
+
+/* Level-up celebration banner shown after a resolved encounter. */
+.levelup {
+  text-align: center;
+  padding: 14px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  background: linear-gradient(90deg, rgba(255, 206, 92, 0.18), rgba(123, 216, 143, 0.18));
+  border: 1px solid rgba(255, 206, 92, 0.5);
+  color: var(--accent);
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+
+/* Before/after stat + reward deltas. */
+.delta-pos { color: var(--accent-2); }
+.delta-neg { color: var(--danger); }
+
+/* Rarity accents for item badges. */
+.rar-common { color: var(--muted); }
+.rar-uncommon { color: #7bd88f; border-color: #2f5a3e; }
+.rar-rare { color: #57b6ff; border-color: #2f4a5a; }
+.rar-epic { color: #c89bff; border-color: #463a5a; }
+.rar-legendary { color: var(--accent); border-color: #5a4f2f; }
+.rar-absurd { color: #ff6bd0; border-color: #5a2f4f; }
+
+/* Item row in the inventory / catalog. */
+.item-row { flex-direction: column; align-items: stretch; gap: 6px; }
+.slot-head { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 14px 0 6px; }

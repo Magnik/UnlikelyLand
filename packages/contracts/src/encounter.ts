@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import {
+  ContentRatingSchema,
   EncounterTypeSchema,
   MemoryTypeSchema,
   RaritySchema,
@@ -8,6 +9,7 @@ import {
   ItemSlotSchema,
   StatCategorySchema,
   StatKeySchema,
+  StoryStyleTagSchema,
 } from './enums';
 
 /**
@@ -85,6 +87,12 @@ export const EncounterSchema = z
     itemConceptSuggestions: z.array(ItemConceptSuggestionSchema).max(4).default([]),
     // Present on fallback content for auditing; AI output omits it.
     templateId: z.string().max(120).optional(),
+    // Fallback-content metadata (AI output omits these; defaults keep AI valid).
+    // minRating gates a fallback encounter so it is only shown to players whose
+    // chosen content rating is at least this permissive. styleAffinities let the
+    // fallback selector bias toward a player's structured story preferences.
+    minRating: ContentRatingSchema.default('family'),
+    styleAffinities: z.array(StoryStyleTagSchema).max(10).default([]),
   })
   .strict()
   .superRefine((enc, ctx) => {

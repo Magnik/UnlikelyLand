@@ -1,0 +1,561 @@
+[
+  {
+    "title": "The Museum of Slightly Wrong Things",
+    "description": "A grand marble museum sits at the end of an overgrown drive, its banner proudly declaring NOW OPEN: ARTIFACTS THAT ARE ALMOST CORRECT. Inside, every exhibit is faintly off — a clock with thirteen evenly spaced hours, a chair with one leg that is technically an arm, a portrait of someone who is definitely looking at you and definitely shouldn't be. A docent in white gloves drifts between cases, gently rotating each object a few degrees so it stays wrong.",
+    "encounterType": "exploration",
+    "allowGoHome": true,
+    "goHomeLabel": "Insist the gift shop is the only real exhibit",
+    "choices": [
+      {
+        "id": "study_thirteen_clock",
+        "label": "Examine the thirteen-hour clock closely",
+        "description": "You count the hours twice to be sure. The thirteenth one only appears when you are not looking directly at it, which makes counting an adventure.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "correct_an_exhibit",
+        "label": "Quietly rotate an artifact back to correct",
+        "description": "One small nudge and the chair would be a perfectly ordinary chair. The docent has their back turned. Surely the museum would thank you.",
+        "statFocus": "mischief",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The docent rotates everything for a reason they have not explained."
+      },
+      {
+        "id": "interview_docent",
+        "label": "Ask the docent how things get acquired",
+        "description": "Someone has to find a portrait that watches visitors and decide it belongs in a glass case. You would like to understand the procurement process.",
+        "statFocus": "charisma",
+        "riskLevel": "low",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "sign_loud_guestbook",
+        "label": "Sign the guestbook that hums when you write",
+        "description": "The guestbook emits a low contented hum with each letter, louder for vowels. You write carefully, then add a few extra vowels to see what happens.",
+        "statFocus": "weirdness",
+        "riskLevel": "low",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_exploration",
+      "more_mystery",
+      "more_weirdness"
+    ],
+    "templateId": "fallback:exploration-b:0"
+  },
+  {
+    "title": "Tide Pools That Reflect Tomorrow",
+    "description": "You pick your way down to a rocky shoreline studded with shallow tide pools. Each one reflects not the sky above but a sky from some other time — one shows tonight's stars, one shows a storm that hasn't arrived, and one shows you, slightly older, looking down into a tide pool. A small hermit crab wearing a thimble for a shell scuttles between them, apparently checking the forecast.",
+    "encounterType": "exploration",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "peer_into_future_pool",
+        "label": "Lean over the pool showing an older you",
+        "description": "The reflection is doing something with its hands you cannot quite make out. You bend closer for a better look, careful not to disturb the water.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The water remembers being touched."
+      },
+      {
+        "id": "leap_across_pools",
+        "label": "Hop from rock to rock across the pools",
+        "description": "The dry stones make a tempting path out toward the largest pool. The rocks are slick, the gaps are generous, and the timing is everything.",
+        "statFocus": "agility",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "consult_thimble_crab",
+        "label": "Ask the thimble crab about the weather",
+        "description": "It is clearly the local expert, going pool to pool with the air of a meteorologist who has seen things. You wait politely for its assessment.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "wait_for_storm_pool",
+        "label": "Move inland before the storm pool's storm arrives",
+        "description": "One pool is showing weather that hasn't happened yet. The sensible move is to be somewhere else when it decides to catch up.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_exploration",
+      "more_mystery"
+    ],
+    "templateId": "fallback:exploration-b:1"
+  },
+  {
+    "title": "The Hedge Maze With Opinions",
+    "description": "A towering hedge maze fills the valley, its entrance arch trimmed into the words THIS WAY, PROBABLY. As you step inside, the walls rustle and rearrange — not to trap you, but to argue. One hedge nudges you left while another sighs disapprovingly and leans the other way. Somewhere near the center, you can hear two walls of shrubbery having a heated but very quiet disagreement about your route.",
+    "encounterType": "exploration",
+    "allowGoHome": true,
+    "goHomeLabel": "Declare hedges have no standing to advise you",
+    "choices": [
+      {
+        "id": "follow_friendly_hedge",
+        "label": "Trust the hedge that keeps nudging you left",
+        "description": "It seems sincere, as far as foliage goes, and it has been right about two corners so far. You decide to give the leftward shrub the benefit of the doubt.",
+        "statFocus": "bravery",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "vault_over_wall",
+        "label": "Climb over a hedge wall to see the layout",
+        "description": "Arguments are easier to ignore from above. You find a sturdy-looking section and start hauling yourself up through the leaves.",
+        "statFocus": "agility",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "mediate_hedges",
+        "label": "Mediate the central disagreement",
+        "description": "The two arguing walls have clearly been at this for years. You offer your services as a neutral party with no stake in left versus right.",
+        "statFocus": "negotiation",
+        "riskLevel": "low",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "leave_breadcrumb_trail",
+        "label": "Mark your path methodically as you go",
+        "description": "If the walls insist on moving, you will simply out-document them. You note every turn, every landmark, every passive-aggressive rustle.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_exploration",
+      "more_weirdness"
+    ],
+    "templateId": "fallback:exploration-b:2"
+  },
+  {
+    "title": "The Waterfall That Falls Up on Weekends",
+    "description": "You reach a gorge where a magnificent waterfall thunders down the cliff — except a small wooden sign at the lookout notes POSTED HOURS: FALLS DOWNWARD MON–FRI. WEEKENDS & HOLIDAYS, FALLS UPWARD. A bored attendant in a rain poncho sits in a booth, idly checking a tide-style chart of when gravity reports for duty here. Mist drifts both directions at once, undecided.",
+    "encounterType": "exploration",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "check_the_schedule",
+        "label": "Read the posted gravity schedule carefully",
+        "description": "There are footnotes, exceptions, and one alarming asterisk next to 'leap years.' You want to understand exactly what today's water is contractually obligated to do.",
+        "statFocus": "curiosity",
+        "riskLevel": "low",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "ride_the_updraft",
+        "label": "Step into the falls when it's going up",
+        "description": "If water can ride up the cliff on a weekend, in principle so can you. You watch the mist, check your footing, and wait for the upward shift.",
+        "statFocus": "bravery",
+        "riskLevel": "ridiculous",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The attendant has stopped looking bored and started looking concerned."
+      },
+      {
+        "id": "chat_with_attendant",
+        "label": "Ask the attendant about the strangest shift",
+        "description": "Anyone who works this booth has stories. You buy them a metaphorical coffee and settle in for tales of the day the water couldn't decide.",
+        "statFocus": "charisma",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "scramble_down_dry_face",
+        "label": "Climb down the slick cliff beside the falls",
+        "description": "The rock face is wet, the handholds are debatable, and the bottom of the gorge holds whatever the water has been carrying down all week.",
+        "statFocus": "agility",
+        "riskLevel": "high",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_exploration",
+      "more_weirdness"
+    ],
+    "templateId": "fallback:exploration-b:3"
+  },
+  {
+    "title": "Carnival, Closed for Weather (Internal)",
+    "description": "A small carnival sprawls across a field, every ride frozen mid-motion — the carousel horses caught leaping, the Ferris wheel stopped with one gondola at the very top. A hand-lettered sign on the ticket booth reads CLOSED DUE TO INTERNAL WEATHER. Indeed, a tiny private rain cloud hovers over the funnel-cake stand, drizzling sadly, while everywhere else the sun beats down on cotton candy that has not aged a day.",
+    "encounterType": "exploration",
+    "allowGoHome": true,
+    "goHomeLabel": "Leave before the clown notices you're awake",
+    "choices": [
+      {
+        "id": "climb_frozen_ferris",
+        "label": "Climb the stopped Ferris wheel to the top gondola",
+        "description": "Someone is up there, you're fairly sure — a silhouette that hasn't moved in the still gondola. The spokes make a serviceable ladder if you don't think about it too hard.",
+        "statFocus": "bravery",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "comfort_rain_cloud",
+        "label": "Console the rain cloud over the funnel cakes",
+        "description": "It is a very small cloud having a very large feeling. You approach gently, the way one approaches any weeping weather system, and ask what's wrong.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "ride_motionless_carousel",
+        "label": "Climb onto the mid-leap carousel horse",
+        "description": "The horses are frozen at the peak of a gallop, manes flying, going nowhere with tremendous enthusiasm. You wonder what happens to a rider who joins a ride that has stopped believing in stopping.",
+        "statFocus": "weirdness",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The carousel music box has been wound and is waiting."
+      },
+      {
+        "id": "investigate_ticket_booth",
+        "label": "Search the abandoned ticket booth",
+        "description": "Booths hold ledgers, lost-and-found, and the occasional answer. You ease open the little door and have a careful look around inside.",
+        "statFocus": "curiosity",
+        "riskLevel": "low",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_exploration",
+      "more_mystery",
+      "more_weirdness"
+    ],
+    "templateId": "fallback:exploration-b:4"
+  },
+  {
+    "title": "The Greenhouse of Extremely Polite Plants",
+    "description": "A vast glass greenhouse glows green ahead of you, its door propped open with a flowerpot that says PLEASE, AFTER YOU. Inside, the plants are impeccably mannered: vines retract to let you pass, a fern offers you the comfier of two benches, and a row of sunflowers turns in unison to face you and then, realizing this is rude, looks politely away. A watering can on a stool clears its throat and asks if you've eaten.",
+    "encounterType": "exploration",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "accept_tea_from_vine",
+        "label": "Accept the cup of tea a vine is offering",
+        "description": "A tendril extends a steaming cup it has brewed from its own leaves. To refuse would be unforgivably rude, and it has gone to such trouble.",
+        "statFocus": "charisma",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The vine is watching you take the first sip very intently."
+      },
+      {
+        "id": "wander_back_rows",
+        "label": "Wander into the dim, overgrown back rows",
+        "description": "Toward the rear of the greenhouse, the plants are less manicured and the politeness gets a little forced. Something back there has not been pruned in a long time.",
+        "statFocus": "bravery",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "make_small_talk",
+        "label": "Make pleasant small talk with the sunflowers",
+        "description": "They are clearly dying to chat but too well-bred to start. You comment on the lovely light and let conversation bloom from there.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "inspect_compost",
+        "label": "Investigate what the polite plants compost",
+        "description": "Even the most courteous garden has to put things somewhere. You lift the lid of a tasteful bin in the corner, just to satisfy a small nagging curiosity.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_exploration",
+      "more_weirdness",
+      "more_social"
+    ],
+    "templateId": "fallback:exploration-b:5"
+  },
+  {
+    "title": "The Ladder Stapled to the Sky",
+    "description": "A single wooden ladder rises straight up out of a meadow and simply keeps going, vanishing into a low cloud with no visible support of any kind. A laminated tag zip-tied to the third rung reads INSPECTED ANNUALLY — LAST INSPECTION: PENDING. A pigeon sits on the seventh rung, refusing to fly the rest of the way out of what appears to be principle. Far above, something is occasionally dropping single playing cards down through the cloud.",
+    "encounterType": "exploration",
+    "allowGoHome": true,
+    "goHomeLabel": "Respect the pigeon's boundaries and depart",
+    "choices": [
+      {
+        "id": "climb_the_ladder",
+        "label": "Start climbing toward the cloud",
+        "description": "The rungs are sturdier than they have any right to be. Whatever is dealing cards up there clearly has a table, and a table implies a chair, and a chair implies you're invited.",
+        "statFocus": "bravery",
+        "riskLevel": "ridiculous",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The rungs get harder to see the higher you look."
+      },
+      {
+        "id": "collect_falling_cards",
+        "label": "Gather the playing cards drifting down",
+        "description": "They land face-up in the grass, all from the same deck, all suspiciously relevant. You start collecting them to see what hand is being dealt to you.",
+        "statFocus": "curiosity",
+        "riskLevel": "low",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "negotiate_with_pigeon",
+        "label": "Coax the principled pigeon to explain itself",
+        "description": "It clearly knows something about what's up there, and it clearly disapproves of it. You'd like to hear the pigeon's side before you commit to anything.",
+        "statFocus": "negotiation",
+        "riskLevel": "low",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "test_ladder_safety",
+        "label": "Test how the ladder stays up before trusting it",
+        "description": "It is held up by nothing, which is exactly the kind of thing worth checking before you put your full weight on it. You give it an investigative shake and a long, suspicious look.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_exploration",
+      "more_mystery"
+    ],
+    "templateId": "fallback:exploration-b:6"
+  },
+  {
+    "title": "The Quarry Full of Sleeping Statues",
+    "description": "You descend into an old stone quarry where dozens of unfinished statues lie half-carved from the rock — a hand here, a noble brow there, a horse with only three legs done. They are, unmistakably, snoring. Each rises and falls with slow stone breaths, and the half-formed faces wear expressions of deep contentment. A chisel rests on a flat rock with a note: GONE TO LUNCH. DO NOT WAKE THE WORK.",
+    "encounterType": "exploration",
+    "allowGoHome": true,
+    "goHomeLabel": "Tiptoe out and never speak of this",
+    "choices": [
+      {
+        "id": "wake_a_statue",
+        "label": "Gently wake the most-finished statue",
+        "description": "The note was very clear, which is precisely why it's so tempting. The figure is nearly complete and looks like it might have a great deal to say.",
+        "statFocus": "mischief",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The note was underlined three times."
+      },
+      {
+        "id": "take_up_chisel",
+        "label": "Pick up the chisel and finish a leg",
+        "description": "The three-legged horse is so close. You're no sculptor, but the rock seems to want to be carved, and the sleeping statue won't mind a little help.",
+        "statFocus": "accuracy",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "listen_to_stone_dreams",
+        "label": "Press your ear to a statue and listen",
+        "description": "Sleeping stone might dream out loud. You lean against a cool marble shoulder and try to overhear whatever a statue dreams about.",
+        "statFocus": "weirdness",
+        "riskLevel": "low",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "explore_quarry_floor",
+        "label": "Search the quarry floor for what they're being carved from",
+        "description": "All this stone came from somewhere, and the deepest part of the quarry is dark and unexplored. You pick your way carefully down to have a look.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_exploration",
+      "more_mystery",
+      "more_weirdness"
+    ],
+    "templateId": "fallback:exploration-b:7"
+  },
+  {
+    "title": "The Windmill Grinding Yesterdays",
+    "description": "A tall windmill turns steadily on a hill, though there is no wind at all today. Its sails creak around, driven by something inside, and from the millstone pours not flour but a fine grey dust that smells faintly of old afternoons. A sack by the door is labeled FINELY MILLED MONDAYS — TODAY'S BATCH. The miller, a stooped figure with flour-white hair, is sweeping yesterday into a dustpan and looks up at you without surprise.",
+    "encounterType": "exploration",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "ask_what_is_milled",
+        "label": "Ask the miller what exactly gets ground here",
+        "description": "The dust smells of memory and the sacks are labeled with days of the week. You'd like the miller to explain the operation, ideally before you breathe in too much of it.",
+        "statFocus": "curiosity",
+        "riskLevel": "low",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "climb_into_sails",
+        "label": "Climb up into the turning sail mechanism",
+        "description": "Something inside is driving the sails with no wind to help, and you want to see what. The gears turn slow and heavy, with plenty of room between them — if your timing holds.",
+        "statFocus": "agility",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "taste_the_dust",
+        "label": "Touch a fingertip of the milled dust to your tongue",
+        "description": "It smells like a specific Tuesday you can almost place. Against every instinct, you wonder what an afternoon tastes like once it's been ground this fine.",
+        "statFocus": "weirdness",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The miller stops sweeping to watch."
+      },
+      {
+        "id": "decline_and_observe",
+        "label": "Keep your distance and watch the process",
+        "description": "There's clearly something off about inhaling powdered yesterdays. You stay near the door, hands behind your back, and simply observe the milling from a safe remove.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_exploration",
+      "more_mystery"
+    ],
+    "templateId": "fallback:exploration-b:8"
+  },
+  {
+    "title": "The Phone Booth in the Middle of Nowhere",
+    "description": "Out in an empty stretch of heath stands a lone red phone booth, immaculately clean, with a connection cable running off into the soil and disappearing. As you approach, it begins to ring. A small chalkboard beside it tallies MISSED CALLS: 4,001, with the four thousand and first freshly chalked. Inside, a notepad lists names you've never heard, each crossed out, and the receiver is warm as if someone just hung up.",
+    "encounterType": "exploration",
+    "allowGoHome": true,
+    "goHomeLabel": "Let it ring; it's probably a scam",
+    "choices": [
+      {
+        "id": "answer_the_phone",
+        "label": "Pick up the ringing receiver",
+        "description": "Four thousand calls have gone unanswered. Whoever is on the line has been very, very patient, and is calling right now, for you, somehow.",
+        "statFocus": "bravery",
+        "riskLevel": "high",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The notepad has space for one more name."
+      },
+      {
+        "id": "trace_the_cable",
+        "label": "Follow the cable into the ground",
+        "description": "It runs from the booth straight down into the soil and presumably somewhere. You crouch, take hold of the cable, and start tracing where it leads.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "read_crossed_names",
+        "label": "Study the crossed-out names on the notepad",
+        "description": "Every name is struck through except the blank line at the bottom. You read carefully, looking for any pattern that explains who got called and what became of them.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "ring_back",
+        "label": "Let it stop, then dial '0' yourself",
+        "description": "If something keeps calling out here, maybe there's an operator at the other end. You wait for silence, then put a coin in and try to reach whoever's behind all this.",
+        "statFocus": "weirdness",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_exploration",
+      "more_mystery"
+    ],
+    "templateId": "fallback:exploration-b:9"
+  }
+]

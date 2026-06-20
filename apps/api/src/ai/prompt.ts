@@ -1,4 +1,4 @@
-import type { ContentRating, EncounterType, ExpeditionType } from '@unlikelyland/contracts';
+import type { ContentRating, EncounterType, ExpeditionType, StoryStyleTag } from '@unlikelyland/contracts';
 import { ALL_STATS } from '@unlikelyland/contracts';
 
 export interface GenerationContext {
@@ -9,9 +9,30 @@ export interface GenerationContext {
   contentRating: ContentRating;
   personalitySummary: string;
   recentMemories: string[];
+  /** Structured story-style toggles the player selected (never free-form text). */
+  storyStyleTags: StoryStyleTag[];
   step: number;
   maxSteps: number;
 }
+
+/**
+ * Fixed, server-controlled hint text for each structured preference. The player
+ * only ever selects from this closed set, so their input can never inject
+ * arbitrary instructions into the prompt — and these are steering nudges, not
+ * overrides of the content-safety rules above them.
+ */
+const STYLE_TAG_HINT: Record<StoryStyleTag, string> = {
+  more_comedy: 'lean into comedy and absurd humour',
+  more_mystery: 'add a thread of mystery or something unexplained',
+  more_combat: 'make a confrontation or fight more likely',
+  more_social: 'favour social encounters and conversation',
+  more_exploration: 'favour exploration and discovery of places',
+  more_weirdness: 'turn the weirdness up; embrace the surreal',
+  less_combat: 'avoid combat; prefer non-violent challenges',
+  less_danger: 'keep the stakes lower and less perilous',
+  more_recurring_npcs: 'bring back a familiar NPC or reference a past one',
+  more_strange_items: 'feature an unusual or strange object',
+};
 
 const RATING_GUIDANCE: Record<ContentRating, string> = {
   family:
@@ -65,14 +86,25 @@ export function buildEncounterPrompt(ctx: GenerationContext): { system: string; 
       ? `Recent private story facts about this player (weave in subtly, do not contradict):\n- ${ctx.recentMemories.join('\n- ')}`
       : 'This player has no notable history yet.';
 
+  // Structured style preferences → fixed hint lines. These steer tone only and
+  // never override the content-rating safety rules in the system prompt.
+  const styleHints = ctx.storyStyleTags.map((t) => STYLE_TAG_HINT[t]).filter(Boolean);
+  const styleBlock =
+    styleHints.length > 0
+      ? `Player style preferences (honour these where you can, but never break the content rating): ${styleHints.join('; ')}.`
+      : '';
+
   const user = [
     `Region set: ${ctx.regionSetName} — ${ctx.regionSetBlurb}`,
     `Activity: ${ctx.expeditionType} (aim for a ${ctx.desiredEncounterType} encounter).`,
     `This is step ${ctx.step} of ${ctx.maxSteps} in the current expedition.`,
     `Player personality so far: ${ctx.personalitySummary}.`,
     memoryBlock,
+    styleBlock,
     'Generate one fresh encounter now as a single JSON object.',
-  ].join('\n');
+  ]
+    .filter(Boolean)
+    .join('\n');
 
   return { system, user };
 }

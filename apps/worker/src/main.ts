@@ -58,12 +58,28 @@ async function tick(): Promise<void> {
 }
 
 async function main(): Promise<void> {
+  // A stray rejection/exception must not silently wedge the loop or crash without a
+  // trace — log and keep ticking (the next interval recovers).
+  process.on('unhandledRejection', (e) => console.error('[worker] unhandledRejection', e));
+  process.on('uncaughtException', (e) => console.error('[worker] uncaughtException', e));
+
   // eslint-disable-next-line no-console
   console.log(`[worker] UnlikelyLand worker started; tick every ${TICK_MS}ms`);
   await tick().catch((e) => console.error('[worker] tick error', e));
-  setInterval(() => {
+  const timer = setInterval(() => {
     tick().catch((e) => console.error('[worker] tick error', e));
   }, TICK_MS);
+
+  // Graceful shutdown so `docker stop` (SIGTERM) closes the DB pool cleanly instead
+  // of being SIGKILLed after the timeout.
+  const shutdown = async (sig: string) => {
+    console.log(`[worker] ${sig} received; shutting down`);
+    clearInterval(timer);
+    await prisma.$disconnect().catch(() => undefined);
+    process.exit(0);
+  };
+  process.on('SIGTERM', () => void shutdown('SIGTERM'));
+  process.on('SIGINT', () => void shutdown('SIGINT'));
 }
 
 void main();

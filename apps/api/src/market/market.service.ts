@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import type { CreateListingInput, MarketListingView } from '@unlikelyland/contracts';
 import { PrismaService } from '../common/prisma.service';
 import { EconomyService } from '../economy/economy.service';
+import { AchievementsService } from '../achievements/achievements.service';
 
 interface MarketRow {
   id: string;
@@ -26,6 +27,7 @@ export class MarketService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly economy: EconomyService,
+    private readonly achievements: AchievementsService,
   ) {}
 
   async list(viewer: string): Promise<MarketListingView[]> {
@@ -84,14 +86,26 @@ export class MarketService {
       if (!listing || listing.status !== 'active') throw new NotFoundException('Listing not available');
       if (listing.sellerCharacterId === buyerId) throw new BadRequestException('You cannot buy your own listing');
 
+      // Atomic claim FIRST: only one concurrent buy can flip active -> sold. Without
+      // this, two simultaneous buys both pass the status check on a stale read and
+      // each gets the item + pays the seller (item/currency duplication). Mirrors the
+      // conditional-claim pattern in ResolutionService.
+      const claim = await tx.marketListing.updateMany({
+        where: { id: listingId, status: 'active' },
+        data: { status: 'sold', buyerCharacterId: buyerId, soldAt: new Date() },
+      });
+      if (claim.count === 0) throw new NotFoundException('Listing not available');
+
+      // Only after the claim succeeds do we move value.
       await this.economy.spendNormal(tx, buyerId, listing.priceAmount, 'market:buy', listing.id);
       await this.economy.applyDeltas(tx, listing.sellerCharacterId, { normal: listing.priceAmount }, 'market:sell', listing.id);
       await tx.inventoryItem.create({
         data: { characterId: buyerId, itemDefinitionId: listing.itemDefinitionId, quantity: listing.quantity },
       });
-      const updated = await tx.marketListing.update({
+      await this.achievements.onMarketSale(tx, listing.sellerCharacterId);
+
+      const updated = await tx.marketListing.findUniqueOrThrow({
         where: { id: listing.id },
-        data: { status: 'sold', buyerCharacterId: buyerId, soldAt: new Date() },
         include: { itemDefinition: true, seller: { select: { displayName: true } } },
       });
       return this.toView(updated as MarketRow, buyerId);
@@ -102,11 +116,16 @@ export class MarketService {
     return this.prisma.$transaction(async (tx) => {
       const listing = await tx.marketListing.findUnique({ where: { id: listingId } });
       if (!listing || listing.sellerCharacterId !== characterId) throw new NotFoundException('Listing not found');
-      if (listing.status !== 'active') throw new BadRequestException('Listing is not active');
+      // Atomic claim so the escrowed stack is released exactly once and a cancel
+      // racing a buy (or another cancel) cannot duplicate it.
+      const claim = await tx.marketListing.updateMany({
+        where: { id: listingId, sellerCharacterId: characterId, status: 'active' },
+        data: { status: 'cancelled' },
+      });
+      if (claim.count === 0) throw new BadRequestException('Listing is not active');
       await tx.inventoryItem.create({
         data: { characterId, itemDefinitionId: listing.itemDefinitionId, quantity: listing.quantity },
       });
-      await tx.marketListing.update({ where: { id: listing.id }, data: { status: 'cancelled' } });
       return { cancelled: true };
     });
   }

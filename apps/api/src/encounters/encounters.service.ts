@@ -6,8 +6,10 @@ import {
   type ChoiceView,
   type ItemConceptSuggestion,
 } from '@unlikelyland/contracts';
+import type { Prisma } from '@prisma/client';
 import { PrismaService } from '../common/prisma.service';
 import { AiGatewayService } from '../ai/ai-gateway.service';
+import { validateItemConcept } from '../ai/item-validator';
 import { StoryMemoryService } from '../story-memory/story-memory.service';
 import { CharactersService } from '../characters/characters.service';
 import { EXPEDITIONS } from '../engine/rules';
@@ -47,6 +49,7 @@ export class EncountersService {
     const expedition = await this.prisma.expedition.findUniqueOrThrow({ where: { id: expeditionId } });
     const cfg = EXPEDITIONS[expedition.type as ExpeditionType];
     const stats = this.characters.statBlockFromRow(character.stats as never);
+    const storyStyleTags = await this.characters.getStoryStyleTags(characterId);
     const memories = await this.memory.recentForPrompt(characterId);
     const regions = await this.prisma.region.findMany({
       where: { regionSetId: character.regionSetId },
@@ -66,6 +69,7 @@ export class EncountersService {
       contentRating: character.contentRating as 'family' | 'pg13' | 'r',
       personalitySummary: this.characters.personalitySummary(stats),
       recentMemories: memories,
+      storyStyleTags,
       step: stepIndex,
       maxSteps: expedition.maxSteps,
       seedParts: [characterId, expeditionId, stepIndex],
@@ -87,38 +91,64 @@ export class EncountersService {
     return this.toView(row);
   }
 
-  /** Persist AI item-concept proposals; auto-approve safe low-power common/uncommon. */
+  /**
+   * Persist AI item-concept proposals through the central validator. The AI never
+   * supplies stat numbers and its text is moderated at the family floor; the
+   * server derives a balanced, budget-capped stat block. A concept is only
+   * auto-approved (minted into the global catalog) when it is a low-power
+   * common/uncommon that passes every validation rule — everything else is left
+   * `pending` for admin review. Concept + item creation run in one transaction so
+   * a half-approved concept can never exist.
+   */
   private async ingestItemConcepts(characterId: string, suggestions: ItemConceptSuggestion[]): Promise<void> {
     for (const s of suggestions.slice(0, 2)) {
       try {
-        const concept = await this.prisma.pendingItemConcept.create({
-          data: {
-            proposedByCharacterId: characterId,
-            name: s.name,
-            description: s.description,
-            intendedRarity: s.intendedRarity,
-            intendedSlot: s.intendedSlot,
-            narrativePurpose: s.narrativePurpose,
-            status: 'pending',
-          },
+        const v = validateItemConcept({
+          name: s.name,
+          description: s.description,
+          narrativePurpose: s.narrativePurpose,
+          intendedSlot: s.intendedSlot,
+          intendedRarity: s.intendedRarity,
         });
-        if (s.intendedRarity === 'common' || s.intendedRarity === 'uncommon') {
-          const item = await this.prisma.itemDefinition.create({
+
+        await this.prisma.$transaction(async (tx) => {
+          const concept = await tx.pendingItemConcept.create({
             data: {
-              key: `ai-${concept.id.slice(0, 12)}`,
+              proposedByCharacterId: characterId,
               name: s.name,
               description: s.description,
-              slot: s.intendedSlot,
-              rarity: s.intendedRarity,
-              powerBudget: s.intendedRarity === 'uncommon' ? 6 : 3,
-              source: 'ai_approved',
+              intendedRarity: s.intendedRarity,
+              intendedSlot: s.intendedSlot,
+              narrativePurpose: s.narrativePurpose,
+              status: 'pending',
+              proposedStatModifiers: v.normalized.statModifiers as Prisma.InputJsonValue,
+              proposedPowerBudget: v.normalized.powerBudget,
+              autoApprovable: v.autoApprovable,
+              validationIssues: JSON.stringify(v.issues),
             },
           });
-          await this.prisma.pendingItemConcept.update({
-            where: { id: concept.id },
-            data: { status: 'auto_approved', createdItemId: item.id },
-          });
-        }
+
+          if (v.autoApprovable) {
+            const item = await tx.itemDefinition.create({
+              data: {
+                key: `ai-${concept.id.slice(0, 12)}`,
+                name: v.normalized.name,
+                description: v.normalized.description,
+                slot: v.normalized.slot,
+                rarity: v.normalized.rarity,
+                statModifiers: v.normalized.statModifiers as Prisma.InputJsonValue,
+                powerBudget: v.normalized.powerBudget,
+                consumableEffectType: v.normalized.consumableEffectType,
+                consumableEffectPower: v.normalized.consumableEffectPower,
+                source: 'ai_approved',
+              },
+            });
+            await tx.pendingItemConcept.update({
+              where: { id: concept.id },
+              data: { status: 'auto_approved', createdItemId: item.id },
+            });
+          }
+        });
       } catch {
         // best-effort — a concept failing to ingest must not break encounter generation
       }

@@ -5,7 +5,7 @@ import { Rng } from './rng';
 
 describe('computeReward', () => {
   it('a success pays more XP than a failure for the same choice', () => {
-    const base = { riskLevel: 'high', rewardProfile: 'risky', encounterType: 'combat' } as const;
+    const base = { riskLevel: 'high', rewardProfile: 'risky', encounterType: 'combat', level: 1 } as const;
     const win = computeReward({ ...base, success: true, margin: 5, rng: new Rng(1) });
     const lose = computeReward({ ...base, success: false, margin: -5, rng: new Rng(1) });
     expect(win.xp).toBeGreaterThan(lose.xp);
@@ -19,6 +19,7 @@ describe('computeReward', () => {
         encounterType: 'combat',
         success: true,
         margin: 20,
+        level: 5,
         rng: new Rng(seed),
       });
       expect(r.premium).toBe(0);
@@ -33,6 +34,7 @@ describe('computeReward', () => {
         encounterType: 'scavenging',
         success: true,
         margin: 100,
+        level: 10,
         rng: new Rng(seed),
       });
       expect(r.xp).toBeLessThanOrEqual(REWARDS.MAX_XP_PER_ENCOUNTER);
@@ -49,6 +51,7 @@ describe('computeReward', () => {
       encounterType: 'scavenging',
       success: false,
       margin: -2,
+      level: 1,
       rng: new Rng(3),
     });
     expect(r.crafting).toBe(0);
@@ -62,6 +65,7 @@ describe('computeReward', () => {
       encounterType: 'social',
       success: true,
       margin: 3,
+      level: 1,
       rng: new Rng(8),
     });
     expect(r.crafting).toBe(0);

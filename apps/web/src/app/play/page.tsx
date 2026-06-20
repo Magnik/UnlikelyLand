@@ -23,6 +23,7 @@ export default function PlayPage() {
   const [expedition, setExpedition] = useState<ExpeditionView | null>(null);
   const [encounter, setEncounter] = useState<EncounterView | null>(null);
   const [result, setResult] = useState<ResolutionView | null>(null);
+  const [prevLevel, setPrevLevel] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -103,6 +104,7 @@ export default function PlayPage() {
     if (!encounter) return;
     setError(null);
     setBusy(true);
+    setPrevLevel(character?.level);
     try {
       const res = await api.resolve({ encounterId: encounter.id, choiceId, clientRequestId: uuid() });
       setResult(res);
@@ -207,7 +209,7 @@ export default function PlayPage() {
         ) : null}
 
         {result ? (
-          <OutcomePanel result={result} onContinue={continueFromResult} />
+          <OutcomePanel result={result} previousLevel={prevLevel} onContinue={continueFromResult} />
         ) : encounter ? (
           <EncounterCard encounter={encounter} busy={busy} onPick={pick} onGoHome={goHome} />
         ) : (

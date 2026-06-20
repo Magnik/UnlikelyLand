@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import {
   FriendRequestActionSchema,
   TargetCharacterSchema,
@@ -7,9 +7,11 @@ import {
 } from '@unlikelyland/contracts';
 import { CurrentUser, type AuthUser } from '../common/current-user.decorator';
 import { ZodBody } from '../common/zod-validation.pipe';
+import { RateLimit, RateLimitGuard } from '../common/rate-limit.guard';
 import { SocialService } from './social.service';
 
 @Controller('social')
+@UseGuards(RateLimitGuard)
 export class SocialController {
   constructor(private readonly social: SocialService) {}
 
@@ -23,6 +25,7 @@ export class SocialController {
     return this.social.search(user.characterId, q ?? '');
   }
 
+  @RateLimit({ limit: 20, windowMs: 60_000, key: 'social:request' })
   @Post('request')
   send(@CurrentUser() user: AuthUser, @Body(new ZodBody(TargetCharacterSchema)) dto: TargetCharacterInput) {
     return this.social.sendRequest(user.characterId, dto.characterId);

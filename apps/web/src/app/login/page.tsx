@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { api, ApiError, setToken } from '@/lib/api';
+import { api, ApiError, setSession } from '@/lib/api';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -18,7 +18,7 @@ export default function LoginPage() {
     setBusy(true);
     try {
       const res = await api.login({ username, password });
-      setToken(res.token);
+      setSession(res.token, res.refreshToken);
       router.replace('/play');
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Something went wrong');
@@ -35,12 +35,12 @@ export default function LoginPage() {
       <form className="card" onSubmit={submit}>
         {error ? <div className="error">{error}</div> : null}
         <div className="field">
-          <label>Username</label>
-          <input value={username} onChange={(e) => setUsername(e.target.value)} autoCapitalize="none" autoComplete="username" />
+          <label htmlFor="login-username">Username</label>
+          <input id="login-username" value={username} onChange={(e) => setUsername(e.target.value)} autoCapitalize="none" autoComplete="username" />
         </div>
         <div className="field">
-          <label>Password</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" />
+          <label htmlFor="login-password">Password</label>
+          <input id="login-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" />
         </div>
         <button className="btn btn-primary" disabled={busy || !username || !password}>
           {busy ? 'Logging in…' : 'Log in'}

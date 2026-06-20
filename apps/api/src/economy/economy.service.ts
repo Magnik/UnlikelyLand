@@ -47,6 +47,32 @@ export class EconomyService {
     if (rows.length) await tx.economyTransaction.createMany({ data: rows });
   }
 
+  /**
+   * Record an awarded item in the reward-audit trail. Items aren't a currency,
+   * but every grant is logged here (currency 'item', amount = quantity) so the
+   * economy/reward history is the single place to investigate "where did this
+   * item come from". Must be called inside the same transaction as the grant.
+   */
+  async logItemReward(
+    tx: Prisma.TransactionClient,
+    characterId: string,
+    itemDefinitionId: string,
+    quantity: number,
+    reason: string,
+    refId?: string,
+  ): Promise<void> {
+    await tx.economyTransaction.create({
+      data: {
+        characterId,
+        currency: 'item',
+        amount: quantity,
+        reason,
+        refType: 'item_drop',
+        refId: refId ?? itemDefinitionId,
+      },
+    });
+  }
+
   /** Spend normal currency (Clams), e.g. to pay for a faster revive. */
   async spendNormal(
     tx: Prisma.TransactionClient,
@@ -55,20 +81,59 @@ export class EconomyService {
     reason: string,
     refId?: string,
   ): Promise<void> {
+    await this.spend(tx, characterId, 'normal', amount, reason, refId);
+  }
+
+  /** Spend crafting currency (Oddments), e.g. to deposit into a guild bank. */
+  async spendCrafting(
+    tx: Prisma.TransactionClient,
+    characterId: string,
+    amount: number,
+    reason: string,
+    refId?: string,
+  ): Promise<void> {
+    await this.spend(tx, characterId, 'crafting', amount, reason, refId);
+  }
+
+  /**
+   * Atomic, race-safe currency debit. The affordability check and the decrement
+   * are a SINGLE conditional update (`where: { <column>: { gte: amount } }`), so
+   * concurrent spends can never drive a balance negative regardless of isolation
+   * level — unlike a read-then-write, which can both pass the check on a stale read.
+   */
+  private async spend(
+    tx: Prisma.TransactionClient,
+    characterId: string,
+    currency: 'normal' | 'crafting' | 'reputation' | 'premium',
+    amount: number,
+    reason: string,
+    refId?: string,
+  ): Promise<void> {
     if (amount <= 0) return;
-    const character = await tx.character.findUniqueOrThrow({
-      where: { id: characterId },
-      select: { normalMoney: true },
+    const column = SPEND_COLUMN[currency];
+    const insufficient = SPEND_INSUFFICIENT[currency];
+    const res = await tx.character.updateMany({
+      where: { id: characterId, [column]: { gte: amount } },
+      data: { [column]: { decrement: amount } },
     });
-    if (character.normalMoney < amount) {
-      throw new BadRequestException('Not enough Clams');
-    }
-    await tx.character.update({
-      where: { id: characterId },
-      data: { normalMoney: { decrement: amount } },
-    });
+    if (res.count === 0) throw new BadRequestException(insufficient);
     await tx.economyTransaction.create({
-      data: { characterId, currency: 'normal', amount: -amount, reason, refType: 'spend', refId },
+      data: { characterId, currency, amount: -amount, reason, refType: 'spend', refId },
     });
   }
 }
+
+/** Character column backing each spendable currency. */
+const SPEND_COLUMN = {
+  normal: 'normalMoney',
+  crafting: 'craftingResources',
+  reputation: 'reputation',
+  premium: 'premiumMoney',
+} as const;
+
+const SPEND_INSUFFICIENT = {
+  normal: 'Not enough Clams',
+  crafting: 'Not enough Oddments',
+  reputation: 'Not enough Notoriety',
+  premium: 'Not enough Escape Tokens',
+} as const;

@@ -28,9 +28,14 @@ ENV NODE_ENV=production
 # carries the Prisma CLI + ts-node used by the entrypoint for migrate + seed.
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
+# tsconfig files are required at runtime: `prisma db seed` runs ts-node prisma/seed.ts,
+# which needs apps/api/tsconfig.json (and the base it extends). Without these the
+# seed step of the CMD chain fails and the container never starts the server.
+COPY --from=builder /app/tsconfig.base.json ./tsconfig.base.json
 COPY --from=builder /app/packages/contracts/package.json ./packages/contracts/package.json
 COPY --from=builder /app/packages/contracts/dist ./packages/contracts/dist
 COPY --from=builder /app/apps/api/package.json ./apps/api/package.json
+COPY --from=builder /app/apps/api/tsconfig.json ./apps/api/tsconfig.json
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
 COPY --from=builder /app/apps/api/prisma ./apps/api/prisma
 

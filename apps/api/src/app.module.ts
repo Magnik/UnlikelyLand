@@ -16,6 +16,8 @@ import { SocialModule } from './social/social.module';
 import { MailModule } from './mail/mail.module';
 import { AchievementsModule } from './achievements/achievements.module';
 import { PrestigeModule } from './prestige/prestige.module';
+import { ReportsModule } from './reports/reports.module';
+import { ModerationModule } from './moderation/moderation.module';
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { PrestigeModule } from './prestige/prestige.module';
     MailModule,
     AchievementsModule,
     PrestigeModule,
+    ReportsModule,
+    ModerationModule,
   ],
   controllers: [HealthController],
 })

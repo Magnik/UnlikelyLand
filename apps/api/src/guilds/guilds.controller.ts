@@ -1,16 +1,27 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { CreateGuildSchema, type CreateGuildInput } from '@unlikelyland/contracts';
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  CreateGuildSchema,
+  GuildBankActionSchema,
+  GuildMemberActionSchema,
+  UpdateGuildSchema,
+  type CreateGuildInput,
+  type GuildBankActionInput,
+  type GuildMemberActionInput,
+  type UpdateGuildInput,
+} from '@unlikelyland/contracts';
 import { CurrentUser, type AuthUser } from '../common/current-user.decorator';
 import { ZodBody } from '../common/zod-validation.pipe';
+import { RateLimit, RateLimitGuard } from '../common/rate-limit.guard';
 import { GuildsService } from './guilds.service';
 
 @Controller('guilds')
+@UseGuards(RateLimitGuard)
 export class GuildsController {
   constructor(private readonly guilds: GuildsService) {}
 
   @Get()
-  list() {
-    return this.guilds.list();
+  list(@Query('q') q?: string, @Query('page') page?: string) {
+    return this.guilds.list(q, page ? Number(page) : 1);
   }
 
   // Declared before ':id' so the literal path wins.
@@ -24,9 +35,46 @@ export class GuildsController {
     return this.guilds.view(id, user.characterId);
   }
 
+  // Founding a guild is rate-limited to blunt spam guild creation.
+  @RateLimit({ limit: 5, windowMs: 60 * 60 * 1000, key: 'guild:create' })
   @Post()
   create(@CurrentUser() user: AuthUser, @Body(new ZodBody(CreateGuildSchema)) dto: CreateGuildInput) {
     return this.guilds.create(user.characterId, dto);
+  }
+
+  @Post('update')
+  update(@CurrentUser() user: AuthUser, @Body(new ZodBody(UpdateGuildSchema)) dto: UpdateGuildInput) {
+    return this.guilds.updateGuild(user.characterId, dto);
+  }
+
+  @Post('promote')
+  promote(@CurrentUser() user: AuthUser, @Body(new ZodBody(GuildMemberActionSchema)) dto: GuildMemberActionInput) {
+    return this.guilds.promote(user.characterId, dto.characterId);
+  }
+
+  @Post('demote')
+  demote(@CurrentUser() user: AuthUser, @Body(new ZodBody(GuildMemberActionSchema)) dto: GuildMemberActionInput) {
+    return this.guilds.demote(user.characterId, dto.characterId);
+  }
+
+  @Post('kick')
+  kick(@CurrentUser() user: AuthUser, @Body(new ZodBody(GuildMemberActionSchema)) dto: GuildMemberActionInput) {
+    return this.guilds.kick(user.characterId, dto.characterId);
+  }
+
+  @Post('transfer')
+  transfer(@CurrentUser() user: AuthUser, @Body(new ZodBody(GuildMemberActionSchema)) dto: GuildMemberActionInput) {
+    return this.guilds.transferOwnership(user.characterId, dto.characterId);
+  }
+
+  @Post('bank/deposit')
+  deposit(@CurrentUser() user: AuthUser, @Body(new ZodBody(GuildBankActionSchema)) dto: GuildBankActionInput) {
+    return this.guilds.depositToBank(user.characterId, dto.amount);
+  }
+
+  @Post('bank/withdraw')
+  withdraw(@CurrentUser() user: AuthUser, @Body(new ZodBody(GuildBankActionSchema)) dto: GuildBankActionInput) {
+    return this.guilds.withdrawFromBank(user.characterId, dto.amount);
   }
 
   @Post('leave')

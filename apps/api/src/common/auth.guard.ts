@@ -14,6 +14,7 @@ interface JwtPayload {
   sub: string; // userId
   username: string;
   role: UserRole;
+  ver?: number; // token version; mismatch ⇒ revoked
 }
 
 /**
@@ -46,24 +47,32 @@ export class AuthGuard implements CanActivate {
 
     let payload: JwtPayload;
     try {
-      payload = await this.jwt.verifyAsync<JwtPayload>(token);
+      // Pin the signing algorithm so only our HMAC tokens are ever accepted.
+      payload = await this.jwt.verifyAsync<JwtPayload>(token, { algorithms: ['HS256'] });
     } catch {
       throw new UnauthorizedException('Invalid or expired token');
     }
 
-    const character = await this.prisma.character.findUnique({
-      where: { userId: payload.sub },
-      select: { id: true },
+    // Re-read role + ban state from the DB every request: the JWT claim is never
+    // trusted for authorization, so a demotion or ban takes effect immediately
+    // (within the token's lifetime) rather than only after it expires.
+    const user = await this.prisma.user.findUnique({
+      where: { id: payload.sub },
+      select: { role: true, bannedAt: true, tokenVersion: true, character: { select: { id: true } } },
     });
-    if (!character) {
-      throw new UnauthorizedException('No character for this account');
+    if (!user) throw new UnauthorizedException('Account not found');
+    if (user.bannedAt) throw new UnauthorizedException('This account has been suspended');
+    // A logout/ban bumps tokenVersion, so a stale access token is rejected at once.
+    if ((payload.ver ?? 0) !== user.tokenVersion) {
+      throw new UnauthorizedException('Session expired — please log in again');
     }
+    if (!user.character) throw new UnauthorizedException('No character for this account');
 
     request.user = {
       userId: payload.sub,
       username: payload.username,
-      role: payload.role,
-      characterId: character.id,
+      role: user.role as UserRole,
+      characterId: user.character.id,
     };
     return true;
   }

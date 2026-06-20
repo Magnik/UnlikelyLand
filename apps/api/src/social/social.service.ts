@@ -1,6 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import type { DirectoryEntry, SocialView } from '@unlikelyland/contracts';
 import { PrismaService } from '../common/prisma.service';
+import { RelationshipService } from '../common/relationship.service';
+import { AchievementsService } from '../achievements/achievements.service';
 
 /** Order a pair of ids so each friendship is stored once. */
 function pairKey(a: string, b: string): readonly [string, string] {
@@ -9,12 +11,17 @@ function pairKey(a: string, b: string): readonly [string, string] {
 
 /**
  * Friends, friend requests, and blocking. Blocking removes any existing
- * friendship + pending requests and prevents new requests/mail; chat already
- * hides blocked users' messages.
+ * friendship + pending requests and prevents new requests/mail; chat hides
+ * blocked users' messages and directory search hides blocked players (either
+ * direction). All block checks go through the shared RelationshipService.
  */
 @Injectable()
 export class SocialService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly relationships: RelationshipService,
+    private readonly achievements: AchievementsService,
+  ) {}
 
   async overview(characterId: string): Promise<SocialView> {
     const [friendships, incoming, outgoing, blocked] = await Promise.all([
@@ -64,8 +71,14 @@ export class SocialService {
 
   async search(characterId: string, q: string): Promise<DirectoryEntry[]> {
     if (!q || q.trim().length < 2) return [];
+    // Hide anyone in a block relationship with the searcher (either direction) so a
+    // block makes both parties undiscoverable to each other.
+    const blockedIds = await this.relationships.blockedIdsForFeed(characterId);
     const chars = await this.prisma.character.findMany({
-      where: { displayName: { contains: q.trim(), mode: 'insensitive' }, id: { not: characterId } },
+      where: {
+        displayName: { contains: q.trim(), mode: 'insensitive' },
+        id: { notIn: [characterId, ...blockedIds] },
+      },
       select: { id: true, displayName: true, level: true },
       take: 20,
       orderBy: { displayName: 'asc' },
@@ -75,13 +88,20 @@ export class SocialService {
 
   async sendRequest(fromId: string, toId: string) {
     if (fromId === toId) throw new BadRequestException('You cannot befriend yourself');
+
+    // A muted player cannot initiate friend requests (a spam/harassment vector that
+    // bypasses the chat/mail mute otherwise).
+    const me = await this.prisma.character.findUnique({ where: { id: fromId }, select: { mutedUntil: true } });
+    if (me?.mutedUntil && me.mutedUntil.getTime() > Date.now()) {
+      throw new ForbiddenException('You are muted and cannot send friend requests right now');
+    }
+
     const target = await this.prisma.character.findUnique({ where: { id: toId }, select: { id: true } });
     if (!target) throw new NotFoundException('Character not found');
 
-    const blocked = await this.prisma.blockedUser.findFirst({
-      where: { OR: [{ characterId: fromId, blockedCharacterId: toId }, { characterId: toId, blockedCharacterId: fromId }] },
-    });
-    if (blocked) throw new BadRequestException('Cannot send a request to this player');
+    if (await this.relationships.isBlockedEitherWay(fromId, toId)) {
+      throw new BadRequestException('Cannot send a request to this player');
+    }
 
     const [a, b] = pairKey(fromId, toId);
     const already = await this.prisma.friendship.findUnique({
@@ -101,6 +121,7 @@ export class SocialService {
           update: {},
           create: { characterAId: a, characterBId: b },
         });
+        await this.achievements.onFriendMade(tx, fromId, toId);
       });
       return { friends: true };
     }
@@ -124,13 +145,16 @@ export class SocialService {
         update: {},
         create: { characterAId: a, characterBId: b },
       });
+      await this.achievements.onFriendMade(tx, req.fromCharacterId, req.toCharacterId);
     });
     return { accepted: true };
   }
 
   async rejectRequest(characterId: string, requestId: string) {
     const req = await this.prisma.friendRequest.findUnique({ where: { id: requestId } });
-    if (!req || req.toCharacterId !== characterId) throw new NotFoundException('Request not found');
+    if (!req || req.toCharacterId !== characterId || req.status !== 'pending') {
+      throw new NotFoundException('Request not found');
+    }
     await this.prisma.friendRequest.update({ where: { id: req.id }, data: { status: 'rejected' } });
     return { rejected: true };
   }

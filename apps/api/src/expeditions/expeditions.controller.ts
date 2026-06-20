@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { GoHomeSchema, StartExpeditionSchema, type GoHomeInput, type StartExpeditionInput } from '@unlikelyland/contracts';
 import { CurrentUser, type AuthUser } from '../common/current-user.decorator';
 import { ZodBody } from '../common/zod-validation.pipe';
+import { RateLimit, RateLimitGuard } from '../common/rate-limit.guard';
 import { ExpeditionsService } from './expeditions.service';
 
 @Controller('expeditions')
@@ -18,6 +19,8 @@ export class ExpeditionsController {
     return this.expeditions.getActive(user.characterId);
   }
 
+  @UseGuards(RateLimitGuard)
+  @RateLimit({ limit: 20, windowMs: 60 * 1000, key: 'expedition:start' })
   @Post('start')
   start(
     @CurrentUser() user: AuthUser,

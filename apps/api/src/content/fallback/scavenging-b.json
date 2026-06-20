@@ -1,0 +1,274 @@
+[
+  {
+    "title": "The Glove That Negotiates on Behalf of the Beach",
+    "description": "A single weathered work glove lies palm-up on the sand, and as you bend toward a half-buried tackle box beside it, the glove inflates a finger and points at you. 'Before we proceed,' it says, in the tired voice of someone who has done this all morning, 'the beach has asked me to represent its interests. The box is negotiable. Your manners are not.' Behind it, a tide line of bottle caps and fishing lures waits like an itemized invoice.",
+    "encounterType": "scavenging",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "haggle_box",
+        "label": "Open formal negotiations for the tackle box",
+        "description": "Counter-offer, concession, handshake. The glove respects a player who comes to the table prepared.",
+        "statFocus": "negotiation",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "compliment_beach",
+        "label": "Sincerely compliment the beach on its lovely sand",
+        "description": "Flattery routed through proper channels. A well-represented beach loves to be appreciated, and the glove takes notes.",
+        "statFocus": "charisma",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "snatch_during_clause",
+        "label": "Grab the box mid-clause while the glove is mid-sentence",
+        "description": "Negotiations break down the instant your hand moves. Fast hands, broken trust, possible consequences from a very wordy mitten.",
+        "statFocus": "agility",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The glove's pointing finger has not yet finished its sentence, or its thought."
+      },
+      {
+        "id": "audit_invoice",
+        "label": "Demand to inspect the tide-line invoice for errors",
+        "description": "Question every bottle cap. A glove this organized has surely overcharged somebody, somewhere, at some point.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_social",
+      "more_weirdness",
+      "less_combat"
+    ],
+    "templateId": "fallback:scavenging-b:0"
+  },
+  {
+    "title": "The Returns Tide",
+    "description": "The water here goes out and comes back wrong. Each wave deposits things that were clearly borrowed and never given back: a neighbor's ladder, a library book sixty years overdue, a single earring with a note reading 'YOU KNOW WHAT YOU DID.' A driftwood sign, freshly planted, announces: 'RETURNS PROCESSED CONTINUOUSLY. NO RECEIPT, NO PROBLEM, NO ESCAPE.' The next wave is already gathering, and it is carrying something with your initials on it.",
+    "encounterType": "scavenging",
+    "allowGoHome": true,
+    "goHomeLabel": "Claim you returned everything on time and flee",
+    "choices": [
+      {
+        "id": "time_the_wave",
+        "label": "Time the waves and snatch the ladder between returns",
+        "description": "There is a rhythm to the tide's bureaucracy. Read it, count it, and grab the good salvage in the gap.",
+        "statFocus": "accuracy",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "inspect_initials",
+        "label": "Wade out to read the item carrying your initials",
+        "description": "The tide thinks you owe something. Curiosity says find out what. Self-preservation has notably left the room.",
+        "statFocus": "curiosity",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The note pinned to it is folded over, address-side down."
+      },
+      {
+        "id": "negotiate_extension",
+        "label": "Argue with the tide for a longer return window",
+        "description": "Every overdue borrower deserves their day in front of the surf. Plead your case before the wave files it.",
+        "statFocus": "negotiation",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_mystery",
+      "more_weirdness",
+      "less_combat"
+    ],
+    "templateId": "fallback:scavenging-b:1"
+  },
+  {
+    "title": "The Sock Drawer at the End of the World",
+    "description": "Wedged in a sea cave, perfectly dry, sits a wooden dresser drawer crammed with hundreds of unmatched socks — and every one of them is awake. They rustle toward you in a soft woolen tide, murmuring the same desperate plea: each is looking for its partner, and each is absolutely certain you are hiding it on your person. A hand-stitched label on the drawer reads: 'NO MATCH LEAVES UNHAPPY. SOME MATCHES LEAVE WITH FRIENDS.'",
+    "encounterType": "scavenging",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "match_pair",
+        "label": "Carefully match two socks by thread, weave, and odor",
+        "description": "Somewhere in this writhing pile are two halves of a whole. A keen eye reunites them and earns the drawer's gratitude.",
+        "statFocus": "accuracy",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "wade_in",
+        "label": "Wade into the woolen tide and feel around the bottom",
+        "description": "The good salvage always sinks to the bottom of the drawer. Mind the clingy ones; they get attached.",
+        "statFocus": "agility",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Several socks at the bottom have stopped murmuring and started listening."
+      },
+      {
+        "id": "console_socks",
+        "label": "Gently explain you are not, in fact, hiding their partners",
+        "description": "Heartbreak, validated. A drawer of grieving socks may calm down enough to part with a thing or two willingly.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "pocket_pretend",
+        "label": "Pretend to find a sock's partner in your sleeve",
+        "description": "Distract the pile with false hope, pocket the shiny thing wedged behind the drawer. What could a sad sock possibly do.",
+        "statFocus": "deception",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_weirdness",
+      "more_social",
+      "less_danger"
+    ],
+    "templateId": "fallback:scavenging-b:2"
+  },
+  {
+    "title": "The First Barnacle Bank of Low Tide",
+    "description": "An old anchor capstan has been colonized by a colony of barnacles so organized they have opened a bank. Tiny shells click open and shut at a row of teller windows carved into the rust, and a chalkboard advertises 'SAFETY DEPOSIT VAULTS — YOUR VALUABLES, OUR CALCIUM.' The head teller, a barnacle wearing a monocle of sea-glass, slides you a slip: 'TO WITHDRAW SALVAGE, OPEN AN ACCOUNT. MINIMUM DEPOSIT: ONE SECRET OR ONE SNACK.'",
+    "encounterType": "scavenging",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "open_account",
+        "label": "Open an account with a modest, true secret",
+        "description": "Deposit something real and the vault opens its little calcium door. Banks built on barnacles run on trust and trivia.",
+        "statFocus": "negotiation",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "crack_vault",
+        "label": "Pick the lock on an unattended deposit vault",
+        "description": "Skip the paperwork, work the tiny tumblers with a fishbone. Steady fingers, steadier nerves, and ideally no alarm clams.",
+        "statFocus": "accuracy",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The teller's sea-glass monocle catches the light every few seconds, as if scanning."
+      },
+      {
+        "id": "ask_loan",
+        "label": "Apply for a small salvage loan with a charming pitch",
+        "description": "Sell the bank on your future earnings. A barnacle lender loves a confident borrower with a sob story and a plan.",
+        "statFocus": "charisma",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "audit_books",
+        "label": "Politely ask to examine the bank's reserve ledger",
+        "description": "No bank this small should have vaults this full. Curiosity wants the books; the books may not survive scrutiny.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_social",
+      "more_weirdness",
+      "less_combat"
+    ],
+    "templateId": "fallback:scavenging-b:3"
+  },
+  {
+    "title": "X Marks the Complaint",
+    "description": "Half-buried in a tar barrel you find a genuine treasure map, brittle and authentic, with a bold red X. Reading the fine print, however, you realize it is not a treasure map at all — it is a formal complaint, drawn in map form, filed by a long-dead pirate against the island itself. The X marks not gold but 'THE EXACT SPOT WHERE THE MANAGEMENT WRONGED ME.' A coil of compasses, spyglasses, and a still-sealed grievance tube sit bundled with it.",
+    "encounterType": "scavenging",
+    "allowGoHome": true,
+    "goHomeLabel": "Decide some complaints are best left unresolved",
+    "choices": [
+      {
+        "id": "follow_x",
+        "label": "Follow the complaint to the exact spot of the grievance",
+        "description": "Whatever wronged a pirate badly enough to map it formally is surely worth a look. Tread lightly near the X.",
+        "statFocus": "curiosity",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The red X is slightly damp, as if recently re-inked by someone."
+      },
+      {
+        "id": "grab_instruments",
+        "label": "Quietly pocket the compasses and spyglasses",
+        "description": "The map is a liability, but the navigation tools bundled with it are pure salvage. Slip them free of the grievance.",
+        "statFocus": "agility",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "open_tube",
+        "label": "Crack the sealed grievance tube and read the full filing",
+        "description": "Steady hands open the wax seal without tearing the contents. A complete pirate complaint is its own rare treasure.",
+        "statFocus": "accuracy",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "file_response",
+        "label": "Draft a sympathetic reply to the dead pirate's complaint",
+        "description": "Acknowledge the grievance, apologize on the island's behalf, leave it pinned to the X. Closure can be its own reward.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_mystery",
+      "more_exploration",
+      "more_weirdness"
+    ],
+    "templateId": "fallback:scavenging-b:4"
+  }
+]

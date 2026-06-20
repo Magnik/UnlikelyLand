@@ -12,7 +12,11 @@ export class AppConfig {
   readonly port = Number(process.env.API_PORT ?? 4000);
 
   readonly jwtSecret = process.env.JWT_SECRET ?? 'dev-secret-change-me';
-  readonly jwtExpiresIn = process.env.JWT_EXPIRES_IN ?? '30d';
+  // Short-lived access token + a longer-lived refresh token. `jwtExpiresIn` is kept
+  // as the access-token default for back-compat with existing env vars.
+  readonly accessExpiresIn = process.env.JWT_EXPIRES_IN ?? process.env.ACCESS_EXPIRES_IN ?? '30m';
+  readonly jwtExpiresIn = process.env.JWT_EXPIRES_IN ?? '30m';
+  readonly refreshExpiresIn = process.env.REFRESH_EXPIRES_IN ?? '30d';
 
   readonly corsOrigins = (process.env.CORS_ORIGINS ?? '')
     .split(',')

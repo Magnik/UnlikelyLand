@@ -1,0 +1,338 @@
+[
+  {
+    "title": "The Department of Lost Causes Needs Filing",
+    "description": "A clerk made entirely of stacked cardigans hands you a wheeled cart groaning with files and explains that the Department of Lost Causes is hopelessly behind. Each folder must be filed under the exact aisle where its cause was lost, and the aisles are labeled with feelings rather than letters. He points you toward 'Mild Regret,' 'Should Have Said Something,' and the perilously overstuffed 'Knew Better.' A laminated sign warns that misfiling a cause merely loses it again, which is, he sighs, technically job security.",
+    "encounterType": "work",
+    "allowGoHome": true,
+    "goHomeLabel": "Decide your cause is filing this under 'Not Today'",
+    "choices": [
+      {
+        "id": "file_by_feeling",
+        "label": "File each folder under its precise emotional aisle",
+        "description": "Read every cause carefully and shelve it where it truly belongs, matching regret to regret with surgical accuracy.",
+        "statFocus": "accuracy",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "negotiate_quota",
+        "label": "Negotiate a smaller, more humane filing quota",
+        "description": "Argue that no one person can be expected to file this much regret in one afternoon, and propose terms.",
+        "statFocus": "negotiation",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "shoulder_the_cart",
+        "label": "Heave the entire overloaded cart to the back aisle yourself",
+        "description": "Skip the trips and muscle the whole groaning cart down to 'Knew Better' in one heroic, ill-advised push.",
+        "statFocus": "strength",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "read_one_folder",
+        "label": "Sneak a look inside the heaviest folder first",
+        "description": "One folder is conspicuously thicker than the rest and seems to hum faintly. Surely a quick peek would only help your filing.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Some causes were filed under 'Lost' on purpose."
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_comedy",
+      "less_combat"
+    ],
+    "templateId": "fallback:work:0"
+  },
+  {
+    "title": "Express Delivery to a House That Moves",
+    "description": "The post office presses a warm, suspiciously breathing parcel into your arms and a single instruction: deliver it to the Wandermoor cottage before sundown. The catch, the postmistress admits, is that the cottage has legs and strong opinions about visitors, and it has been avoiding this particular parcel for weeks. A trail of fresh, enormous footprints leads off into the bracken, occasionally doubling back as if the house heard you coming. The parcel, for its part, lets out a small, encouraging chirp.",
+    "encounterType": "work",
+    "allowGoHome": true,
+    "goHomeLabel": "Mark it 'recipient ambulatory' and head home",
+    "choices": [
+      {
+        "id": "track_footprints",
+        "label": "Track the cottage's footprints to its hiding spot",
+        "description": "Follow the doubling-back prints with a careful eye, reading the gait to guess where a shy house would tuck itself away.",
+        "statFocus": "accuracy",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "coax_house",
+        "label": "Talk the skittish cottage into accepting its mail",
+        "description": "Houses, like people, refuse parcels out of fear. Sit on a stump and gently reason with it from a respectful distance.",
+        "statFocus": "negotiation",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "outrun_cottage",
+        "label": "Sprint to cut the galloping house off at the ridge",
+        "description": "It has legs, but you have determination and a head start. Pour everything into a flat run to head it off.",
+        "statFocus": "agility",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "peek_parcel",
+        "label": "Investigate why the parcel keeps chirping",
+        "description": "The package is warm, breathing, and now humming a little tune. It would be unprofessional not to understand your cargo. Wouldn't it.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The cottage may be avoiding the parcel for a reason."
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_comedy",
+      "more_exploration"
+    ],
+    "templateId": "fallback:work:1"
+  },
+  {
+    "title": "Manning the Stall of Slightly Wrong Maps",
+    "description": "A vendor with a sunburn and a deadline thrusts an apron at you and bolts, leaving you in sole charge of a stall selling maps of the island that are each wrong in exactly one way. One map has the wrong number of bays; another insists north is a suggestion; the bestseller depicts the island as a disappointed face. Customers are forming a line, the cash box is held shut with a hopeful rubber band, and a sign reads ALL SALES FINAL, ALL MAPS APPROXIMATE. The first customer wants the 'most accurate' wrong map for a journey he refuses to describe.",
+    "encounterType": "work",
+    "allowGoHome": true,
+    "goHomeLabel": "Fold the apron and become approximately elsewhere",
+    "choices": [
+      {
+        "id": "match_map",
+        "label": "Match each traveler to the map wrong in the least harmful way",
+        "description": "Quiz each customer just enough to pair them with the single inaccuracy least likely to strand them in a bog.",
+        "statFocus": "accuracy",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "upsell_maps",
+        "label": "Upsell the disappointed-face map as a collector's item",
+        "description": "Lean into the chaos. Reframe each flaw as character and charge a premium for cartographic authenticity.",
+        "statFocus": "negotiation",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "warn_honestly",
+        "label": "Tell every customer exactly how their map is wrong",
+        "description": "Disclose each map's flaw plainly before any coin changes hands, sales target and rubber-banded cash box be damned.",
+        "statFocus": "honor",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "study_bestseller",
+        "label": "Examine why the 'disappointed face' map sells out daily",
+        "description": "Of all the wrong maps, the sulking-island one flies off the table. Something about it draws people back. You'd like to know what.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "A map that's wrong on purpose is right about something."
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_comedy",
+      "more_social"
+    ],
+    "templateId": "fallback:work:2"
+  },
+  {
+    "title": "Repair Duty on the Bridge of Second Thoughts",
+    "description": "The toll-keeper hands you a toolbox and explains that the Bridge of Second Thoughts is sagging again. The bridge, you learn, is structurally sound but emotionally fragile: every plank it sees someone turn back at mid-crossing, it loses a little faith in itself, and three planks have now gone soft with doubt. Your job is to repair the soft boards before the evening commuters arrive, ideally without standing on the part that is currently questioning whether it deserves to be a bridge at all. The river below offers no opinion, which the bridge finds hurtful.",
+    "encounterType": "work",
+    "allowGoHome": true,
+    "goHomeLabel": "Reconsider, mid-bridge, and walk back",
+    "choices": [
+      {
+        "id": "precise_repair",
+        "label": "Replace the doubting planks with steady new ones",
+        "description": "Measure twice, cut once, and seat each fresh board exactly true so the span never wobbles under a commuter again.",
+        "statFocus": "accuracy",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "haul_timber",
+        "label": "Carry the heavy replacement timber across in one trip",
+        "description": "The new beams are oak and unkind. Shoulder the whole load across the sagging span before it loses its nerve entirely.",
+        "statFocus": "strength",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "reassure_bridge",
+        "label": "Talk the bridge back into believing in itself",
+        "description": "Half this job is structural and half is morale. Walk its length praising every plank that has ever borne a traveler.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "test_softboard",
+        "label": "Step carefully onto the plank that's questioning everything",
+        "description": "The most doubtful board is also the one in the way. You could test your weight on it gently, just to see how soft 'soft' really is.",
+        "statFocus": "caution",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "A bridge having second thoughts may share them with you."
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_comedy",
+      "less_danger"
+    ],
+    "templateId": "fallback:work:3"
+  },
+  {
+    "title": "Census Night for the Uncountable",
+    "description": "A flustered enumerator with an inkwell and a haunted expression recruits you on the spot: it is Census Night, and the official tally is due by dawn. Your assigned district is the only one that keeps coming back wrong, because it is home to things that resist being counted. There is a flock of geese that splits in two whenever observed, a family of nesting echoes, and one resident who is legally three people on weekdays. The form has boxes for everyone, the enumerator insists, you just have to be very firm with the arithmetic.",
+    "encounterType": "work",
+    "allowGoHome": true,
+    "goHomeLabel": "Count yourself as 'absent' and slip away",
+    "choices": [
+      {
+        "id": "tally_carefully",
+        "label": "Count the splitting geese with rigorous bookkeeping",
+        "description": "Devise a tallying method robust to division, marking each goose the instant before it can become two, and balance the ledger.",
+        "statFocus": "accuracy",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "interview_three",
+        "label": "Negotiate a single census entry from the weekday triplet",
+        "description": "The resident who is three people on weekdays wants three forms. Talk them down to a number you can both defend to the Crown.",
+        "statFocus": "negotiation",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "record_truthfully",
+        "label": "Record every uncountable result exactly as it happened",
+        "description": "Refuse to fudge the impossible. Write down 'two-and-a-half geese' and 'one echo, recurring' and sign your honest name to it.",
+        "statFocus": "honor",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "knock_quiet_door",
+        "label": "Knock on the one door nobody told you about",
+        "description": "There's a house at the district's edge that isn't on the enumerator's list at all. Someone, or something, has been left uncounted on purpose.",
+        "statFocus": "curiosity",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Things left off the census usually arranged it that way."
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_comedy",
+      "more_mystery"
+    ],
+    "templateId": "fallback:work:4"
+  },
+  {
+    "title": "The Lighthouse Whose Lamp Won't Commit",
+    "description": "The harbor master rows you out to the lighthouse with a ledger of complaints: the lamp has developed a personality and now refuses to shine on nights it finds 'aesthetically uninspiring.' Ships have been left circling in dignified confusion. Your shift is to keep the beam turning until dawn by any reasonable means, which the previous keeper attempted and is now described only as 'on extended leave.' The lamp dims theatrically as you climb the stairs, clearly waiting to be convinced the night is worth its effort. The fog, meanwhile, is rolling in with opinions of its own.",
+    "encounterType": "work",
+    "allowGoHome": true,
+    "goHomeLabel": "Decide the dark has its own charm and row back",
+    "choices": [
+      {
+        "id": "tune_mechanism",
+        "label": "Recalibrate the rotating mechanism by hand",
+        "description": "Adjust the gears and lenses with painstaking precision so the beam sweeps true regardless of the lamp's artistic mood.",
+        "statFocus": "accuracy",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "crank_manually",
+        "label": "Turn the heavy beam by sheer muscle all night",
+        "description": "If the lamp won't rotate itself, you will rotate it. Grip the great crank and haul it round, hour after hour, until dawn.",
+        "statFocus": "strength",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "humor_lamp",
+        "label": "Convince the lamp tonight is worth illuminating",
+        "description": "Flatter the temperamental flame: praise the dramatic fog, the lonely ships, the artistry only it can provide. Make it want to shine.",
+        "statFocus": "charisma",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "watch_fog",
+        "label": "Keep a wary eye on what the fog is bringing in",
+        "description": "The incoming fog moves against the wind and seems to be steering toward the one ship still circling. Better to watch it closely than be surprised.",
+        "statFocus": "caution",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Some things wait for the lighthouse to go dark."
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_mystery",
+      "more_comedy"
+    ],
+    "templateId": "fallback:work:5"
+  }
+]

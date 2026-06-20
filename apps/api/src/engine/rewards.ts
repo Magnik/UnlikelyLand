@@ -1,5 +1,6 @@
 import type { EncounterType, Rarity, RewardProfile, RiskLevel } from '@unlikelyland/contracts';
 import { REWARDS } from './rules';
+import { rollRarity } from './loot';
 import type { Rng } from './rng';
 
 export interface RewardInput {
@@ -8,6 +9,8 @@ export interface RewardInput {
   encounterType: EncounterType;
   success: boolean;
   margin: number;
+  /** Character level — biases drop rarity upward (mildly) at higher levels. */
+  level: number;
   rng: Rng;
 }
 
@@ -27,25 +30,13 @@ function performanceMultiplier(success: boolean, margin: number): number {
   return 1 + bonus;
 }
 
-function rollRarity(rng: Rng): Rarity {
-  const weights = REWARDS.RARITY_WEIGHTS;
-  const entries = Object.entries(weights) as [Rarity, number][];
-  const total = entries.reduce((sum, [, w]) => sum + w, 0);
-  let pick = rng.int(1, total);
-  for (const [rarity, w] of entries) {
-    pick -= w;
-    if (pick <= 0) return rarity;
-  }
-  return 'common';
-}
-
 /**
  * Compute the validated reward for a resolved choice. This is the ONLY place
  * rewards are derived — the AI and client never supply numbers. Every channel
  * is clamped to a per-encounter cap (REWARDS.MAX_*) as an exploit ceiling.
  */
 export function computeReward(input: RewardInput): RewardResult {
-  const { riskLevel, rewardProfile, encounterType, success, margin, rng } = input;
+  const { riskLevel, rewardProfile, encounterType, success, margin, level, rng } = input;
   const mult = performanceMultiplier(success, margin);
 
   // XP
@@ -77,7 +68,7 @@ export function computeReward(input: RewardInput): RewardResult {
   if (success) {
     const dropChance = REWARDS.ITEM_DROP_CHANCE[rewardProfile];
     if (rng.chance(dropChance)) {
-      itemDrop = { rarity: rollRarity(rng) };
+      itemDrop = { rarity: rollRarity(rng, level) };
     }
   }
 

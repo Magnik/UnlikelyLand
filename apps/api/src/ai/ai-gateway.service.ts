@@ -97,8 +97,12 @@ export class AiGatewayService {
       if (aiEncounter) return { encounter: aiEncounter, source: 'ai' };
     }
 
-    // Fallback path — guaranteed playable content.
-    const encounter = this.fallback.pick(ctx.fallbackPool, ...ctx.seedParts);
+    // Fallback path — guaranteed playable content, rating-safe and preference-biased.
+    const encounter = this.fallback.pick(ctx.fallbackPool, {
+      rating: ctx.contentRating as ContentRating,
+      styleTags: ctx.storyStyleTags,
+      seedParts: ctx.seedParts,
+    });
     await this.log(ctx.characterId, settings, 'fallback', 0, null, null);
     return { encounter, source: 'fallback' };
   }

@@ -22,7 +22,9 @@ export default function MarketPage() {
     const [l, m, i, c] = await Promise.all([api.market.list(), api.market.mine(), api.inventory(), api.character()]);
     setListings(l);
     setMine(m);
-    setInv(i.filter((x) => !x.equipped));
+    // Only non-equipped items can be listed; the inventory endpoint now returns a
+    // view object, so read .items.
+    setInv(i.items.filter((x) => !x.equipped));
     setClams(c.currencies.normal);
   }, []);
 
@@ -142,7 +144,9 @@ export default function MarketPage() {
                     <button
                       className="btn inline btn-primary"
                       disabled={busy || clams < l.priceAmount}
-                      onClick={() => act(() => api.market.buy(l.id))}
+                      onClick={() => {
+                        if (confirm(`Buy ${l.itemName} for ${l.priceAmount} Clams?`)) act(() => api.market.buy(l.id));
+                      }}
                     >
                       {clams < l.priceAmount ? 'Not enough Clams' : 'Buy'}
                     </button>

@@ -5,6 +5,8 @@ import { AppConfig } from './config';
 import { PrismaService } from './prisma.service';
 import { AuthGuard } from './auth.guard';
 import { RolesGuard } from './roles.guard';
+import { RelationshipService } from './relationship.service';
+import { ModerationLogService } from './moderation-log.service';
 
 /**
  * Global infrastructure module. Provides config, the Prisma client, JWT, and
@@ -25,9 +27,11 @@ import { RolesGuard } from './roles.guard';
   providers: [
     AppConfig,
     PrismaService,
+    RelationshipService,
+    ModerationLogService,
     { provide: APP_GUARD, useClass: AuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
   ],
-  exports: [AppConfig, PrismaService, JwtModule],
+  exports: [AppConfig, PrismaService, RelationshipService, ModerationLogService, JwtModule],
 })
 export class CommonModule {}

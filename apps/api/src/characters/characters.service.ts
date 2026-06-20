@@ -2,18 +2,56 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { Prisma } from '@prisma/client';
 import {
   ALL_STATS,
+  COMBAT_STATS,
+  SOCIAL_STATS,
   PERSONALITY_STATS,
   STAT_LABEL,
+  StoryStyleTagSchema,
+  categoryForStat,
   defaultStatBlock,
+  type ActivityEventView,
+  type ActivityType,
   type CharacterView,
+  type ConsumableEffectView,
   type ContentRating,
+  type EffectiveStatsView,
+  type GuildRole,
+  type InventoryItemView,
+  type InventoryView,
+  type ItemSlot,
+  type PublicProfileView,
   type StatBlock,
+  type StatKey,
+  type StatModifier,
+  type StoryStyleTag,
   type UpdateCharacterInput,
 } from '@unlikelyland/contracts';
 import { PrismaService } from '../common/prisma.service';
+import { RelationshipService } from '../common/relationship.service';
+import { moderateText } from '../ai/moderation';
+import { combineEffectiveStats } from '../engine/effective-stats';
 import { computeStamina, regenPerHour } from '../engine/stamina';
 import { levelFromXp } from '../engine/leveling';
 import { CONSUMABLE, DEATH } from '../engine/rules';
+
+/** Parse the JSON-encoded storyStyleTags column into a validated, deduped list. */
+function parseStoryStyleTags(raw: string): StoryStyleTag[] {
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    const valid = parsed.filter((t): t is StoryStyleTag => StoryStyleTagSchema.safeParse(t).success);
+    return Array.from(new Set(valid)).slice(0, 10);
+  } catch {
+    return [];
+  }
+}
+
+/** Build the consumable-effect view for an item, or null for non-consumables. */
+function consumableEffectViewFor(slot: string, type: string, power: number): ConsumableEffectView | null {
+  if (slot !== 'consumable') return null;
+  if (type === 'stamina') return { type: 'stamina', power, label: `Restores ${power} stamina` };
+  return { type: 'none', power: 0, label: 'No mechanical effect — purely flavour' };
+}
 
 type StatsRow = Record<string, number> & { id: string; characterId: string };
 
@@ -28,7 +66,10 @@ const PERSONALITY_ADJECTIVE: Record<string, string> = {
 
 @Injectable()
 export class CharactersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly relationships: RelationshipService,
+  ) {}
 
   /** Create a character + stats + arrival memory for a freshly-registered user. */
   async createForUser(userId: string, displayName: string): Promise<string> {
@@ -99,6 +140,7 @@ export class CharactersService {
       id: c.id,
       displayName: c.displayName,
       bio: c.bio,
+      title: c.title,
       level: level.level,
       xp: c.xp,
       xpForNextLevel: level.xpForNext,
@@ -118,7 +160,7 @@ export class CharactersService {
       stats: this.statBlockFromRow(c.stats as unknown as StatsRow),
       regionSet: { id: c.regionSet.id, name: c.regionSet.name, blurb: c.regionSet.blurb },
       contentRating: c.contentRating as 'family' | 'pg13' | 'r',
-      storyStylePreferences: c.storyStylePreferences,
+      storyStyleTags: parseStoryStyleTags(c.storyStyleTags),
       death: {
         isDead: c.isDead,
         deathReason: c.deathReason,
@@ -132,50 +174,242 @@ export class CharactersService {
     };
   }
 
+  /**
+   * Update editable profile/settings fields. The bio is moderated server-side
+   * (PG-13 floor, since profiles are publicly visible) before persisting, and the
+   * structured story-style tags are validated and stored as JSON. All validation
+   * is server-side; the client cannot bypass it.
+   */
   async update(characterId: string, dto: UpdateCharacterInput): Promise<CharacterView> {
-    await this.prisma.character.update({
-      where: { id: characterId },
-      data: {
-        bio: dto.bio,
-        contentRating: dto.contentRating as ContentRating | undefined,
-        storyStylePreferences: dto.storyStylePreferences,
-      },
-    });
+    const data: Prisma.CharacterUpdateInput = {};
+
+    if (dto.bio !== undefined) {
+      const moderation = moderateText(dto.bio, 'pg13');
+      if (!moderation.safe) {
+        throw new BadRequestException(`Bio rejected by moderation (${moderation.reason ?? 'unsafe'})`);
+      }
+      data.bio = dto.bio;
+    }
+    if (dto.contentRating !== undefined) data.contentRating = dto.contentRating as ContentRating;
+    if (dto.storyStyleTags !== undefined) {
+      const tags = Array.from(new Set(dto.storyStyleTags)).slice(0, 10);
+      data.storyStyleTags = JSON.stringify(tags);
+    }
+    if (dto.title !== undefined) {
+      data.title = await this.resolveTitle(characterId, dto.title);
+    }
+
+    if (Object.keys(data).length > 0) {
+      await this.prisma.character.update({ where: { id: characterId }, data });
+    }
     return this.buildView(characterId);
   }
 
-  async getInventory(characterId: string) {
+  /** The character's structured story-style preferences (used by AI + fallback). */
+  async getStoryStyleTags(characterId: string): Promise<StoryStyleTag[]> {
+    const c = await this.prisma.character.findUniqueOrThrow({
+      where: { id: characterId },
+      select: { storyStyleTags: true },
+    });
+    return parseStoryStyleTags(c.storyStyleTags);
+  }
+
+  async getInventory(characterId: string): Promise<InventoryItemView[]> {
     const items = await this.prisma.inventoryItem.findMany({
       where: { characterId },
       include: { itemDefinition: true },
       orderBy: { acquiredAt: 'desc' },
     });
-    return items.map((i) => ({
-      id: i.id,
-      name: i.itemDefinition.name,
-      description: i.itemDefinition.description,
-      slot: i.itemDefinition.slot,
-      rarity: i.itemDefinition.rarity,
-      quantity: i.quantity,
-      equipped: i.equipped,
-      statModifiers: (i.itemDefinition.statModifiers ?? {}) as Record<string, number>,
-    }));
+    return items.map((i) => this.toInventoryItemView(i, i.itemDefinition));
+  }
+
+  private toInventoryItemView(
+    row: { id: string; quantity: number; equipped: boolean },
+    def: {
+      key: string;
+      name: string;
+      description: string;
+      slot: string;
+      rarity: string;
+      statModifiers: Prisma.JsonValue;
+      consumableEffectType: string;
+      consumableEffectPower: number;
+    },
+  ): InventoryItemView {
+    return {
+      id: row.id,
+      itemKey: def.key,
+      name: def.name,
+      description: def.description,
+      slot: def.slot as ItemSlot,
+      rarity: def.rarity as InventoryItemView['rarity'],
+      quantity: row.quantity,
+      equipped: row.equipped,
+      statModifiers: (def.statModifiers ?? {}) as StatModifier,
+      consumableEffect: consumableEffectViewFor(def.slot, def.consumableEffectType, def.consumableEffectPower),
+    };
   }
 
   /** Base stats plus the sum of equipped items' modifiers — used in checks/combat. */
   async getEffectiveStats(characterId: string): Promise<StatBlock> {
+    return (await this.getEffectiveStatsView(characterId)).effective;
+  }
+
+  /**
+   * The ONE reusable effective-stat calculation: base stats plus the sum of
+   * equipped items' modifiers, with a per-stat breakdown for the UI. Combat and
+   * encounter resolution call getEffectiveStats (which delegates here), so play
+   * and display can never diverge.
+   */
+  async getEffectiveStatsView(characterId: string): Promise<EffectiveStatsView> {
     const c = await this.prisma.character.findUniqueOrThrow({
       where: { id: characterId },
       include: { stats: true, inventory: { where: { equipped: true }, include: { itemDefinition: true } } },
     });
-    const block = this.statBlockFromRow(c.stats as unknown as StatsRow);
-    for (const inv of c.inventory) {
-      const mods = (inv.itemDefinition.statModifiers ?? {}) as Record<string, number>;
-      for (const [k, v] of Object.entries(mods)) {
-        if (k in block) block[k as keyof StatBlock] += v;
-      }
+    const base = this.statBlockFromRow(c.stats as unknown as StatsRow);
+    const { effective, modTotals } = combineEffectiveStats(
+      base,
+      c.inventory.map((inv) => (inv.itemDefinition.statModifiers ?? {}) as Record<string, number>),
+    );
+    const entries = ALL_STATS.map((stat) => ({
+      stat,
+      label: STAT_LABEL[stat],
+      category: categoryForStat(stat),
+      base: base[stat],
+      modifier: modTotals[stat] ?? 0,
+      effective: effective[stat],
+    }));
+    return { base, effective, entries };
+  }
+
+  /** Full inventory screen: items + which item is equipped per slot + effective stats. */
+  async getInventoryView(characterId: string): Promise<InventoryView> {
+    const items = await this.getInventory(characterId);
+    const stats = await this.getEffectiveStatsView(characterId);
+    const equippedBySlot: Partial<Record<ItemSlot, string>> = {};
+    for (const it of items) {
+      if (it.equipped && it.slot !== 'consumable') equippedBySlot[it.slot] = it.id;
     }
-    return block;
+    return { items, equippedBySlot, stats };
+  }
+
+  /**
+   * Validate a requested title: it must be a PUBLIC achievement the character has
+   * actually unlocked. Returns the achievement's display name to store (or null to
+   * clear). Throws if the key is unknown or not unlocked — the client is never
+   * trusted to assert which titles it has earned.
+   */
+  private async resolveTitle(characterId: string, titleKey: string | null): Promise<string | null> {
+    if (titleKey === null) return null;
+    const ach = await this.prisma.achievement.findUnique({
+      where: { key: titleKey },
+      select: { id: true, name: true, isPublic: true },
+    });
+    if (!ach || !ach.isPublic) throw new BadRequestException('Unknown title');
+    const owned = await this.prisma.characterAchievement.findUnique({
+      where: { characterId_achievementId: { characterId, achievementId: ach.id } },
+      select: { id: true },
+    });
+    if (!owned) throw new BadRequestException('You have not unlocked that title');
+    return ach.name;
+  }
+
+  /**
+   * Public-only projection of a character. Deliberately omits Story Memory,
+   * private expedition details, AI events, messages, exact economy history, and
+   * hidden personality values. Used for viewing other players' profiles.
+   *
+   * Blocking is enforced: if the viewer and target are in a block relationship
+   * (either direction) the profile is reported as not-found, so a blocked party
+   * cannot see the blocker (and existence is not confirmed).
+   */
+  async getPublicProfile(viewerCharacterId: string, characterId: string): Promise<PublicProfileView> {
+    if (
+      viewerCharacterId !== characterId &&
+      (await this.relationships.isBlockedEitherWay(viewerCharacterId, characterId))
+    ) {
+      throw new NotFoundException('Character not found');
+    }
+
+    const c = await this.prisma.character.findUnique({
+      where: { id: characterId },
+      include: {
+        stats: true,
+        regionSet: { select: { id: true, name: true } },
+        guildMembership: { include: { guild: { select: { id: true, name: true, tag: true } } } },
+        achievements: { include: { achievement: true } },
+        escapes: { select: { id: true } },
+        inventory: { where: { equipped: true }, include: { itemDefinition: true } },
+      },
+    });
+    if (!c || !c.stats) throw new NotFoundException('Character not found');
+
+    const stats = this.statBlockFromRow(c.stats as unknown as StatsRow);
+    const combat = COMBAT_STATS.reduce((sum, s) => sum + stats[s], 0);
+    const social = SOCIAL_STATS.reduce((sum, s) => sum + stats[s], 0);
+    const topPersonality = [...PERSONALITY_STATS]
+      .map((s) => ({ s, v: stats[s] }))
+      .sort((a, b) => b.v - a.v)
+      .find((r) => r.v > 5);
+
+    const achievements = c.achievements
+      .filter((a) => a.achievement.isPublic)
+      .map((a) => ({
+        key: a.achievement.key,
+        name: a.achievement.name,
+        description: a.achievement.description,
+        unlockedAt: a.unlockedAt.toISOString(),
+      }));
+
+    const equipment = c.inventory
+      .filter((inv) => inv.itemDefinition.slot !== 'consumable')
+      .map((inv) => ({
+        slot: inv.itemDefinition.slot as ItemSlot,
+        name: inv.itemDefinition.name,
+        rarity: inv.itemDefinition.rarity as PublicProfileView['equipment'][number]['rarity'],
+      }));
+
+    const activityRows = await this.prisma.activityEvent.findMany({
+      where: { characterId },
+      orderBy: { createdAt: 'desc' },
+      take: 6,
+    });
+    const recentActivity: ActivityEventView[] = activityRows.map((a) => ({
+      id: a.id,
+      type: a.type as ActivityType,
+      characterId,
+      displayName: c.displayName,
+      title: a.title,
+      detail: a.detail,
+      createdAt: a.createdAt.toISOString(),
+    }));
+
+    const relationship = await this.relationships.relationshipStatus(viewerCharacterId, characterId);
+
+    return {
+      characterId: c.id,
+      displayName: c.displayName,
+      title: c.title,
+      bio: c.bio,
+      level: levelFromXp(c.xp).level,
+      regionSet: { id: c.regionSet.id, name: c.regionSet.name },
+      guild: c.guildMembership?.guild
+        ? {
+            id: c.guildMembership.guild.id,
+            name: c.guildMembership.guild.name,
+            tag: c.guildMembership.guild.tag,
+            role: c.guildMembership.role as GuildRole,
+          }
+        : null,
+      achievements,
+      statSummary: { combat, social, topTrait: topPersonality ? STAT_LABEL[topPersonality.s] : null },
+      equipment,
+      combatVictories: c.combatVictories,
+      escapeCount: c.escapes.length,
+      joinedAt: c.createdAt.toISOString(),
+      recentActivity,
+      relationship,
+    };
   }
 
   /** Equip an item, unequipping anything else already in that slot. */
@@ -195,7 +429,13 @@ export class CharactersService {
       for (const s of sameSlot) {
         await tx.inventoryItem.update({ where: { id: s.id }, data: { equipped: false } });
       }
-      await tx.inventoryItem.update({ where: { id: inventoryItemId }, data: { equipped: true } });
+      // Conditional on ownership so equipping an item that was concurrently sold/listed
+      // (its row deleted/escrowed) fails cleanly instead of throwing a raw P2025.
+      const equipped = await tx.inventoryItem.updateMany({
+        where: { id: inventoryItemId, characterId },
+        data: { equipped: true },
+      });
+      if (equipped.count === 0) throw new NotFoundException('Item not found');
     });
     return this.buildView(characterId);
   }
@@ -203,7 +443,8 @@ export class CharactersService {
   async unequip(characterId: string, inventoryItemId: string): Promise<CharacterView> {
     const item = await this.prisma.inventoryItem.findUnique({ where: { id: inventoryItemId } });
     if (!item || item.characterId !== characterId) throw new NotFoundException('Item not found');
-    await this.prisma.inventoryItem.update({ where: { id: inventoryItemId }, data: { equipped: false } });
+    // updateMany (not update-by-id) so a concurrent delete is a harmless no-op, not a P2025.
+    await this.prisma.inventoryItem.updateMany({ where: { id: inventoryItemId, characterId }, data: { equipped: false } });
     return this.buildView(characterId);
   }
 
@@ -216,22 +457,34 @@ export class CharactersService {
     if (!item || item.characterId !== characterId) throw new NotFoundException('Item not found');
     if (item.itemDefinition.slot !== 'consumable') throw new BadRequestException('That item is not consumable');
 
+    // The effect comes from the item definition (server-assigned). A flavour-only
+    // consumable (effect 'none') still gets consumed but does nothing mechanical.
+    const effectPower =
+      item.itemDefinition.consumableEffectType === 'stamina'
+        ? item.itemDefinition.consumableEffectPower || CONSUMABLE.STAMINA_RESTORE
+        : 0;
+
     await this.prisma.$transaction(async (tx) => {
+      // Claim one unit FIRST with a conditional decrement, so a concurrent double-use
+      // (or a use racing a sell/list) can't restore stamina twice from one stack.
+      const claim = await tx.inventoryItem.updateMany({
+        where: { id: inventoryItemId, characterId, quantity: { gte: 1 } },
+        data: { quantity: { decrement: 1 } },
+      });
+      if (claim.count === 0) throw new NotFoundException('Item not found');
+      // Drop the row once the stack hits zero.
+      await tx.inventoryItem.deleteMany({ where: { id: inventoryItemId, quantity: { lte: 0 } } });
+
       const c = await tx.character.findUniqueOrThrow({
         where: { id: characterId },
         select: { staminaCurrent: true, staminaMax: true, staminaLastUpdatedAt: true },
       });
       const s = computeStamina(c.staminaCurrent, c.staminaMax, c.staminaLastUpdatedAt.getTime(), Date.now());
-      const restored = Math.min(c.staminaMax, s.current + CONSUMABLE.STAMINA_RESTORE);
+      const restored = Math.min(c.staminaMax, s.current + effectPower);
       await tx.character.update({
         where: { id: characterId },
         data: { staminaCurrent: restored, staminaLastUpdatedAt: new Date(s.lastUpdatedAtMs) },
       });
-      if (item.quantity > 1) {
-        await tx.inventoryItem.update({ where: { id: inventoryItemId }, data: { quantity: { decrement: 1 } } });
-      } else {
-        await tx.inventoryItem.delete({ where: { id: inventoryItemId } });
-      }
     });
     return this.buildView(characterId);
   }

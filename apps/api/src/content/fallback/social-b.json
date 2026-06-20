@@ -1,0 +1,560 @@
+[
+  {
+    "title": "A Formal Debate Against Your Own Echo",
+    "description": "At the mouth of a canyon stands a lectern, a water glass, and a hand-painted sign: TODAY'S DEBATE — YOU vs. THE ECHO. A whiskered moderator in a bow tie explains that the canyon's echo has grown opinionated over the centuries and now demands a formal debate before letting travelers pass. The catch, he adds, is that the echo argues exclusively by repeating your own words back at you with devastating timing. It has never lost.",
+    "encounterType": "social",
+    "allowGoHome": true,
+    "goHomeLabel": "Decide this argument can be settled at home, silently",
+    "choices": [
+      {
+        "id": "argue_sincerely",
+        "label": "Debate the echo in good faith on the merits",
+        "description": "Construct a real argument, carefully worded so that even repeated back at you it still somehow supports your side.",
+        "statFocus": "charisma",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "say_nothing_clever",
+        "label": "Say something it cannot possibly use against you",
+        "description": "An echo can only repeat. Speak a sentence so self-defeating to repeat that the canyon trips over its own cleverness.",
+        "statFocus": "deception",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "concede_gracefully",
+        "label": "Concede the debate with sincere, lavish praise",
+        "description": "Tell the echo it has clearly won and deserved to. Centuries undefeated and nobody has ever simply been nice about it.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "out_shout_canyon",
+        "label": "Drown the echo out with a single overwhelming roar",
+        "description": "Forget rhetoric. Fill your lungs and produce a noise the canyon will be too busy ringing to argue with.",
+        "statFocus": "intimidation",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Canyons remember loud guests longer than quiet ones."
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_social",
+      "more_comedy"
+    ],
+    "templateId": "fallback:social-b:0"
+  },
+  {
+    "title": "The Insult Duel That Forbids Insults",
+    "description": "A crowd has gathered around two duelists on a chalk circle, and a referee in spotless white gloves waves you in to settle a stalemate. This, she explains, is a Courtesy Duel: combatants must defeat each other using only compliments so backhanded, so exquisitely polite, that the wound is undeniable yet nothing rude was technically said. The two duelists have been locked at 'what a BOLD choice of hat' for over an hour, and the crowd is getting restless. The referee needs a guest judge, or possibly a third duelist.",
+    "encounterType": "social",
+    "allowGoHome": true,
+    "goHomeLabel": "Politely note your hat is needed elsewhere",
+    "choices": [
+      {
+        "id": "judge_fairly",
+        "label": "Serve as impartial judge of the backhanded blows",
+        "description": "Score each compliment for politeness, lethality, and plausible deniability. A difficult bench to sit, but someone must.",
+        "statFocus": "honor",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "enter_duel",
+        "label": "Enter the circle and out-courtesy them both",
+        "description": "Step in and deliver a compliment so sweetly devastating that both duelists must sit down and reconsider their lives.",
+        "statFocus": "charisma",
+        "riskLevel": "high",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "rig_outcome",
+        "label": "Quietly coach the losing duelist to a comeback",
+        "description": "Slip behind the underdog and feed them a phrase so perfectly poisoned the crowd will swear they wrote it themselves.",
+        "statFocus": "deception",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Coaching from the sidelines is frowned upon by people who notice."
+      },
+      {
+        "id": "declare_draw",
+        "label": "Declare it a draw and demand they shake hands",
+        "description": "Stride between them, raise both their arms, and inform the crowd that mutual respect is the most cutting victory of all.",
+        "statFocus": "negotiation",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_social",
+      "more_comedy"
+    ],
+    "templateId": "fallback:social-b:1"
+  },
+  {
+    "title": "The Haunted House Wants a Divorce",
+    "description": "A lopsided manor flags you down — that is, the front door opens itself and a butler with very tired eyes invites you in. The owner, a perfectly nice retired sailmaker, is locked in an irreconcilable dispute with the ghost who haunts the place: the man wants peace and quiet, the ghost wants to keep moaning at 3 a.m. Neither will leave, both have lived there for forty years, and they have agreed to abide by the ruling of the next stranger to walk in. The stranger, it turns out, is you.",
+    "encounterType": "social",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "mediate_schedule",
+        "label": "Negotiate a quiet-hours and haunting-hours treaty",
+        "description": "Draft a shared schedule: the ghost gets approved moaning windows, the man gets uninterrupted sleep. Sign in triplicate.",
+        "statFocus": "negotiation",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "hear_ghost",
+        "label": "Ask the ghost why it really moans at 3 a.m.",
+        "description": "Forty years of moaning is a lot of moaning. Sit with the ghost and find out what it has actually been trying to say.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "evict_ghost",
+        "label": "Sternly inform the ghost the lease was always the man's",
+        "description": "Produce the strongest possible argument that tenancy requires a pulse, and deliver it like a landlord with somewhere to be.",
+        "statFocus": "intimidation",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "buy_house",
+        "label": "Offer to take the whole haunted property off their hands",
+        "description": "Solve the dispute by becoming the dispute's new owner. Two stubborn residents, one ambitious buyer, what could go wrong.",
+        "statFocus": "weirdness",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Properties on this island rarely come fully vacant."
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_social",
+      "more_mystery"
+    ],
+    "templateId": "fallback:social-b:2"
+  },
+  {
+    "title": "The Sand Investment Opportunity",
+    "description": "On the beach, a sea otter in a tiny visor has set up a folding table, a flip chart, and the unmistakable energy of someone about to change your life. He explains that he is offering ground-floor access to a revolutionary opportunity: investing in sand. The beach, he gestures, is FULL of it, demand is technically infinite, and all you have to do is recruit two more investors who each recruit two more. A line of slightly dazed seabirds waits behind you, clutching their savings.",
+    "encounterType": "social",
+    "allowGoHome": true,
+    "goHomeLabel": "Recall you already own quite enough sand",
+    "choices": [
+      {
+        "id": "expose_pyramid",
+        "label": "Calmly explain the shape of his business model",
+        "description": "Take the flip chart marker and draw the diagram he keeps mysteriously avoiding. Let the seabirds see the triangle.",
+        "statFocus": "honor",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "negotiate_terms",
+        "label": "Haggle for an absurdly favorable founder's stake",
+        "description": "If sand is the future, get in at the top. Negotiate a cut so large the otter has to recalculate on his flipper.",
+        "statFocus": "negotiation",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "recruit_against",
+        "label": "Recruit the seabirds into YOUR rival sand venture",
+        "description": "Turn to the line, lower your voice, and pitch a competing scheme so confidently the whole queue defects to you.",
+        "statFocus": "deception",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Schemes you start tend to expect things of you later."
+      },
+      {
+        "id": "warn_birds",
+        "label": "Gently warn the seabirds to keep their savings",
+        "description": "Step out of the line, crouch to bird height, and explain in the kindest terms why their coins should stay in their feathers.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_social",
+      "more_comedy"
+    ],
+    "templateId": "fallback:social-b:3"
+  },
+  {
+    "title": "Two Animals Who Refuse to Speak First",
+    "description": "A diplomat in a sash hurries up to you with a translation crisis. A cat and a dog, ambassadors of their respective neighborhoods, have agreed to negotiate a historic peace — but each has sworn, on the honor of their entire species, to not be the one who speaks first. They have been sitting in dignified silence across a tiny table for six days. Both can, in fact, speak perfectly well. Both would rather perish than admit it. The diplomat begs you to break the deadlock without technically making either of them go first.",
+    "encounterType": "social",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "speak_for_both",
+        "label": "Speak on behalf of both, putting words in two mouths",
+        "description": "Narrate each ambassador's position aloud so neither has to. They need only nod, which is not, technically, speaking.",
+        "statFocus": "negotiation",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "trick_first_word",
+        "label": "Goad one into an outburst it can blame on you",
+        "description": "Say something so wrong about their neighborhood that the ambassador HAS to correct you, technically losing on a technicality.",
+        "statFocus": "mischief",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "comfort_pride",
+        "label": "Quietly reassure them that yielding isn't losing",
+        "description": "Sit between the ambassadors and gently dismantle the idea that speaking first is defeat. Six days is a long time to be proud.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "stage_interruption",
+        "label": "Stage a dramatic distraction so both speak at once",
+        "description": "Arrange a sudden commotion at the precise instant that startles both into speaking simultaneously, voiding the entire question.",
+        "statFocus": "deception",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Commotions you arrange have a way of arranging things back."
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_social",
+      "more_comedy"
+    ],
+    "templateId": "fallback:social-b:4"
+  },
+  {
+    "title": "Open Auditions for Town Crier",
+    "description": "The village square has been converted into an audition stage, complete with a judging panel of three exhausted-looking elders and a hand-bell on a velvet pillow. The previous town crier, you learn, lost his voice announcing a particularly long list of lost-and-found umbrellas, and the village cannot legally function without someone to yell the news. A nervous queue of hopefuls is butchering the morning headlines. The lead elder spots you, sighs with something like hope, and gestures at the bell.",
+    "encounterType": "social",
+    "allowGoHome": true,
+    "goHomeLabel": "Announce, quietly, that you are leaving",
+    "choices": [
+      {
+        "id": "audition_grand",
+        "label": "Audition with a thunderous rendition of the news",
+        "description": "Take the bell, plant your feet, and deliver the umbrella report with the gravity of a coronation announcement.",
+        "statFocus": "charisma",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "out_volume",
+        "label": "Win by sheer overwhelming volume alone",
+        "description": "Skip nuance. Produce a single announcement so loud the judges, the queue, and three neighboring villages all hear it clearly.",
+        "statFocus": "intimidation",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "embellish_news",
+        "label": "Announce the news with thrilling invented details",
+        "description": "The umbrella report is dull. Improve it. Add stakes, a villain, a daring rescue. Accuracy is a small price for ratings.",
+        "statFocus": "deception",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Once announced, things become difficult to un-announce."
+      },
+      {
+        "id": "encourage_others",
+        "label": "Step aside and coach the trembling hopefuls instead",
+        "description": "You don't need the job, but the nervous baker in line clearly wants it. Help the real candidates find their voices.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_social",
+      "more_comedy"
+    ],
+    "templateId": "fallback:social-b:5"
+  },
+  {
+    "title": "Mediation: The Lighthouse vs. The Sea",
+    "description": "On a windswept point, a barnacle-encrusted notary has set up a card table between a towering lighthouse and the entire ocean. The lighthouse, speaking through measured flashes, is filing for separation: it claims the sea has been distant, moody, and keeps taking its things. The sea, represented by an unusually articulate wave that keeps reforming to make its points, insists the lighthouse is cold, controlling, and 'literally shines a light in my face every single night.' The notary hands you a gavel carved from driftwood.",
+    "encounterType": "social",
+    "allowGoHome": true,
+    "goHomeLabel": "Decide this is above your pay grade and tide schedule",
+    "choices": [
+      {
+        "id": "hear_grievances",
+        "label": "Patiently hear out centuries of coastal grievances",
+        "description": "Let the lighthouse flash its full case and the sea reform a dozen times to make its points. Take notes. Nod gravely.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "broker_terms",
+        "label": "Broker a settlement over light, tides, and shared shells",
+        "description": "Negotiate the hard issues: dimmer evenings for the sea, a no-flooding clause for the lighthouse, joint custody of the shells.",
+        "statFocus": "negotiation",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "rekindle_romance",
+        "label": "Make a stirring case that they still belong together",
+        "description": "Remind them of the shipwrecks they survived as a team. Argue, with real conviction, that the coast needs them both.",
+        "statFocus": "charisma",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "side_with_sea",
+        "label": "Quietly take the sea's side and see where it leads",
+        "description": "The sea makes some fair points, and it is, after all, the larger party. Lend it your sympathy and your gavel-hand.",
+        "statFocus": "weirdness",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The sea remembers who stood with it."
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_social",
+      "more_mystery"
+    ],
+    "templateId": "fallback:social-b:6"
+  },
+  {
+    "title": "The Annual Festival of Magnificent Lies",
+    "description": "Bunting flutters over a packed amphitheater where the island holds its most beloved tradition: the Festival of Magnificent Lies, a competition to tell the single most outrageous untruth without once cracking a smile. The reigning champion, an ancient tortoise, has just claimed to have personally invented Tuesday. The crowd gasps. The master of ceremonies thrusts a microphone shaped like a banana at you and announces, to thunderous applause, that the next challenger has arrived. You did not sign up for this.",
+    "encounterType": "social",
+    "allowGoHome": true,
+    "goHomeLabel": "Truthfully state that you must go, then leave",
+    "choices": [
+      {
+        "id": "tell_whopper",
+        "label": "Tell the most magnificent lie the island has ever heard",
+        "description": "Commit fully. Spin a falsehood so grand, so straight-faced, that even the tortoise sets down its tea in awe.",
+        "statFocus": "deception",
+        "riskLevel": "high",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "lie_about_truth",
+        "label": "Win by telling a truth so absurd they assume it's a lie",
+        "description": "Describe something genuinely true about yourself so unbelievable the judges award full marks for fiction.",
+        "statFocus": "honor",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "charm_crowd",
+        "label": "Charm the crowd into laughing the tortoise off stage",
+        "description": "Forget the lie. Work the room until the audience is so won over the champion concedes just to keep being liked.",
+        "statFocus": "charisma",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "interview_tortoise",
+        "label": "Interview the tortoise about inventing Tuesday instead",
+        "description": "Ignore the contest and earnestly ask the champion to explain its Tuesday claim. Curiosity is its own kind of upset.",
+        "statFocus": "curiosity",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Some champions enjoy being asked far too much."
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_social",
+      "more_comedy"
+    ],
+    "templateId": "fallback:social-b:7"
+  },
+  {
+    "title": "The Debt Collector and the Borrowed Cup",
+    "description": "A spectral figure in a threadbare ledger-keeper's coat materializes at the crossroads and consults a scroll that unrolls past his feet. According to his records, he announces gravely, you borrowed a cup. Not from him — from a tavern, in a town, in a life you are fairly sure was not yours. Compound interest over the centuries has rendered the debt 'frankly architectural.' He is, however, a reasonable apparition, and is prepared to discuss terms. The cup, he notes sadly, was a very nice cup.",
+    "encounterType": "social",
+    "allowGoHome": true,
+    "goHomeLabel": "Insist your cups have always been your own",
+    "choices": [
+      {
+        "id": "dispute_debt",
+        "label": "Contest the records and demand the original cup receipt",
+        "description": "Question the chain of custody. Demand the borrowing be proven. Bureaucracy is the one weapon that works on ledgers.",
+        "statFocus": "honor",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "settle_terms",
+        "label": "Negotiate the architectural debt down to a teaspoon",
+        "description": "Meet the collector as a reasonable party and haggle the centuries of interest down to something you could plausibly carry.",
+        "statFocus": "negotiation",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "console_collector",
+        "label": "Ask the collector how long he's been chasing one cup",
+        "description": "Behind the ledger is an apparition who has spent eternity over a single mug. Ask him whether the cup was ever really the point.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "claim_creditor",
+        "label": "Claim HE actually owes YOU for a borrowed saucer",
+        "description": "Produce your own imaginary scroll. Insist that, by his own logic, the saucer debt predates the cup and dwarfs it entirely.",
+        "statFocus": "deception",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Invented ledgers attract their own auditors."
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_social",
+      "more_mystery"
+    ],
+    "templateId": "fallback:social-b:8"
+  },
+  {
+    "title": "The Island's Only Help Desk",
+    "description": "After a long walk you finally reach the island's official Help Desk: a single window, a long counter, and a clerk made entirely of unhurried calm. A laminated sign reads HOW MAY WE NOT HELP YOU TODAY. Above it, a number machine has dispensed you ticket B-7,041; the now-serving display reads B-12. The clerk smiles with infinite patience and asks how he can assist, in a tone that makes very clear he cannot and will not, but deeply respects the procedure of pretending to try.",
+    "encounterType": "social",
+    "allowGoHome": true,
+    "goHomeLabel": "Take a number for leaving and use it immediately",
+    "choices": [
+      {
+        "id": "navigate_system",
+        "label": "Master the procedure and out-bureaucrat the clerk",
+        "description": "Learn the forms, cite the subsections, and route your request through channels so correct the desk has no choice but to act.",
+        "statFocus": "negotiation",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "befriend_clerk",
+        "label": "Win the clerk over through genuine human warmth",
+        "description": "Ask about his day. Mean it. Beneath the laminate, even a help desk clerk wants, occasionally, to actually help someone.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "escalate_loudly",
+        "label": "Demand to speak to whoever this clerk fears",
+        "description": "Invoke the manager, the supervisor, the regional coordinator of coordinators. Every desk answers to someone it dreads.",
+        "statFocus": "intimidation",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "forge_ticket",
+        "label": "Quietly upgrade your ticket number to B-11",
+        "description": "B-7,041 is a death sentence. The number machine is right there, and a confident person with a pen can fix anything.",
+        "statFocus": "mischief",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The queue keeps better records than it lets on."
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_social",
+      "more_comedy"
+    ],
+    "templateId": "fallback:social-b:9"
+  }
+]

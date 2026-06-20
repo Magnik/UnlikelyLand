@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import {
   ItemActionSchema,
   UpdateCharacterSchema,
@@ -26,9 +26,22 @@ export class CharactersController {
     return this.characters.update(user.characterId, dto);
   }
 
+  /** Full inventory screen: items + equipped-per-slot + effective stat breakdown. */
   @Get('me/inventory')
   inventory(@CurrentUser() user: AuthUser) {
-    return this.characters.getInventory(user.characterId);
+    return this.characters.getInventoryView(user.characterId);
+  }
+
+  @Get('me/effective-stats')
+  effectiveStats(@CurrentUser() user: AuthUser) {
+    return this.characters.getEffectiveStatsView(user.characterId);
+  }
+
+  /** Public profile for any character (public-only fields). Auth required; the
+   *  viewer is passed so blocking is enforced (blocked => not found). */
+  @Get(':id/profile')
+  publicProfile(@CurrentUser() user: AuthUser, @Param('id') id: string) {
+    return this.characters.getPublicProfile(user.characterId, id);
   }
 
   @Post('equip')

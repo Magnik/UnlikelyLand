@@ -44,8 +44,18 @@ function CombatLog({ combat }: { combat: NonNullable<ResolutionView['combat']> }
   );
 }
 
-export function OutcomePanel({ result, onContinue }: { result: ResolutionView; onContinue: () => void }) {
+export function OutcomePanel({
+  result,
+  previousLevel,
+  onContinue,
+}: {
+  result: ResolutionView;
+  previousLevel?: number;
+  onContinue: () => void;
+}) {
   const { check } = result;
+  const newLevel = result.character.level;
+  const leveledUp = previousLevel != null && newLevel > previousLevel;
   return (
     <div className="card">
       <div className="row between mb">
@@ -54,6 +64,8 @@ export function OutcomePanel({ result, onContinue }: { result: ResolutionView; o
           {check.success ? 'success' : 'setback'}
         </span>
       </div>
+
+      {leveledUp ? <div className="levelup">⭐ Level up! You&apos;re now level {newLevel}.</div> : null}
 
       <p>{result.narrative}</p>
 

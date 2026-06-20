@@ -1,13 +1,13 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   CURRENCY_LABEL,
   type AchievementView,
   type CharacterView,
   type EscapeStatusView,
-  type InventoryItemView,
 } from '@unlikelyland/contracts';
 import { api, ApiError, getToken } from '@/lib/api';
 import { TopNav } from '@/components/top-nav';
@@ -16,22 +16,18 @@ import { StatGrid } from '@/components/stat-grid';
 export default function ProfilePage() {
   const router = useRouter();
   const [character, setCharacter] = useState<CharacterView | null>(null);
-  const [inventory, setInventory] = useState<InventoryItemView[]>([]);
   const [achievements, setAchievements] = useState<AchievementView[]>([]);
   const [escape, setEscape] = useState<EscapeStatusView | null>(null);
+  const [bio, setBio] = useState('');
+  const [editingBio, setEditingBio] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   const refresh = useCallback(async () => {
-    const [c, inv, ach, esc] = await Promise.all([
-      api.character(),
-      api.inventory(),
-      api.achievements(),
-      api.prestige.status(),
-    ]);
+    const [c, ach, esc] = await Promise.all([api.character(), api.achievements(), api.prestige.status()]);
     setCharacter(c);
-    setInventory(inv);
+    setBio(c.bio);
     setAchievements(ach);
     setEscape(esc);
   }, []);
@@ -44,20 +40,29 @@ export default function ProfilePage() {
     refresh().catch((e) => setError(e instanceof ApiError ? e.message : 'Failed to load'));
   }, [router, refresh]);
 
-  async function act(fn: () => Promise<unknown>) {
+  async function saveBio() {
     setBusy(true);
     setError(null);
+    setNotice(null);
     try {
-      await fn();
-      await refresh();
+      const c = await api.updateCharacter({ bio });
+      setCharacter(c);
+      setBio(c.bio);
+      setEditingBio(false);
+      setNotice('Bio saved.');
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'Action failed');
+      setError(e instanceof ApiError ? e.message : 'Could not save bio');
     } finally {
       setBusy(false);
     }
   }
 
   async function doEscape() {
+    // Irreversible: ends the run, wipes inventory, resets progression. Confirm first
+    // so a mis-tap on mobile can't delete a player's run with no recovery path.
+    if (!confirm('Escape now? This ends your run, leaves your inventory behind, and starts a new run a little stronger. This cannot be undone.')) {
+      return;
+    }
     setBusy(true);
     setError(null);
     setNotice(null);
@@ -91,10 +96,42 @@ export default function ProfilePage() {
       <div className="container">
         <div className="card">
           <h1 style={{ marginBottom: 2 }}>{character.displayName}</h1>
+          {character.title ? <div className="tiny muted" style={{ marginBottom: 2 }}>{character.title}</div> : null}
           <div className="tiny muted mb">
-            Level {character.level} · {character.regionSet.name}
+            Level {character.level} · {character.regionSet.name} · joined {character.createdAt.slice(0, 10)}
           </div>
-          {character.bio ? <p className="small">{character.bio}</p> : <p className="small muted">No bio yet.</p>}
+          <Link href={`/u/${character.id}`} className="btn inline btn-ghost">
+            View public profile
+          </Link>
+
+          {editingBio ? (
+            <div className="field" style={{ marginBottom: 8 }}>
+              <textarea rows={3} maxLength={500} value={bio} onChange={(e) => setBio(e.target.value)} />
+              <div className="row mt">
+                <button className="btn inline btn-primary" disabled={busy} onClick={saveBio}>
+                  Save bio
+                </button>
+                <button
+                  className="btn inline"
+                  disabled={busy}
+                  onClick={() => {
+                    setBio(character.bio);
+                    setEditingBio(false);
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="row between">
+              {character.bio ? <p className="small">{character.bio}</p> : <p className="small muted">No bio yet.</p>}
+              <button className="btn inline" onClick={() => setEditingBio(true)}>
+                Edit
+              </button>
+            </div>
+          )}
+
           <div className="row wrap mt">
             <span className="reward-chip">{character.currencies.normal} {CURRENCY_LABEL.normal}</span>
             <span className="reward-chip">{character.currencies.crafting} {CURRENCY_LABEL.crafting}</span>
@@ -113,7 +150,8 @@ export default function ProfilePage() {
               <>
                 <p className="small">
                   You&apos;re ready to attempt escape. This ends your run and restarts you with a permanent +1 to every
-                  stat{escape.escapeCount > 0 ? ` (legacy level ${escape.escapeCount})` : ''} and Escape Tokens.
+                  stat{escape.escapeCount > 0 ? ` (legacy level ${escape.escapeCount})` : ''} and Escape Tokens. Your
+                  inventory is left behind.
                 </p>
                 <button className="btn btn-primary" disabled={busy} onClick={doEscape}>
                   Attempt escape (run #{escape.escapeCount + 1})
@@ -131,58 +169,9 @@ export default function ProfilePage() {
         <div className="card">
           <h2>Stats</h2>
           <p className="tiny muted" style={{ marginTop: 0 }}>
-            Equipped gear adds to these during expeditions.
+            Base stats. Equipped gear adds to these — see your <a href="/inventory">Inventory</a> for effective totals.
           </p>
           <StatGrid stats={character.stats} />
-        </div>
-
-        <div className="card">
-          <h2>Inventory</h2>
-          {inventory.length === 0 ? (
-            <div className="empty">Nothing yet. Go find some Useful Junk.</div>
-          ) : (
-            <div className="col">
-              {inventory.map((i) => {
-                const mods = Object.entries(i.statModifiers)
-                  .filter(([, v]) => v)
-                  .map(([k, v]) => `+${v} ${k}`)
-                  .join(', ');
-                return (
-                  <div className="stat" key={i.id} style={{ flexDirection: 'column', alignItems: 'stretch', gap: 6 }}>
-                    <div className="row between">
-                      <b>
-                        {i.name}
-                        {i.quantity > 1 ? ` ×${i.quantity}` : ''}
-                        {i.equipped ? ' · equipped' : ''}
-                      </b>
-                      <span className="badge">
-                        {i.rarity} · {i.slot}
-                      </span>
-                    </div>
-                    <span className="tiny muted">
-                      {i.description}
-                      {mods ? ` (${mods})` : ''}
-                    </span>
-                    <div className="row">
-                      {i.slot === 'consumable' ? (
-                        <button className="btn inline" disabled={busy} onClick={() => act(() => api.useItem(i.id))}>
-                          Use
-                        </button>
-                      ) : i.equipped ? (
-                        <button className="btn inline" disabled={busy} onClick={() => act(() => api.unequip(i.id))}>
-                          Unequip
-                        </button>
-                      ) : (
-                        <button className="btn inline btn-primary" disabled={busy} onClick={() => act(() => api.equip(i.id))}>
-                          Equip
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
         </div>
 
         <div className="card">

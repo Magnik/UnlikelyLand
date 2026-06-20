@@ -1,4 +1,4 @@
-import type { EncounterType, ExpeditionType, RewardProfile, RiskLevel } from '@unlikelyland/contracts';
+import type { EncounterType, ExpeditionType, ItemSlot, Rarity, RewardProfile, RiskLevel, StatKey } from '@unlikelyland/contracts';
 
 /**
  * Centralised, tunable game constants. ALL gameplay numbers live here so the
@@ -117,6 +117,61 @@ export const PERSONALITY = {
   NUDGE_BIG: 2,
 } as const;
 
+/**
+ * Item balance constants. The power budget is the total stat-modifier weight an
+ * item of a given rarity may carry; the per-stat cap bounds any single stat. The
+ * server (never the AI) derives an item's modifiers from these, so an approved
+ * AI concept can never create a broken stat combination.
+ */
+export const ITEM = {
+  /** Total stat-modifier budget by rarity (sum of |modifier| across stats). */
+  RARITY_POWER_BUDGET: { common: 3, uncommon: 6, rare: 12, epic: 20, legendary: 32, absurd: 50 } as Record<Rarity, number>,
+  /** Largest single-stat modifier allowed at each rarity. */
+  RARITY_MAX_STAT_MOD: { common: 1, uncommon: 2, rare: 3, epic: 4, legendary: 5, absurd: 6 } as Record<Rarity, number>,
+  /** Rarities eligible for automatic approval (everything else needs an admin). */
+  AUTO_APPROVE_RARITIES: new Set<Rarity>(['common', 'uncommon']),
+  /** An auto-approved item may not exceed this power budget. */
+  AUTO_APPROVE_MAX_POWER: 6,
+  NAME_MAX: 80,
+  DESC_MAX: 400,
+  /**
+   * Which stats each slot favours when the server generates an item's modifiers.
+   * Consumables carry no stat modifiers (they have a consumable effect instead).
+   */
+  SLOT_STAT_AFFINITY: {
+    weapon: ['strength', 'agility', 'accuracy'],
+    armor: ['defense', 'toughness'],
+    tool: ['accuracy', 'curiosity', 'negotiation'],
+    trinket: ['charisma', 'deception', 'weirdness', 'mischief', 'empathy'],
+    companion: ['empathy', 'bravery', 'weirdness'],
+    consumable: [],
+  } as Record<ItemSlot, StatKey[]>,
+} as const;
+
+/**
+ * Loot selection tuning. Rarity weighting starts from the reward table and is
+ * nudged upward (mildly) by character level. Slot bias makes a given expedition
+ * type tend toward thematically-appropriate drops without being rigid.
+ */
+export const LOOT = {
+  /** Extra weight added to rare/epic per character level (keeps rare+ scarce). */
+  RARE_WEIGHT_PER_LEVEL: 0.4,
+  EPIC_WEIGHT_PER_LEVEL: 0.08,
+  /** Caps so high level can't flood the economy with rares. */
+  MAX_RARE_WEIGHT: 22,
+  MAX_EPIC_WEIGHT: 6,
+  /** Per-expedition relative slot weighting for which kind of item tends to drop. */
+  SLOT_BIAS_BY_EXPEDITION: {
+    explore: { weapon: 1, armor: 1, tool: 2, trinket: 2, companion: 2, consumable: 1 },
+    fight: { weapon: 3, armor: 3, tool: 1, trinket: 1, companion: 1, consumable: 1 },
+    scavenge: { weapon: 1, armor: 1, tool: 3, trinket: 1, companion: 1, consumable: 3 },
+    socialize: { weapon: 0, armor: 0, tool: 1, trinket: 3, companion: 2, consumable: 1 },
+    investigate: { weapon: 0, armor: 1, tool: 2, trinket: 3, companion: 1, consumable: 1 },
+    train: { weapon: 2, armor: 2, tool: 2, trinket: 1, companion: 1, consumable: 1 },
+    work: { weapon: 1, armor: 1, tool: 3, trinket: 1, companion: 1, consumable: 2 },
+  } as Record<ExpeditionType, Record<ItemSlot, number>>,
+} as const;
+
 export const DEATH = {
   /** Base revive wait; grows with death count so repeat deaths sting a little. */
   BASE_WAIT_MS: 10 * 60 * 1000,
@@ -141,6 +196,8 @@ export const PRESTIGE = {
   LEGACY_STAT_BONUS: 1,
   /** Escape Tokens granted per escape (scaled by escape count). */
   ESCAPE_TOKENS_PER_ESCAPE: 1,
+  /** Starting Clams a post-escape run resets to (matches a new character). */
+  RESET_NORMAL_MONEY: 25,
 } as const;
 
 export const MEMORY = {

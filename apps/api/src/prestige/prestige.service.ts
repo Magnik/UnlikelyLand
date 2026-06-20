@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { ALL_STATS, type EscapeResultView, type EscapeStatusView } from '@unlikelyland/contracts';
 import { PrismaService } from '../common/prisma.service';
@@ -42,10 +42,15 @@ export class PrestigeService {
     }
     const newCount = (await this.prisma.escapeRecord.count({ where: { characterId } })) + 1;
 
-    await this.prisma.$transaction(async (tx) => {
-      await tx.escapeRecord.create({
-        data: { characterId, escapeCount: newCount, legacyLevel: newCount, summary: `Escaped at level ${level}.` },
-      });
+    try {
+      await this.prisma.$transaction(async (tx) => {
+        // The EscapeRecord (characterId, escapeCount) unique constraint makes escape a
+        // one-shot: two concurrent escapes both compute the same newCount, so the
+        // second insert violates the constraint and its whole transaction rolls back,
+        // preventing a doubled legacy stat bonus / token grant.
+        await tx.escapeRecord.create({
+          data: { characterId, escapeCount: newCount, legacyLevel: newCount, summary: `Escaped at level ${level}.` },
+        });
 
       // Permanent legacy: +1 to every stat.
       const statInc: Record<string, { increment: number }> = {};
@@ -61,7 +66,7 @@ export class PrestigeService {
         data: {
           xp: 0,
           level: 1,
-          normalMoney: 25,
+          normalMoney: PRESTIGE.RESET_NORMAL_MONEY,
           craftingResources: 0,
           reputation: 0,
           staminaCurrent: c.staminaMax,
@@ -76,6 +81,10 @@ export class PrestigeService {
         },
       });
 
+      // Clear inventory — a fresh run starts empty, and leaving rows behind would
+      // orphan equipped items under the single-item-per-slot equipment model.
+      await tx.inventoryItem.deleteMany({ where: { characterId } });
+
       // Wind down any in-flight run state.
       await tx.expedition.updateMany({
         where: { characterId, status: 'active' },
@@ -86,7 +95,7 @@ export class PrestigeService {
         data: { resolved: true, resolvedAt: new Date() },
       });
 
-      await this.achievements.award(tx, characterId, ['escaped-the-island']);
+      await this.achievements.onEscape(tx, characterId);
       await tx.storyMemory.create({
         data: {
           characterId,
@@ -96,7 +105,14 @@ export class PrestigeService {
           regionSetId: c.regionSetId,
         },
       });
-    });
+      });
+    } catch (e) {
+      // A concurrent escape lost the race on the unique (characterId, escapeCount).
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
+        throw new ConflictException('An escape is already being processed');
+      }
+      throw e;
+    }
 
     const character = await this.characters.buildView(characterId);
     return { escaped: true, escapeCount: newCount, legacyLevel: newCount, character };

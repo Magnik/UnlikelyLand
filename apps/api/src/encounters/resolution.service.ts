@@ -10,6 +10,7 @@ import {
   type CurrencyType,
   type Encounter,
   type EncounterChoice,
+  type Rarity,
   type ResolutionView,
   type ResolveChoiceInput,
   type RewardView,
@@ -18,6 +19,7 @@ import {
 import { PrismaService } from '../common/prisma.service';
 import { CharactersService } from '../characters/characters.service';
 import { EconomyService } from '../economy/economy.service';
+import { LootService } from '../economy/loot.service';
 import { StoryMemoryService } from '../story-memory/story-memory.service';
 import { EncountersService } from './encounters.service';
 import { AchievementsService } from '../achievements/achievements.service';
@@ -57,6 +59,7 @@ export class ResolutionService {
     private readonly prisma: PrismaService,
     private readonly characters: CharactersService,
     private readonly economy: EconomyService,
+    private readonly loot: LootService,
     private readonly memory: StoryMemoryService,
     private readonly encounters: EncountersService,
     private readonly achievements: AchievementsService,
@@ -128,14 +131,20 @@ export class ResolutionService {
           encounterType: payload.encounterType,
           success: rewardSuccess,
           margin: check.margin,
+          level,
           rng,
         });
 
     // 5. Personality drift.
     const statNudges = this.computePersonalityNudges(choice);
 
-    // 6. Resolve an item drop against the seeded catalog (read before the tx).
-    const droppedItem = reward.itemDrop ? await this.pickDropItem(reward.itemDrop.rarity, rng) : null;
+    // 6. Resolve an item drop against the approved catalog via the centralized
+    //    loot service (read before the tx; the grant + audit happen inside it).
+    //    Drop selection is biased by the expedition type when there is one.
+    const expeditionType = await this.expeditionTypeFor(encounter.expeditionId);
+    const droppedItem = reward.itemDrop
+      ? await this.loot.pickDrop({ rarity: reward.itemDrop.rarity, expeditionType, level, rng })
+      : null;
 
     // 7. Narrative (engine fallback text — deterministic, on-tone).
     const narrative = buildOutcomeNarrative({ choice, check, combat, died }, rng);
@@ -202,19 +211,24 @@ export class ResolutionService {
         );
       }
 
-      // Personality drift.
+      // Personality drift, clamped to the documented 0..100 ceiling: the conditional
+      // updateMany only increments while the stat is still low enough that the bump
+      // won't exceed 100, so repeated play can't drift a personality stat past the cap.
       for (const nudge of statNudges) {
-        await tx.characterStats.update({
-          where: { characterId },
+        await tx.characterStats.updateMany({
+          where: { characterId, [nudge.stat]: { lte: 100 - nudge.delta } },
           data: { [nudge.stat]: { increment: nudge.delta } },
         });
       }
 
-      // Item grant.
+      // Item grant — created and audited inside the same claim transaction, so a
+      // replayed/duplicate submit (which never re-enters this block) can't grant
+      // the item twice.
       if (droppedItem) {
         await tx.inventoryItem.create({
           data: { characterId, itemDefinitionId: droppedItem.id, quantity: 1 },
         });
+        await this.economy.logItemReward(tx, characterId, droppedItem.id, 1, `encounter:${choice.id}`, encounter.id);
       }
 
       // Death.
@@ -245,12 +259,22 @@ export class ResolutionService {
       await this.memory.recordSuggestions(tx, characterId, payload.memorySuggestions, character.regionSetId);
       await this.memory.upsertNpcs(tx, characterId, payload.npcSuggestions, character.regionSetId);
 
-      // Public achievements (idempotent).
-      const achievementKeys: string[] = ['first-steps'];
-      if (!died && choice.riskLevel === 'ridiculous') achievementKeys.push('survived-something-ridiculous');
-      if (died) achievementKeys.push('first-death');
-      if (!died && levelFromXp(character.xp + reward.xp).level >= 10) achievementKeys.push('reached-level-10');
-      await this.achievements.award(tx, characterId, achievementKeys);
+      // Combat-victory counter (server-authoritative; feeds the leaderboard).
+      if (combat?.playerWon) {
+        await tx.character.update({ where: { id: characterId }, data: { combatVictories: { increment: 1 } } });
+      }
+
+      // Public achievements + activity feed via the central evaluator (idempotent).
+      const oldLevel = levelFromXp(character.xp).level;
+      const newLevel = died ? oldLevel : levelFromXp(character.xp + reward.xp).level;
+      await this.achievements.evaluateEncounter(tx, characterId, {
+        died,
+        riskLevel: choice.riskLevel,
+        wonCombat: combat ? combat.playerWon : null,
+        oldLevel,
+        newLevel,
+        droppedRarity: droppedItem ? (droppedItem.rarity as Rarity) : null,
+      });
 
       // Expedition advancement (terminal states only; next encounter is generated
       // outside the transaction because it may call the AI provider).
@@ -351,13 +375,11 @@ export class ResolutionService {
     return payload.title;
   }
 
-  private async pickDropItem(rarity: string, rng: { int: (a: number, b: number) => number }) {
-    let items = await this.prisma.itemDefinition.findMany({ where: { rarity } });
-    if (items.length === 0) {
-      items = await this.prisma.itemDefinition.findMany({ where: { rarity: 'common' } });
-    }
-    if (items.length === 0) return null;
-    return items[rng.int(0, items.length - 1)];
+  /** Expedition type for loot bias, or null for one-off (non-expedition) encounters. */
+  private async expeditionTypeFor(expeditionId: string | null): Promise<ExpeditionType | null> {
+    if (!expeditionId) return null;
+    const e = await this.prisma.expedition.findUnique({ where: { id: expeditionId }, select: { type: true } });
+    return (e?.type as ExpeditionType) ?? null;
   }
 
   private async expeditionView(expeditionId: string) {

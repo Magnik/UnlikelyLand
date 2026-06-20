@@ -1,24 +1,41 @@
 import type {
   AchievementView,
+  ActivityEventView,
+  AdminInventoryView,
   AiSettingsView,
   AuthResponse,
   ChatMessageView,
+  ChatPageView,
   CharacterView,
+  ChatChannel,
+  ContentRating,
+  CreateReportInput,
   DeathStatusView,
   DirectoryEntry,
+  EffectiveStatsView,
   EncounterView,
   EscapeResultView,
   EscapeStatusView,
   ExpeditionView,
   GuildSummary,
   GuildView,
-  InventoryItemView,
-  LeaderboardEntry,
+  InventoryView,
+  ItemConceptView,
+  ItemDefinitionView,
+  LeaderboardType,
+  LeaderboardView,
   MailView,
   MailboxView,
   MarketListingView,
+  ModChatMessageView,
+  ModeratedUserView,
+  ModerationActionView,
+  ModerationStatsView,
+  PublicProfileView,
+  ReportView,
   ResolutionView,
   SocialView,
+  StoryStyleTag,
 } from '@unlikelyland/contracts';
 
 /**
@@ -28,16 +45,27 @@ import type {
  */
 
 const TOKEN_KEY = 'ul_token';
+const REFRESH_KEY = 'ul_refresh';
 
 export function getToken(): string | null {
   if (typeof window === 'undefined') return null;
   return window.localStorage.getItem(TOKEN_KEY);
 }
+function getRefreshToken(): string | null {
+  if (typeof window === 'undefined') return null;
+  return window.localStorage.getItem(REFRESH_KEY);
+}
 export function setToken(token: string): void {
   window.localStorage.setItem(TOKEN_KEY, token);
 }
+/** Persist both halves of a session (access + refresh). */
+export function setSession(token: string, refreshToken: string): void {
+  window.localStorage.setItem(TOKEN_KEY, token);
+  window.localStorage.setItem(REFRESH_KEY, refreshToken);
+}
 export function clearToken(): void {
   window.localStorage.removeItem(TOKEN_KEY);
+  window.localStorage.removeItem(REFRESH_KEY);
 }
 
 export class ApiError extends Error {
@@ -47,13 +75,48 @@ export class ApiError extends Error {
   }
 }
 
-async function req<T>(path: string, opts: RequestInit = {}): Promise<T> {
+// Single in-flight refresh shared across concurrent 401s, so a burst of requests
+// triggers only one /auth/refresh.
+let refreshing: Promise<boolean> | null = null;
+async function tryRefresh(): Promise<boolean> {
+  const rt = getRefreshToken();
+  if (!rt) return false;
+  if (!refreshing) {
+    refreshing = (async () => {
+      try {
+        const res = await fetch('/api/auth/refresh', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ refreshToken: rt }),
+        });
+        if (!res.ok) return false;
+        const data = (await res.json()) as { token: string; refreshToken: string };
+        setSession(data.token, data.refreshToken);
+        return true;
+      } catch {
+        return false;
+      }
+    })();
+  }
+  const ok = await refreshing;
+  refreshing = null;
+  return ok;
+}
+
+const NO_REFRESH = new Set(['/auth/refresh', '/auth/login', '/auth/register']);
+
+async function req<T>(path: string, opts: RequestInit = {}, retried = false): Promise<T> {
   const headers: Record<string, string> = { 'content-type': 'application/json', ...(opts.headers as Record<string, string>) };
   const token = getToken();
   if (token) headers.Authorization = `Bearer ${token}`;
 
   const res = await fetch(`/api${path}`, { ...opts, headers });
   if (res.status === 204) return null as T;
+
+  // On an expired access token, refresh once and retry transparently.
+  if (res.status === 401 && !retried && !NO_REFRESH.has(path)) {
+    if (await tryRefresh()) return req<T>(path, opts, true);
+  }
 
   const data = await res.json().catch(() => null);
   if (!res.ok) {
@@ -89,9 +152,11 @@ export const api = {
 
   me: () => req<{ id: string; username: string; role: 'player' | 'moderator' | 'admin' }>('/auth/me'),
   character: () => req<CharacterView>('/characters/me'),
-  updateCharacter: (body: { bio?: string; contentRating?: string; storyStylePreferences?: string }) =>
+  updateCharacter: (body: { bio?: string; contentRating?: ContentRating; storyStyleTags?: StoryStyleTag[]; title?: string | null }) =>
     req<CharacterView>('/characters/me', { method: 'PATCH', body: JSON.stringify(body) }),
-  inventory: () => req<InventoryItemView[]>('/characters/me/inventory'),
+  inventory: () => req<InventoryView>('/characters/me/inventory'),
+  effectiveStats: () => req<EffectiveStatsView>('/characters/me/effective-stats'),
+  publicProfile: (characterId: string) => req<PublicProfileView>(`/characters/${characterId}/profile`),
   equip: (inventoryItemId: string) =>
     req<CharacterView>('/characters/equip', { method: 'POST', body: JSON.stringify({ inventoryItemId }) }),
   unequip: (inventoryItemId: string) =>
@@ -99,21 +164,38 @@ export const api = {
   useItem: (inventoryItemId: string) =>
     req<CharacterView>('/characters/use', { method: 'POST', body: JSON.stringify({ inventoryItemId }) }),
 
-  leaderboard: (type: 'level' | 'wealth' | 'reputation') => req<LeaderboardEntry[]>(`/leaderboards/${type}`),
+  leaderboard: (type: LeaderboardType, page = 1, regionSetId?: string) =>
+    req<LeaderboardView>(`/leaderboards/${type}?page=${page}${regionSetId ? `&regionSetId=${regionSetId}` : ''}`),
+  activityFeed: () => req<ActivityEventView[]>('/achievements/feed'),
+
+  report: (body: CreateReportInput) => req<{ reported: boolean }>('/reports', { method: 'POST', body: JSON.stringify(body) }),
 
   guilds: {
-    list: () => req<GuildSummary[]>('/guilds'),
+    list: (q?: string) => req<GuildSummary[]>(`/guilds${q ? `?q=${encodeURIComponent(q)}` : ''}`),
     mine: () => req<GuildView | null>('/guilds/mine'),
     view: (id: string) => req<GuildView>(`/guilds/${id}`),
-    create: (body: { name: string; description?: string }) =>
+    create: (body: { name: string; tag?: string; description?: string }) =>
       req<GuildView>('/guilds', { method: 'POST', body: JSON.stringify(body) }),
+    update: (body: { description?: string; tag?: string | null }) =>
+      req<GuildView>('/guilds/update', { method: 'POST', body: JSON.stringify(body) }),
     join: (id: string) => req<GuildView>(`/guilds/${id}/join`, { method: 'POST' }),
     leave: () => req<{ left: boolean }>('/guilds/leave', { method: 'POST' }),
+    promote: (characterId: string) => req<GuildView>('/guilds/promote', { method: 'POST', body: JSON.stringify({ characterId }) }),
+    demote: (characterId: string) => req<GuildView>('/guilds/demote', { method: 'POST', body: JSON.stringify({ characterId }) }),
+    kick: (characterId: string) => req<GuildView>('/guilds/kick', { method: 'POST', body: JSON.stringify({ characterId }) }),
+    transfer: (characterId: string) => req<GuildView>('/guilds/transfer', { method: 'POST', body: JSON.stringify({ characterId }) }),
+    deposit: (amount: number) => req<GuildView>('/guilds/bank/deposit', { method: 'POST', body: JSON.stringify({ amount }) }),
+    withdraw: (amount: number) => req<GuildView>('/guilds/bank/withdraw', { method: 'POST', body: JSON.stringify({ amount }) }),
   },
 
   chat: {
-    list: () => req<ChatMessageView[]>('/chat'),
-    send: (body: string) => req<ChatMessageView>('/chat', { method: 'POST', body: JSON.stringify({ body }) }),
+    list: (channel: ChatChannel = 'global', before?: string) => {
+      const params = new URLSearchParams({ channel });
+      if (before) params.set('before', before);
+      return req<ChatPageView>(`/chat?${params.toString()}`);
+    },
+    send: (body: string, channel: ChatChannel = 'global') =>
+      req<ChatMessageView>('/chat', { method: 'POST', body: JSON.stringify({ body, channel }) }),
   },
 
   achievements: () => req<AchievementView[]>('/achievements'),
@@ -140,7 +222,7 @@ export const api = {
 
   mail: {
     box: () => req<MailboxView>('/mail'),
-    send: (body: { recipientName: string; subject?: string; body: string }) =>
+    send: (body: { recipientName?: string; recipientCharacterId?: string; subject?: string; body: string }) =>
       req<MailView>('/mail', { method: 'POST', body: JSON.stringify(body) }),
     read: (mailId: string) => req<unknown>('/mail/read', { method: 'POST', body: JSON.stringify({ mailId }) }),
     remove: (mailId: string) => req<unknown>('/mail/delete', { method: 'POST', body: JSON.stringify({ mailId }) }),
@@ -163,6 +245,35 @@ export const api = {
   deathStatus: () => req<DeathStatusView>('/death/status'),
   revive: (method: 'wait' | 'pay' | 'free') => req<DeathStatusView>('/death/revive', { method: 'POST', body: JSON.stringify({ method }) }),
 
+  // Moderator/admin moderation tooling (role-gated server-side).
+  moderation: {
+    reports: (status?: string) => req<ReportView[]>(`/moderation/reports${status ? `?status=${status}` : ''}`),
+    resolveReport: (reportId: string, status: 'actioned' | 'dismissed' | 'reviewing', note?: string) =>
+      req<{ resolved: boolean }>('/moderation/reports/resolve', { method: 'POST', body: JSON.stringify({ reportId, status, note }) }),
+    hide: (messageId: string, targetType: 'chat' | 'mail' = 'chat') =>
+      req<{ ok: boolean }>('/moderation/messages/hide', { method: 'POST', body: JSON.stringify({ messageId, targetType }) }),
+    remove: (messageId: string, targetType: 'chat' | 'mail' = 'chat') =>
+      req<{ ok: boolean }>('/moderation/messages/delete', { method: 'POST', body: JSON.stringify({ messageId, targetType }) }),
+    restore: (messageId: string, targetType: 'chat' | 'mail' = 'chat') =>
+      req<{ ok: boolean }>('/moderation/messages/restore', { method: 'POST', body: JSON.stringify({ messageId, targetType }) }),
+    mute: (characterId: string, minutes: number, reason?: string) =>
+      req<{ ok: boolean }>('/moderation/mute', { method: 'POST', body: JSON.stringify({ characterId, minutes, reason }) }),
+    unmute: (characterId: string) => req<{ ok: boolean }>('/moderation/unmute', { method: 'POST', body: JSON.stringify({ characterId }) }),
+    warn: (characterId: string, reason: string) =>
+      req<{ ok: boolean }>('/moderation/warn', { method: 'POST', body: JSON.stringify({ characterId, reason }) }),
+    searchUsers: (q: string) => req<ModeratedUserView[]>(`/moderation/users/search?q=${encodeURIComponent(q)}`),
+    audit: () => req<ModerationActionView[]>('/moderation/audit'),
+    stats: () => req<ModerationStatsView>('/moderation/stats'),
+    chat: () => req<ModChatMessageView[]>('/moderation/chat'),
+    ban: (characterId: string, reason: string) =>
+      req<{ ok: boolean }>('/moderation/ban', { method: 'POST', body: JSON.stringify({ characterId, reason }) }),
+    unban: (characterId: string) => req<{ ok: boolean }>('/moderation/unban', { method: 'POST', body: JSON.stringify({ characterId }) }),
+    setRole: (characterId: string, role: 'player' | 'moderator') =>
+      req<{ ok: boolean }>('/moderation/role', { method: 'POST', body: JSON.stringify({ characterId, role }) }),
+    disbandGuild: (guildId: string, reason?: string) =>
+      req<{ ok: boolean }>('/moderation/guild/disband', { method: 'POST', body: JSON.stringify({ guildId, reason }) }),
+  },
+
   admin: {
     aiSettings: () => req<AiSettingsView>('/admin/ai/settings'),
     updateAi: (body: Partial<{ enabled: boolean; forceFallback: boolean; model: string; timeoutMs: number }>) =>
@@ -170,5 +281,14 @@ export const api = {
     aiLogs: () => req<Array<Record<string, unknown>>>('/admin/ai/logs'),
     players: () => req<Array<Record<string, unknown>>>('/admin/players'),
     economy: () => req<Array<Record<string, unknown>>>('/admin/economy'),
+    items: () => req<ItemDefinitionView[]>('/admin/items'),
+    itemConcepts: (status?: string) =>
+      req<ItemConceptView[]>(`/admin/item-concepts${status ? `?status=${status}` : ''}`),
+    approveConcept: (id: string, edits: { name?: string; description?: string; rarity?: string; slot?: string } = {}) =>
+      req<ItemDefinitionView>(`/admin/item-concepts/${id}/approve`, { method: 'POST', body: JSON.stringify(edits) }),
+    rejectConcept: (id: string, notes?: string) =>
+      req<unknown>(`/admin/item-concepts/${id}/reject`, { method: 'POST', body: JSON.stringify({ notes }) }),
+    characterInventory: (characterId: string) =>
+      req<AdminInventoryView>(`/admin/players/${characterId}/inventory`),
   },
 };

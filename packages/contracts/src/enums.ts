@@ -165,6 +165,58 @@ export type NpcStatus = z.infer<typeof NpcStatusSchema>;
 export const ContentRatingSchema = z.enum(['family', 'pg13', 'r']);
 export type ContentRating = z.infer<typeof ContentRatingSchema>;
 
+/**
+ * Ordinal rank of each rating (family is the most restrictive / lowest). Used to
+ * decide whether a piece of content (with a minimum rating) is permitted for a
+ * player's chosen rating: show iff CONTENT_RATING_RANK[content] <= player rank.
+ */
+export const CONTENT_RATING_RANK: Record<ContentRating, number> = {
+  family: 0,
+  pg13: 1,
+  r: 2,
+};
+
+// ── Story-style preferences (structured, not free-form) ──────────────────────
+// A closed set of toggles the player can enable. Stored as an array; the server
+// translates them into bounded prompt hints and fallback-selection bias. Keeping
+// this an enum (rather than free text) closes an AI prompt-injection vector.
+
+export const StoryStyleTagSchema = z.enum([
+  'more_comedy',
+  'more_mystery',
+  'more_combat',
+  'more_social',
+  'more_exploration',
+  'more_weirdness',
+  'less_combat',
+  'less_danger',
+  'more_recurring_npcs',
+  'more_strange_items',
+]);
+export type StoryStyleTag = z.infer<typeof StoryStyleTagSchema>;
+export const STORY_STYLE_TAGS = StoryStyleTagSchema.options;
+
+/** Player-facing labels for the structured story-style toggles. */
+export const STORY_STYLE_LABEL: Record<StoryStyleTag, string> = {
+  more_comedy: 'More comedy',
+  more_mystery: 'More mystery',
+  more_combat: 'More combat',
+  more_social: 'More social encounters',
+  more_exploration: 'More exploration',
+  more_weirdness: 'More weirdness',
+  less_combat: 'Less combat',
+  less_danger: 'Less danger',
+  more_recurring_npcs: 'More recurring NPCs',
+  more_strange_items: 'More strange items',
+};
+
+// ── Consumable effects ───────────────────────────────────────────────────────
+// Closed set of mechanical effects a consumable item can have. Kept small and
+// server-interpreted; the AI never supplies an effect (the server assigns one).
+
+export const ConsumableEffectTypeSchema = z.enum(['stamina', 'none']);
+export type ConsumableEffectType = z.infer<typeof ConsumableEffectTypeSchema>;
+
 // ── Users / auth ─────────────────────────────────────────────────────────────
 
 export const UserRoleSchema = z.enum(['player', 'moderator', 'admin']);
@@ -184,3 +236,72 @@ export type ConceptStatus = z.infer<typeof ConceptStatusSchema>;
 
 export const AiOutcomeSchema = z.enum(['ok', 'invalid_schema', 'unsafe', 'timeout', 'error', 'fallback']);
 export type AiOutcome = z.infer<typeof AiOutcomeSchema>;
+
+// ── Social: chat channels, moderation, reporting, guild roles ─────────────────
+
+/** Chat channel scopes. global is required; region/guild are scaffolded. */
+export const ChannelTypeSchema = z.enum(['global', 'region', 'guild', 'system']);
+export type ChannelType = z.infer<typeof ChannelTypeSchema>;
+
+/** Lifecycle status of a chat/mail message after moderation. */
+export const ModerationStatusSchema = z.enum(['visible', 'hidden', 'removed']);
+export type ModerationStatus = z.infer<typeof ModerationStatusSchema>;
+
+/** What kind of thing a player report targets. */
+export const ReportTargetTypeSchema = z.enum(['chat', 'mail', 'profile', 'guild']);
+export type ReportTargetType = z.infer<typeof ReportTargetTypeSchema>;
+
+/** Player-facing report reason categories. */
+export const ReportReasonSchema = z.enum([
+  'spam',
+  'harassment',
+  'hate_or_discrimination',
+  'sexual_content',
+  'threats',
+  'scam_or_phishing',
+  'other',
+]);
+export type ReportReason = z.infer<typeof ReportReasonSchema>;
+export const REPORT_REASONS = ReportReasonSchema.options;
+
+/** Human labels for report reasons (UI). */
+export const REPORT_REASON_LABEL: Record<ReportReason, string> = {
+  spam: 'Spam',
+  harassment: 'Harassment',
+  hate_or_discrimination: 'Hate or discrimination',
+  sexual_content: 'Sexual content',
+  threats: 'Threats',
+  scam_or_phishing: 'Scam or phishing',
+  other: 'Other',
+};
+
+/** Lifecycle of a moderation report. */
+export const ReportStatusSchema = z.enum(['open', 'reviewing', 'actioned', 'dismissed']);
+export type ReportStatus = z.infer<typeof ReportStatusSchema>;
+
+/** Auditable moderation/admin action types. */
+export const ModerationActionTypeSchema = z.enum([
+  'hide_message',
+  'delete_message',
+  'restore_message',
+  'mute',
+  'unmute',
+  'warn',
+  'ban',
+  'unban',
+  'guild_disband',
+  'guild_rename',
+  'resolve_report',
+  'promote',
+  'demote',
+  'transfer_owner',
+]);
+export type ModerationActionType = z.infer<typeof ModerationActionTypeSchema>;
+
+/** Guild membership roles (owner == founder). */
+export const GuildRoleSchema = z.enum(['owner', 'officer', 'member']);
+export type GuildRole = z.infer<typeof GuildRoleSchema>;
+
+/** Public activity-feed event kinds. */
+export const ActivityTypeSchema = z.enum(['achievement', 'level', 'guild', 'escape', 'victory']);
+export type ActivityType = z.infer<typeof ActivityTypeSchema>;

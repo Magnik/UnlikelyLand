@@ -1,0 +1,550 @@
+[
+  {
+    "title": "The Fog Has a Grievance",
+    "description": "A bank of fog rolls in low and stops directly in front of you, thickening into a vaguely person-shaped haze with its arms crossed. It informs you, in a damp and resentful murmur, that you walked through it last Tuesday without so much as an apology. The temperature drops pointedly. It begins to condense around your ankles in a way that feels less like weather and more like being grabbed.",
+    "encounterType": "combat",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "disperse",
+        "label": "Wave your arms and disperse it by force",
+        "description": "Fog is just water that thinks it's a person. Flail hard enough and you can demote it back to mere humidity.",
+        "statFocus": "strength",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "apologize",
+        "label": "Offer a sincere retroactive apology",
+        "description": "Acknowledge last Tuesday. Validate its feelings. Some grudges only want to be witnessed before they evaporate.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "hold_breath",
+        "label": "Stand firm and outlast the chill",
+        "description": "Plant your feet, ignore the cold creeping up your legs, and refuse to flinch until it gets bored.",
+        "statFocus": "toughness",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "walk_through",
+        "label": "Walk straight through it again, on purpose",
+        "description": "It's already this upset. What's one more Tuesday between you?",
+        "statFocus": "bravery",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": true,
+        "isHiddenConsequence": true,
+        "visibleHint": "There's a strange shimmer somewhere in the middle of it."
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_weirdness",
+      "less_danger"
+    ],
+    "templateId": "fallback:combat-b:0"
+  },
+  {
+    "title": "Vending Machine, Now Accepting Violence",
+    "description": "A vending machine stands alone in the clearing, humming with menace, its glass front displaying nothing but rows of fists. A scrolling LED reads NO REFUNDS. NO MERCY. EXACT CHANGE. When you step closer it dispenses a single boxing glove on a spring, retracts it, and rocks forward on its base as if winding up. A faded sticker on the side notes it has been OUT OF ORDER since the incident.",
+    "encounterType": "combat",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "tip",
+        "label": "Rock it over the way the warning labels forbid",
+        "description": "Every kid knows you can shake a snack loose. This one shakes back, but the principle holds.",
+        "statFocus": "strength",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "dodge",
+        "label": "Weave between its spring-loaded jabs",
+        "description": "It punches on a coin-operated rhythm. Learn the timing, slip inside its reach, and stay off the strike zone.",
+        "statFocus": "agility",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "correct_change",
+        "label": "Feed it the exact change it demands",
+        "description": "It asked nicely, in its way. Honor the transaction and maybe it lets you pass like a paying customer.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "unplug",
+        "label": "Hunt for whatever it's plugged into",
+        "description": "There is no outlet in sight. There is, suspiciously, a cord trailing into the bushes.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The cord seems to go a very long way."
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_combat",
+      "more_weirdness"
+    ],
+    "templateId": "fallback:combat-b:1"
+  },
+  {
+    "title": "The Crab Tribunal Will Now Convene",
+    "description": "A semicircle of crabs blocks the tideline, the largest perched on a barnacled rock and wearing a bottlecap for a gavel. They have, they click in unison, found you guilty of Excessive Verticality and sentence you to be pinched. The sentence is effective immediately and the appeals window closed before you arrived. The whole bench raises their claws in grim, snapping anticipation.",
+    "encounterType": "combat",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "scatter",
+        "label": "Charge the bench and scatter the court",
+        "description": "Contempt of court, but they're crabs and you have shoes. Disrupt the proceedings before the gavel falls.",
+        "statFocus": "toughness",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "object",
+        "label": "Loom over the rock and object, loudly",
+        "description": "Tower over the tribunal. Crabs respect a sufficiently large objection delivered from sufficiently high up.",
+        "statFocus": "intimidation",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "sidestep",
+        "label": "Match their gait and sidle away",
+        "description": "They only prosecute forward motion. Move exclusively sideways and you become procedurally invisible.",
+        "statFocus": "agility",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "appeal",
+        "label": "Insist the appeals window is still open",
+        "description": "Argue, with great confidence, that the window operates on tide time. Make them check the moon.",
+        "statFocus": "deception",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_combat",
+      "more_social"
+    ],
+    "templateId": "fallback:combat-b:2"
+  },
+  {
+    "title": "Revolving Door With Commitment Issues",
+    "description": "A freestanding revolving door spins in the middle of the trail, unattached to any building, picking up speed as you approach. It will not let you simply walk around it; every time you try, it pivots to intercept, herding you toward its compartments with the patient cruelty of architecture that has tasted freedom. A brass plate reads PUSH. Beneath it someone has scratched OR ELSE.",
+    "encounterType": "combat",
+    "allowGoHome": true,
+    "goHomeLabel": "Decide you prefer doorways that hold still",
+    "choices": [
+      {
+        "id": "stop",
+        "label": "Grab a wing and wrench it to a stop",
+        "description": "Get a grip on one panel and stop the rotation with raw force before it gets a grip on you.",
+        "statFocus": "strength",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "time_it",
+        "label": "Time the gap and dart through clean",
+        "description": "There's a half-second window between panels. Read the rhythm, pick your moment, and thread the needle.",
+        "statFocus": "accuracy",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "brace",
+        "label": "Step in and let it spit you out the far side",
+        "description": "Enter on its terms, brace against the panels, and ride the spin to wherever a determined door decides you belong.",
+        "statFocus": "toughness",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "wait",
+        "label": "Sit down and wait for it to tire",
+        "description": "Doors are not known for stamina. Outlast it. Be the more patient piece of infrastructure.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_weirdness",
+      "less_danger"
+    ],
+    "templateId": "fallback:combat-b:3"
+  },
+  {
+    "title": "The Storm Wants to Settle This Like Men",
+    "description": "A thunderhead descends until it hovers at eye level, rolling up two cloudy sleeves it should not anatomically possess. It has been told, it rumbles, that you have been BADMOUTHING precipitation, and it intends to defend the honor of all weather here and now. Lightning crackles between its knuckles. Somewhere a single dramatic raindrop lands on your nose, like a slap with a glove.",
+    "encounterType": "combat",
+    "allowGoHome": true,
+    "goHomeLabel": "Remember an urgent appointment indoors",
+    "choices": [
+      {
+        "id": "box",
+        "label": "Put up your fists and box the cloud",
+        "description": "It wants a fair fight. Give it one. Punching a storm is exactly as ill-advised as it sounds, which is to say thrilling.",
+        "statFocus": "bravery",
+        "riskLevel": "ridiculous",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "counterpunch",
+        "label": "Read its swing and counter the lightning",
+        "description": "It telegraphs every bolt with a flash. Watch the flicker, slip the strike, and answer on the recovery.",
+        "statFocus": "accuracy",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "deescalate",
+        "label": "Stare it down until it grumbles off",
+        "description": "Hold your ground and your gaze. Most storms are mostly bluster, and they can tell when you've decided not to be impressed.",
+        "statFocus": "intimidation",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "compliment",
+        "label": "Praise its honestly impressive humidity",
+        "description": "Defuse it with flattery. No weather front truly wants to fight; it wants to be told its rainfall is the talk of the island.",
+        "statFocus": "charisma",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "r",
+    "styleAffinities": [
+      "more_combat",
+      "more_weirdness"
+    ],
+    "templateId": "fallback:combat-b:4"
+  },
+  {
+    "title": "The Cheese Is Rolling and It Has Opinions",
+    "description": "A wheel of cheese the size of a wagon barrels down the slope toward you, gaining speed and, alarmingly, gaining a face. It bellows something muffled and rindy about RIGHT OF WAY as it comes, leaving a wake of flattened wildflowers and one very surprised marmot. The smell arrives several seconds before the cheese does, like a herald announcing doom in a strong, mature bouquet.",
+    "encounterType": "combat",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "brace_stop",
+        "label": "Brace and stop the wheel cold",
+        "description": "Plant yourself, take the impact, and halt a runaway dairy product through sheer refusal to move. Your shoulders will remember this.",
+        "statFocus": "toughness",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "leap",
+        "label": "Leap clear at the last possible instant",
+        "description": "Let it come. Judge the moment. Spring aside and let several hundred pounds of cheese answer to gravity alone.",
+        "statFocus": "agility",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "wedge",
+        "label": "Jam a rock to make it jump the track",
+        "description": "Place an obstacle with precision and turn its momentum against it. The best way to fight a wheel is geometry.",
+        "statFocus": "accuracy",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "taste",
+        "label": "Stand your ground and take a bite as it passes",
+        "description": "It is, after all, cheese, and you are, after all, hungry. Etiquette is unclear on whether this counts as winning.",
+        "statFocus": "bravery",
+        "riskLevel": "ridiculous",
+        "rewardProfile": "strange",
+        "mayStartCombat": true,
+        "isHiddenConsequence": true,
+        "visibleHint": "There seems to be something rolled up inside the rind."
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_combat",
+      "more_weirdness"
+    ],
+    "templateId": "fallback:combat-b:5"
+  },
+  {
+    "title": "The Lamppost Has Decided to Patrol",
+    "description": "A cast-iron lamppost wrenches its base from the cobbles and lurches into the path, its lit head swiveling like a one-eyed sentinel. It announces, in a buzzing electric drone, that this is now a CHECKPOINT, and that you are loitering in its pool of light without authorization. It cracks its post against the ground like a constable's baton and advances with the slow inevitability of municipal hardware.",
+    "encounterType": "combat",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "topple",
+        "label": "Tackle it back into the ground",
+        "description": "It's top-heavy and rooted in habit. Hit it low, drive it over, and remind it that lampposts are supposed to stay put.",
+        "statFocus": "strength",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "shadows",
+        "label": "Slip out of its light and vanish",
+        "description": "It can only police what it can see. Step into the dark margins where its glow can't reach and walk on unbothered.",
+        "statFocus": "agility",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "credentials",
+        "label": "Loom in and demand its patrol authority",
+        "description": "Get right up under the lamp and ask, with great gravity, exactly who deputized a streetlight. Bureaucratic hardware fears a jurisdictional question.",
+        "statFocus": "intimidation",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "parry",
+        "label": "Catch and parry its swinging post",
+        "description": "It swings the heavy base like a baton. Read the arc, deflect the iron, and keep your skull out of the streetlight's jurisdiction.",
+        "statFocus": "defense",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_combat"
+    ],
+    "templateId": "fallback:combat-b:6"
+  },
+  {
+    "title": "Beanbag Ambush in the Quiet Room",
+    "description": "A beanbag chair the size of a small pony oozes out from behind a boulder, rippling with menace, and lands on the path with a soft, threatening WHUMPF. It does not speak, because it is a beanbag, but its intent to engulf you is unmistakable as it humps forward in slow, doughy lunges. Trapped impressions of three previous sitters are still visible in its surface, none of them looking comfortable about it.",
+    "encounterType": "combat",
+    "allowGoHome": true,
+    "goHomeLabel": "Declare you've reached your daily lounging quota",
+    "choices": [
+      {
+        "id": "deflate",
+        "label": "Pin it and squeeze the stuffing out",
+        "description": "Get on top, find a seam, and reduce it to a sad puddle of fabric and beans before it reduces you to a fourth impression.",
+        "statFocus": "strength",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "hop_over",
+        "label": "Vault its soft bulk before it lands",
+        "description": "It's slow and it's squishy. Read the lunge, plant a foot on its yielding top, and clear it in one bounce.",
+        "statFocus": "agility",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "endure",
+        "label": "Let it engulf you and shove free",
+        "description": "Allow the engulfing, find the bottom, and power back out the way you came in. Worst case it's just very cozy in there.",
+        "statFocus": "toughness",
+        "riskLevel": "high",
+        "rewardProfile": "balanced",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "investigate",
+        "label": "Examine the trapped impressions first",
+        "description": "Three people are pressed into this thing. One of them appears to be waving.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The middle impression has its mouth open like it's mid-sentence."
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_weirdness",
+      "less_danger"
+    ],
+    "templateId": "fallback:combat-b:7"
+  },
+  {
+    "title": "Soup Kitchen Showdown",
+    "description": "A ladle-wielding pot of stew has set up a folding table across the trail and is conscripting passersby into the lunch line at spoonpoint. It is a thick, brown stew with a cracked-ceramic body and a temper, and it informs you the soup kitchen is MANDATORY and the soup is ITSELF. The ladle, dripping, levels at your chest. Behind it a chalkboard reads TODAY'S SPECIAL: SUBMISSION.",
+    "encounterType": "combat",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "disarm",
+        "label": "Wrestle the ladle from its grip",
+        "description": "Take away the spoon and it's just an opinionated pot. Get inside its reach and pry the utensil loose.",
+        "statFocus": "strength",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "parry_ladle",
+        "label": "Parry each ladle swing until it tires",
+        "description": "It fights in wide, hot arcs. Block low, keep your guard up, and let the broth wear itself out splashing.",
+        "statFocus": "defense",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "line_up",
+        "label": "Politely join the lunch line as instructed",
+        "description": "Comply. Take a number. Sometimes the way through a mandatory soup kitchen is to simply, briefly, accept the soup.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "health_code",
+        "label": "Threaten to report a health-code violation",
+        "description": "Loom over the table and point out that serving oneself is, at minimum, deeply unhygienic and probably illegal.",
+        "statFocus": "intimidation",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_combat",
+      "more_social"
+    ],
+    "templateId": "fallback:combat-b:8"
+  },
+  {
+    "title": "The Filing Deadline Is Coming In Sideways",
+    "description": "The sky goes grey and a blizzard sweeps in, except the snow is paperwork: tax forms, late notices, and triplicate carbons whipping past in a stinging horizontal gale. A voice in the wind, dry and administrative, informs you the deadline is NOW and you are UNDERWITHHELD and there is nowhere to shelter that is not also a service center. A snowdrift of unfiled returns begins piling against your legs with grim, drifting purpose.",
+    "encounterType": "combat",
+    "allowGoHome": true,
+    "goHomeLabel": "File for an extension by leaving immediately",
+    "choices": [
+      {
+        "id": "push_through",
+        "label": "Lower your head and bull through the gale",
+        "description": "Forms can't actually stop you, only annoy you at speed. Brace against the wind and force your way forward, deadline be damned.",
+        "statFocus": "toughness",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "shield",
+        "label": "Raise a guard against the stinging paper",
+        "description": "The carbons cut like sleet. Get an arm up, angle into the wind, and weather the worst of the audit-storm behind your guard.",
+        "statFocus": "defense",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": true,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "find_eye",
+        "label": "Slip through the calm eye of the storm",
+        "description": "Even a blizzard of bureaucracy has a still center. Read the swirl, find the loophole in the weather, and walk through it untouched.",
+        "statFocus": "agility",
+        "riskLevel": "medium",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "sign_blank",
+        "label": "Sign a blank form and let the wind take it",
+        "description": "Surrender one signature to the storm and hope it considers the matter, and you, settled.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "You can't quite read what you'd be agreeing to."
+      }
+    ],
+    "minRating": "r",
+    "styleAffinities": [
+      "more_weirdness",
+      "more_combat"
+    ],
+    "templateId": "fallback:combat-b:9"
+  }
+]

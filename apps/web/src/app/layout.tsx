@@ -13,7 +13,8 @@ export const viewport: Viewport = {
   themeColor: '#0e1014',
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
+  // No maximumScale/userScalable lock: disabling zoom fails WCAG 1.4.4 and hurts
+  // low-vision users. The layout is responsive, so pinch-zoom is purely additive.
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

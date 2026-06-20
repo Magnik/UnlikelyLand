@@ -23,10 +23,17 @@ model User {
   displayName  String
   passwordHash String
   role         String   @default("player") // player | moderator | admin
+  // Moderation: a banned user's JWT is rejected by AuthGuard regardless of expiry.
+  bannedAt     DateTime?
+  bannedReason String?
+  // Bumped on logout/ban to invalidate every outstanding access + refresh token
+  // (the access token carries this version and AuthGuard rejects a stale one).
+  tokenVersion Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  character Character?
+  character         Character?
+  moderationActions ModerationAction[] @relation("moderationActor")
 }
 
 // ── Character ────────────────────────────────────────────────────────────────
@@ -39,6 +46,17 @@ model Character {
 
   level Int @default(1)
   xp    Int @default(0)
+
+  // Lifetime count of combat encounters won (server-incremented; leaderboard input).
+  combatVictories Int @default(0)
+  // Optional selected cosmetic title (an unlocked public achievement key), shown
+  // on the public profile. Null = no title displayed.
+  title String?
+  // Moderation state. mutedUntil blocks chat/mail send while in the future.
+  mutedUntil   DateTime?
+  warningCount Int       @default(0)
+  // Opt out of appearing on public leaderboards.
+  hiddenFromLeaderboards Boolean @default(false)
 
   // Currencies (see CURRENCY_LABEL in contracts): normal=Clams, premium=Escape
   // Tokens, crafting=Oddments, reputation=Notoriety.
@@ -53,7 +71,10 @@ model Character {
 
   regionSetId           String
   contentRating         String  @default("pg13") // family | pg13 | r
+  // Legacy free-form field (kept for back-compat; no longer read). Structured
+  // preferences live in storyStyleTags as a JSON array of StoryStyleTag values.
   storyStylePreferences String  @default("")
+  storyStyleTags        String  @default("[]") // JSON array of StoryStyleTag
 
   // Death state
   isDead              Boolean   @default(false)
@@ -88,10 +109,21 @@ model Character {
   aiLogs           AiGenerationLog[]
   sentMail         MailMessage[]          @relation("mailSender")
   receivedMail     MailMessage[]          @relation("mailRecipient")
+  reportsFiled     MessageReport[]        @relation("reporter")
+  activityEvents   ActivityEvent[]
+  // Social graph back-relations (give the loose join tables real FKs so deleting a
+  // character cascades its friend requests/friendships/blocks instead of orphaning).
+  friendReqSent    FriendRequest[]        @relation("friendReqFrom")
+  friendReqRecvd   FriendRequest[]        @relation("friendReqTo")
+  friendshipsA     Friendship[]           @relation("friendshipA")
+  friendshipsB     Friendship[]           @relation("friendshipB")
+  blocksMade       BlockedUser[]          @relation("blocker")
+  blocksAgainst    BlockedUser[]          @relation("blockedTarget")
 
   @@index([level])
   @@index([reputation])
   @@index([normalMoney])
+  @@index([combatVictories])
 }
 
 model CharacterStats {
@@ -233,6 +265,9 @@ model ItemDefinition {
   rarity        String // common | uncommon | rare | epic | legendary | absurd
   statModifiers Json     @default("{}")
   powerBudget   Int      @default(0)
+  // Consumable mechanics (server-interpreted). type: stamina | none.
+  consumableEffectType  String @default("none")
+  consumableEffectPower Int    @default(0)
   source        String   @default("seed") // seed | ai_approved | admin
   createdAt     DateTime @default(now())
 
@@ -265,6 +300,12 @@ model PendingItemConcept {
   status                String   @default("pending") // pending | approved | rejected | auto_approved
   reviewNotes           String?
   createdItemId         String?
+  // Server-computed validation verdict captured at ingest time. The AI never
+  // supplies stat numbers — the server derives a balanced, budget-capped block.
+  proposedStatModifiers Json     @default("{}")
+  proposedPowerBudget   Int      @default(0)
+  autoApprovable        Boolean  @default(false)
+  validationIssues      String   @default("[]") // JSON array of issue strings
   createdAt             DateTime @default(now())
 
   proposedBy Character? @relation(fields: [proposedByCharacterId], references: [id], onDelete: SetNull)
@@ -305,6 +346,10 @@ model MarketListing {
   itemDefinition ItemDefinition @relation(fields: [itemDefinitionId], references: [id])
 
   @@index([status])
+  // Unindexed FKs cause slow scans (and block ItemDefinition deletes); index the
+  // item FK and the seller column used by the "my listings" query.
+  @@index([itemDefinitionId])
+  @@index([sellerCharacterId])
 }
 
 // ── Social ───────────────────────────────────────────────────────────────────
@@ -312,14 +357,31 @@ model MarketListing {
 model ChatMessage {
   id          String   @id @default(uuid())
   characterId String
+  // Channel routing. channelType: global | region | guild | system. region/guild
+  // scope is keyed by the nullable ids below. `channel` is the legacy column kept
+  // for back-compat (always 'global' for old rows).
   channel     String   @default("global")
+  channelType String   @default("global")
+  regionSetId String?
+  guildId     String?
   body        String
-  deleted     Boolean  @default(false)
-  createdAt   DateTime @default(now())
+  // Moderation. moderationStatus: visible | hidden | removed. `deleted` is the
+  // legacy boolean kept in sync (removed/hidden => deleted=true) for old readers.
+  moderationStatus String   @default("visible")
+  reportCount      Int      @default(0)
+  deleted          Boolean  @default(false)
+  deletedAt        DateTime?
+  deletedByUserId  String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now()) @updatedAt
 
   character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
 
   @@index([channel, createdAt])
+  @@index([channelType, moderationStatus, createdAt])
+  // Guild/region channel reads filter by these ids; without an index they scan the table.
+  @@index([guildId, createdAt])
+  @@index([regionSetId, createdAt])
 }
 
 model MailMessage {
@@ -331,6 +393,9 @@ model MailMessage {
   readAt               DateTime?
   deletedBySender      Boolean   @default(false)
   deletedByRecipient   Boolean   @default(false)
+  // Moderation. moderationStatus: visible | removed (hidden by staff after a report).
+  moderationStatus     String    @default("visible")
+  reportCount          Int       @default(0)
   createdAt            DateTime  @default(now())
 
   sender    Character @relation("mailSender", fields: [senderCharacterId], references: [id], onDelete: Cascade)
@@ -347,7 +412,13 @@ model FriendRequest {
   status          String   @default("pending") // pending | accepted | rejected
   createdAt       DateTime @default(now())
 
+  fromCharacter Character @relation("friendReqFrom", fields: [fromCharacterId], references: [id], onDelete: Cascade)
+  toCharacter   Character @relation("friendReqTo", fields: [toCharacterId], references: [id], onDelete: Cascade)
+
   @@unique([fromCharacterId, toCharacterId])
+  // Incoming-request lookups query by recipient; the unique above only indexes the
+  // (from, to) prefix, so add a dedicated index on the recipient column.
+  @@index([toCharacterId])
 }
 
 model Friendship {
@@ -356,7 +427,12 @@ model Friendship {
   characterBId String
   createdAt    DateTime @default(now())
 
+  characterA Character @relation("friendshipA", fields: [characterAId], references: [id], onDelete: Cascade)
+  characterB Character @relation("friendshipB", fields: [characterBId], references: [id], onDelete: Cascade)
+
   @@unique([characterAId, characterBId])
+  // Friendship lookups also query by the B side (OR characterBId), uncovered by the unique prefix.
+  @@index([characterBId])
 }
 
 model BlockedUser {
@@ -365,7 +441,80 @@ model BlockedUser {
   blockedCharacterId String
   createdAt          DateTime @default(now())
 
+  blocker Character @relation("blocker", fields: [characterId], references: [id], onDelete: Cascade)
+  blocked Character @relation("blockedTarget", fields: [blockedCharacterId], references: [id], onDelete: Cascade)
+
   @@unique([characterId, blockedCharacterId])
+  // Block feed-filtering queries the reverse direction (blockedCharacterId).
+  @@index([blockedCharacterId])
+}
+
+// ── Moderation & reporting ───────────────────────────────────────────────────
+
+// A player-filed report against a chat message, mail, profile, or guild. One
+// report per (reporter, target) is enforced for message targets so the same user
+// cannot inflate the report count by re-reporting.
+model MessageReport {
+  id                String    @id @default(uuid())
+  reporterCharacterId String
+  targetType        String // chat | mail | profile | guild
+  targetMessageId   String? // ChatMessage/MailMessage id when targetType is chat/mail
+  targetCharacterId String? // reported character (profile, or message author)
+  targetGuildId     String?
+  reason            String // spam | harassment | hate_or_discrimination | sexual_content | threats | scam_or_phishing | other
+  note              String    @default("")
+  status            String    @default("open") // open | reviewing | actioned | dismissed
+  resolvedByUserId  String?
+  resolutionNote    String?
+  resolvedAt        DateTime?
+  createdAt         DateTime  @default(now())
+
+  reporter Character @relation("reporter", fields: [reporterCharacterId], references: [id], onDelete: Cascade)
+
+  @@unique([reporterCharacterId, targetType, targetMessageId])
+  @@index([status, createdAt])
+  @@index([targetCharacterId])
+}
+
+// Append-only audit trail of every privileged moderation/admin action. Never
+// exposed to regular players. metadata holds action-specific context as JSON.
+model ModerationAction {
+  id                String   @id @default(uuid())
+  moderatorUserId   String
+  actionType        String // hide_message | delete_message | restore_message | mute | unmute | warn | ban | unban | guild_disband | guild_rename | resolve_report | promote | demote | transfer_owner
+  targetType        String   @default("") // chat | mail | character | guild | report
+  targetCharacterId String?
+  targetMessageId   String?
+  targetGuildId     String?
+  targetReportId    String?
+  reason            String   @default("")
+  metadata          Json     @default("{}")
+  createdAt         DateTime @default(now())
+
+  moderator User @relation("moderationActor", fields: [moderatorUserId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@index([targetCharacterId])
+  @@index([moderatorUserId])
+}
+
+// ── Public activity feed ─────────────────────────────────────────────────────
+
+// A public, intentionally-shareable milestone (achievement unlock, level
+// milestone, guild join/found, escape). Contains only public-safe text; never
+// private story/encounter/economy detail. Drives the world activity feed.
+model ActivityEvent {
+  id          String   @id @default(uuid())
+  characterId String
+  type        String // achievement | level | guild | escape | victory
+  title       String
+  detail      String   @default("")
+  createdAt   DateTime @default(now())
+
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@index([characterId, createdAt])
 }
 
 // ── Guilds ───────────────────────────────────────────────────────────────────
@@ -373,11 +522,20 @@ model BlockedUser {
 model Guild {
   id               String   @id @default(uuid())
   name             String   @unique
+  // Short clan tag (2-5 chars, A-Z0-9) shown next to member names in chat. Unique,
+  // nullable so existing guilds backfill cleanly until renamed.
+  tag              String?  @unique
   description      String   @default("")
   ownerCharacterId String
+  // Guild progression. The bank holds Oddments (crafting currency) deposited by
+  // members; xp accrues from contributions and drives a derived guild level.
+  bankBalance      Int      @default(0)
+  xp               Int      @default(0)
   createdAt        DateTime @default(now())
 
-  owner   Character     @relation("guildOwner", fields: [ownerCharacterId], references: [id])
+  // Deleting the founder's character disbands the guild (members already cascade),
+  // instead of the previous RESTRICT which made the owner's account undeletable.
+  owner   Character     @relation("guildOwner", fields: [ownerCharacterId], references: [id], onDelete: Cascade)
   members GuildMember[]
 }
 
@@ -473,4 +631,9 @@ model EscapeRecord {
   createdAt   DateTime @default(now())
 
   character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  // Makes an escape a one-shot: two concurrent escapes compute the same escapeCount,
+  // so the second insert violates this unique and its transaction rolls back,
+  // preventing a doubled legacy stat bonus / token grant.
+  @@unique([characterId, escapeCount])
 }

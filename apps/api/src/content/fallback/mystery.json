@@ -1,0 +1,448 @@
+[
+  {
+    "title": "The Footprints Are Yours, From Tomorrow",
+    "description": "A neat line of footprints crosses the wet sand toward you, then stops dead at your feet, as if someone walked here and then unhappened. The tread matches your own boots exactly, down to the worn left heel, except they point the wrong way and the mud inside them is still drying. Pinned to a piece of driftwood nearby, a damp note in your own handwriting reads: 'Don't.' You do not remember writing it, which is somehow the least alarming part.",
+    "encounterType": "mystery",
+    "allowGoHome": true,
+    "goHomeLabel": "Decide tomorrow can sort out its own footprints",
+    "choices": [
+      {
+        "id": "follow_backward",
+        "label": "Follow the prints back to where they begin",
+        "description": "If they end at you, they must start somewhere, and that somewhere is the only honest witness on this beach.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "match_stride",
+        "label": "Place your feet in the prints and stand very still",
+        "description": "Maybe the trick is to simply be where you were going to be. You line up boot to boot and wait for the rest of you to arrive.",
+        "statFocus": "weirdness",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The drying mud is already firming up around your soles."
+      },
+      {
+        "id": "obey_note",
+        "label": "Heed your own warning and touch nothing",
+        "description": "You wrote 'Don't' for a reason, even if the reason hasn't happened yet. You step back carefully and respect the wishes of future you.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "leave_reply",
+        "label": "Write a note back and pin it beside the first",
+        "description": "Correspondence is correspondence, even across whatever this is. You have several pressing questions and exactly one suspicious audience.",
+        "statFocus": "deception",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_mystery",
+      "more_weirdness"
+    ],
+    "templateId": "fallback:mystery:0"
+  },
+  {
+    "title": "The Lost & Found That Returns the Unlost",
+    "description": "A wooden booth at the crossroads bears a hand-painted sign: LOST & FOUND. Inside, a sleepy attendant sorts a shelf of items nobody reported missing — a left shoe, a Tuesday, the sound of your grandmother's voice — and ticks each against a ledger of things that have not yet been lost. He squints at you, consults the ledger, and says, 'Ah. We've been holding something of yours. You won't notice it's gone until the day after you collect it.' He slides a small, plain box across the counter.",
+    "encounterType": "mystery",
+    "allowGoHome": true,
+    "goHomeLabel": "Insist you've lost nothing and never will",
+    "choices": [
+      {
+        "id": "open_box",
+        "label": "Open the box right there at the counter",
+        "description": "Whatever is yours is yours, and you'd rather meet it now than discover its absence tomorrow.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The attendant looks away politely as you reach for the lid."
+      },
+      {
+        "id": "read_ledger",
+        "label": "Ask to inspect the ledger of unlost things",
+        "description": "A list of things not yet lost is a map of every future grief on the island. You'd like a quiet look at the index.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "interview_attendant",
+        "label": "Gently ask the attendant how long he's worked here",
+        "description": "He files Tuesdays and grandmothers' voices without blinking. Someone who has seen that much loss has stories, and a person under all that sorting.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "claim_extra",
+        "label": "Claim a second item you definitely never owned",
+        "description": "There's a fascinating left shoe on that shelf. If the rules are this loose, perhaps ownership is just confidence and a steady hand.",
+        "statFocus": "deception",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_mystery",
+      "more_recurring_npcs"
+    ],
+    "templateId": "fallback:mystery:1"
+  },
+  {
+    "title": "The Riddle the Statue Forgot",
+    "description": "A moss-cloaked stone guardian blocks the path, one hand raised in the universal gesture of 'halt, and answer me this.' It clears six centuries of gravel from its throat, draws breath for a riddle it has guarded since before the trees — and stops. It has forgotten the riddle. After a long, mortified silence, the statue admits it remembers only the answer, which is 'a candle,' and begs you, with genuine distress in its granite eyes, to help it reconstruct the question before its next inspection.",
+    "encounterType": "mystery",
+    "allowGoHome": false,
+    "choices": [
+      {
+        "id": "invent_riddle",
+        "label": "Compose a brand-new riddle that resolves to 'a candle'",
+        "description": "Burns at both ends, weeps without sorrow, dies giving light. You have material; the statue has standards.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "console_statue",
+        "label": "Reassure the statue that forgetting is only human",
+        "description": "Six hundred years on one riddle would rattle anyone. You sit on the path and let it grieve the question properly.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "feed_false_answer",
+        "label": "Insist the real answer was never 'a candle' at all",
+        "description": "Convince a confused statue that it has been guarding the wrong answer for centuries. Where this leads is its problem, technically.",
+        "statFocus": "deception",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Statues that doubt their own answers tend to start doubting other things."
+      },
+      {
+        "id": "search_base",
+        "label": "Search the statue's base for the original inscription",
+        "description": "Riddles this old are usually carved somewhere. You kneel and start clearing centuries of moss from the plinth, looking for the question itself.",
+        "statFocus": "caution",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "family",
+    "styleAffinities": [
+      "more_mystery"
+    ],
+    "templateId": "fallback:mystery:2"
+  },
+  {
+    "title": "Every Clock Agrees, and That's the Problem",
+    "description": "You enter a clearing full of clocks — sundials, water clocks, a grandfather clock half-swallowed by an oak, a confused rooster — and every single one reads exactly the same time: 4:13. The shadows say it's midday. Your own pulse says it's evening. A weathered placard explains that 4:13 is when It Happened, that nobody will say what It was, and that the clocks have simply refused to move on. As you watch, the rooster opens its beak to crow and, instead, very quietly says, 'four thirteen.'",
+    "encounterType": "mystery",
+    "allowGoHome": true,
+    "goHomeLabel": "Decide you're late for literally anything else",
+    "choices": [
+      {
+        "id": "question_rooster",
+        "label": "Ask the rooster what happened at 4:13",
+        "description": "It clearly knows. It has been saying so all along, in its way. You crouch to its level and ask the only question that matters.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "wind_one_forward",
+        "label": "Quietly advance a single clock past 4:13",
+        "description": "Maybe all this place needs is one brave timepiece to take the next minute. You reach for the smallest, least intimidating clock.",
+        "statFocus": "weirdness",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The other clocks all seem to be facing that one now."
+      },
+      {
+        "id": "comfort_clearing",
+        "label": "Sit with the clocks and let them not move on",
+        "description": "Some things are stuck for a reason. You settle among them, ask nothing, and simply keep the frozen minute company.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "check_placard_back",
+        "label": "Carefully read the back of the placard",
+        "description": "Placards that won't name a thing on the front sometimes hedge on the back. You tilt it gently and read what was meant to be hidden.",
+        "statFocus": "caution",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_mystery",
+      "more_weirdness"
+    ],
+    "templateId": "fallback:mystery:3"
+  },
+  {
+    "title": "The Island Is Missing Wednesdays",
+    "description": "A frantic almanac-keeper flags you down outside her cluttered shed, waving a calendar with a problem: nobody on the island can remember a single Wednesday. Tuesdays roll straight into Thursdays. She has interviewed everyone, and they all blink at the word 'Wednesday' as if it were a flavor of weather. Yet her records prove the Wednesdays existed — they were filed, then collected, by a courier she's never seen, on a day she can no longer name.",
+    "encounterType": "mystery",
+    "allowGoHome": true,
+    "goHomeLabel": "Politely note that you only do weekends",
+    "choices": [
+      {
+        "id": "stake_out",
+        "label": "Volunteer to stake out the next missing day",
+        "description": "If a courier collects the Wednesdays, the courier comes from somewhere. You offer to stay awake through whatever day refuses to be remembered.",
+        "statFocus": "caution",
+        "riskLevel": "high",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "cross_examine",
+        "label": "Question the keeper about who'd want a whole weekday",
+        "description": "Days don't go missing without a buyer. You sit her down and trace the paper trail of every collected, uncollected Wednesday.",
+        "statFocus": "curiosity",
+        "riskLevel": "low",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "forge_wednesday",
+        "label": "Help her forge a convincing counterfeit Wednesday",
+        "description": "If you can fake one well enough that the island believes it, perhaps the real ones will feel safe coming back. Perhaps the courier will too.",
+        "statFocus": "deception",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Counterfeit days have a way of attracting the original collector."
+      },
+      {
+        "id": "console_keeper",
+        "label": "Comfort the keeper, the only one who still remembers",
+        "description": "Everyone else forgot; she carries the whole week alone. That kind of remembering is a heavy and lonely thing.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_mystery",
+      "more_recurring_npcs"
+    ],
+    "templateId": "fallback:mystery:4"
+  },
+  {
+    "title": "The Well That Answers Yesterday's Questions",
+    "description": "An old stone well at the edge of the woods has a reputation: ask it anything, and it answers. The catch, scrawled on the bucket, is that it answers the question asked the day before yours — by whoever stood here last. You lean over the dark mouth, and before you can speak, a voice rises from below and calmly says, 'Yes. Bury it under the third birch. And do not tell the surveyor.' You have asked nothing. You did, however, just inherit somebody's entire secret.",
+    "encounterType": "mystery",
+    "allowGoHome": true,
+    "goHomeLabel": "Forget you heard about any third birch",
+    "choices": [
+      {
+        "id": "ask_anyway",
+        "label": "Ask the well your own burning question",
+        "description": "Tomorrow's visitor will hear your answer, not you. Still — somewhere, on some tomorrow, you'd like a reply, even one you'll never collect.",
+        "statFocus": "curiosity",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "find_birch",
+        "label": "Go investigate the third birch from the answer",
+        "description": "Bury it under the third birch, the well said. You didn't ask, but you certainly heard, and now your boots are walking toward the trees.",
+        "statFocus": "caution",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The surveyor it warned about may also be looking for that birch."
+      },
+      {
+        "id": "warn_next",
+        "label": "Wait to warn whoever the secret belongs to",
+        "description": "Someone left a confession in that well and doesn't know a stranger now holds it. The decent thing is to give it back to the right ears.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "seed_lie",
+        "label": "Shout a false question down to mislead tomorrow",
+        "description": "Tomorrow's listener will hear whatever you say now, presented as gospel. A well this trusting is practically begging to be lied to.",
+        "statFocus": "deception",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_mystery",
+      "more_weirdness"
+    ],
+    "templateId": "fallback:mystery:5"
+  },
+  {
+    "title": "The Census of Things That Aren't There",
+    "description": "A surveyor in immaculate overalls is pacing a stretch of perfectly ordinary heath, counting on his fingers and muttering numbers at empty air. He greets you with relief: he is the island's Negative-Space Census-Taker, charged with cataloguing everything that is conspicuously absent. There is, he confides, supposed to be a cottage right here. There isn't. There never was. And yet every record insists a family of four still lives in it, pays its taxes promptly, and waved to him just this morning.",
+    "encounterType": "mystery",
+    "allowGoHome": true,
+    "goHomeLabel": "Quietly count yourself among the absent",
+    "choices": [
+      {
+        "id": "knock_air",
+        "label": "Walk up and knock where the door should be",
+        "description": "Records say a family lives here. Politeness says you knock. The space between those two facts is exactly where you raise your knuckles.",
+        "statFocus": "weirdness",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The empty air has a faint smell of someone's dinner cooking."
+      },
+      {
+        "id": "audit_records",
+        "label": "Comb the tax records for the phantom family",
+        "description": "A household that pays on time leaves a trail. You sit with the surveyor's ledgers and follow the money that nobody seems to be holding.",
+        "statFocus": "curiosity",
+        "riskLevel": "low",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "steady_surveyor",
+        "label": "Reassure the rattled census-taker",
+        "description": "He counts absences for a living and it's clearly fraying him. You walk the empty plot beside him and let him say the strange parts out loud.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "file_yourself",
+        "label": "Register yourself as the cottage's fifth resident",
+        "description": "If a nonexistent house has four taxpaying tenants, a fifth could do very well there. You ask the surveyor for the relevant form.",
+        "statFocus": "deception",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_mystery",
+      "more_recurring_npcs"
+    ],
+    "templateId": "fallback:mystery:6"
+  },
+  {
+    "title": "The Letter Addressed to Who You'll Become",
+    "description": "A mailbox stands at a deserted fork, red flag up, though there's no house and no road that earns a fork. Inside waits a single sealed letter. The address is unsettlingly specific: your description, your exact location, and a name that isn't yours but feels like a coat you haven't grown into yet. The postmark is dated for a year that hasn't arrived. Faint through the envelope, you can see your own future handwriting, and it appears to be apologizing.",
+    "encounterType": "mystery",
+    "allowGoHome": true,
+    "goHomeLabel": "Leave the flag up and the letter unread",
+    "choices": [
+      {
+        "id": "open_letter",
+        "label": "Tear it open and read what you'll one day write",
+        "description": "Whoever you become took the trouble to reach back this far. The least you can do is read the apology and find out what it's for.",
+        "statFocus": "curiosity",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Some letters are easier to obey than to ignore."
+      },
+      {
+        "id": "return_sender",
+        "label": "Mark it RETURN TO SENDER and post it back",
+        "description": "You are not ready to be the person on that envelope, and you decline the appointment. The flag goes up; the future can wait its turn.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "write_first",
+        "label": "Leave a letter of your own for them to find",
+        "description": "Correspondence goes both ways across a strange enough mailbox. You have things to tell the person you're turning into, and one firm request.",
+        "statFocus": "empathy",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "swap_address",
+        "label": "Quietly re-address it to somebody else entirely",
+        "description": "If the future is handing out destinies by mail, there's no law saying you must accept yours. A different name, a steady pen, and it's somebody else's apology now.",
+        "statFocus": "deception",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      }
+    ],
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_mystery",
+      "more_weirdness"
+    ],
+    "templateId": "fallback:mystery:7"
+  }
+]

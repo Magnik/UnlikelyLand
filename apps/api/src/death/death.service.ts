@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import type { DeathStatusView, ReviveInput } from '@unlikelyland/contracts';
 import { PrismaService } from '../common/prisma.service';
 import { EconomyService } from '../economy/economy.service';
+import { AchievementsService } from '../achievements/achievements.service';
 import { DEATH } from '../engine/rules';
 
 /**
@@ -14,6 +15,7 @@ export class DeathService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly economy: EconomyService,
+    private readonly achievements: AchievementsService,
   ) {}
 
   async status(characterId: string): Promise<DeathStatusView> {
@@ -40,23 +42,28 @@ export class DeathService {
     const c = await this.prisma.character.findUniqueOrThrow({ where: { id: characterId } });
     if (!c.isDead) throw new BadRequestException('You are not downed');
 
-    const now = Date.now();
     const payCost = DEATH.PAY_BASE_COST + c.deathCount * DEATH.PAY_COST_PER_DEATH;
+    const restoredStamina = Math.min(c.staminaMax, c.staminaCurrent + Math.floor(c.staminaMax / 2));
 
     await this.prisma.$transaction(async (tx) => {
+      // Each revive is a one-shot, claimed atomically inside the tx so concurrent
+      // requests (double-tap, free+pay race) cannot both succeed. The method-specific
+      // predicate re-checks eligibility against the live row, not the pre-tx snapshot.
+      const where: { id: string; isDead: true; freeReviveAvailable?: true; reviveAvailableAt?: { lte: Date } } = {
+        id: characterId,
+        isDead: true,
+      };
       if (dto.method === 'free') {
-        if (!c.freeReviveAvailable) throw new BadRequestException('No free revive available');
+        where.freeReviveAvailable = true;
       } else if (dto.method === 'pay') {
+        // Atomic, race-safe spend; rolls back with the rest if the claim below fails.
         await this.economy.spendNormal(tx, characterId, payCost, 'revive:pay');
       } else {
-        // wait
-        if (!c.reviveAvailableAt || c.reviveAvailableAt.getTime() > now) {
-          throw new BadRequestException('Revival timer has not elapsed yet');
-        }
+        where.reviveAvailableAt = { lte: new Date() };
       }
 
-      await tx.character.update({
-        where: { id: characterId },
+      const claim = await tx.character.updateMany({
+        where,
         data: {
           isDead: false,
           deathReason: null,
@@ -64,14 +71,21 @@ export class DeathService {
           deathStartedAt: null,
           freeReviveAvailable: false,
           // Restore a portion of stamina so the player can get going again.
-          staminaCurrent: Math.min(c.staminaMax, c.staminaCurrent + Math.floor(c.staminaMax / 2)),
+          staminaCurrent: restoredStamina,
           staminaLastUpdatedAt: new Date(),
         },
       });
+      if (claim.count === 0) {
+        if (dto.method === 'free') throw new BadRequestException('No free revive available');
+        if (dto.method === 'wait') throw new BadRequestException('Revival timer has not elapsed yet');
+        throw new BadRequestException('Unable to revive right now');
+      }
+
       await tx.deathRecord.updateMany({
         where: { characterId, revivedAt: null },
         data: { revivedAt: new Date(), method: dto.method },
       });
+      await this.achievements.onFirstRevival(tx, characterId);
     });
 
     return this.status(characterId);

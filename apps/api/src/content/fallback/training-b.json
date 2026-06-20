@@ -1,0 +1,281 @@
+[
+  {
+    "title": "The Mirror Wants You To Lie Better",
+    "description": "A cracked full-length mirror leans in a velvet booth, and inside it stands a slightly better-dressed version of you who claims to be your reflection and your most disappointed acting coach. 'You lie like a confession,' it sighs, adjusting a tie you are not wearing. It runs the island's only school of Persuasive Untruth, grading every fib on conviction, posture, and follow-through. A small bell waits to ring the instant you blink wrong.",
+    "encounterType": "training",
+    "allowGoHome": true,
+    "goHomeLabel": "Claim, unconvincingly, that you have plans",
+    "minRating": "family",
+    "styleAffinities": [
+      "more_social",
+      "more_weirdness"
+    ],
+    "choices": [
+      {
+        "id": "sell_whopper",
+        "label": "Sell the mirror an outrageous, fully committed lie",
+        "description": "Look your reflection dead in its borrowed eyes and tell it the most magnificent untruth you can build, then defend it to the last detail without flinching.",
+        "statFocus": "deception",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "charm_grade",
+        "label": "Charm your way to a passing grade honestly",
+        "description": "Drop the act entirely. Win the coach over with warmth and sincerity until it decides charisma counts as an advanced form of persuasion.",
+        "statFocus": "charisma",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "stare_bell",
+        "label": "Hold a perfect unblinking deadpan",
+        "description": "Say nothing true or false. Just out-still the bell, matching your reflection blink for blink until one of you cracks first.",
+        "statFocus": "caution",
+        "riskLevel": "low",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "swap_places",
+        "label": "Convince the reflection to teach from your side",
+        "description": "Propose the mirror's forbidden lesson: trade places, just for practice, and let the better-dressed you live your afternoon while you grade from inside the glass.",
+        "statFocus": "weirdness",
+        "riskLevel": "medium",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "Your reflection has already started packing a small bag."
+      }
+    ],
+    "templateId": "fallback:training-b:0"
+  },
+  {
+    "title": "Stealth Class With a Very Loud Floor",
+    "description": "The thieves' guild trains its sneaking on the Complaining Floorboards, a single hallway of planks that narrate every footstep at volume. 'LEFT HEEL, OVERCONFIDENT,' bellows one as you enter. At the far end, a retired cat burglar — now just a retired cat — dozes on a cushion and awards diplomas to anyone who can cross without waking her. The boards insist they are not tattling, merely 'sharing.'",
+    "encounterType": "training",
+    "allowGoHome": true,
+    "goHomeLabel": "Loudly announce you were never here",
+    "minRating": "family",
+    "styleAffinities": [
+      "more_weirdness",
+      "less_combat"
+    ],
+    "choices": [
+      {
+        "id": "tiptoe_silent",
+        "label": "Cross the hallway in total silence",
+        "description": "Read the grain of each plank, find the quiet spots between complaints, and ghost across before a single board can announce you to the napping cat.",
+        "statFocus": "agility",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "befriend_boards",
+        "label": "Win over the floorboards with sympathy",
+        "description": "Kneel and actually listen to the planks. Validate their need to be heard until they agree to whisper you across, just this once.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "bribe_cat",
+        "label": "Negotiate the diploma directly with the cat",
+        "description": "Skip the floor entirely and open talks with the examiner. Everyone has a price, and hers appears to be measured in chin scratches.",
+        "statFocus": "negotiation",
+        "riskLevel": "low",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "sprint_chaos",
+        "label": "Sprint across and outrun the announcements",
+        "description": "Move faster than gossip. Cross the entire hall in three strides so the boards are still describing your left heel when you reach the cushion.",
+        "statFocus": "agility",
+        "riskLevel": "high",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The cat has one eye open and a very small notepad."
+      }
+    ],
+    "templateId": "fallback:training-b:1"
+  },
+  {
+    "title": "The Intimidation Workshop for the Chronically Adorable",
+    "description": "A tiny, enormously fluffy creature runs a remedial class for things too cute to threaten anyone. It stands on a stump in a foam pauldron, demonstrating its fiercest snarl, which makes onlookers coo. 'Today,' it squeaks, 'we learn to be FEARED.' A row of nervous bunnies, one shy mushroom, and a baby cloud all look to you to demonstrate that menace is, in fact, learnable.",
+    "encounterType": "training",
+    "allowGoHome": true,
+    "goHomeLabel": "Awww at the teacher and ruin everything",
+    "minRating": "family",
+    "styleAffinities": [
+      "more_comedy",
+      "more_social"
+    ],
+    "choices": [
+      {
+        "id": "practice_snarl",
+        "label": "Rehearse a genuinely terrifying presence",
+        "description": "Drop your shoulders, narrow your eyes, and project pure dread at the foam-armored teacher until even it takes a respectful half-step back.",
+        "statFocus": "intimidation",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "coach_bunnies",
+        "label": "Gently coach the nervous bunnies instead",
+        "description": "Forget your own grade. Build the timid class up one trembling student at a time until the shyest of them manages a tiny, valiant growl.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "fake_resume",
+        "label": "Invent a fearsome reputation for yourself",
+        "description": "Menace is half rumor. Spin a backstory so dark and convincing that the whole class believes you are the most dangerous thing on the island.",
+        "statFocus": "deception",
+        "riskLevel": "medium",
+        "rewardProfile": "risky",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "scare_cloud",
+        "label": "Attempt to make the baby cloud cry on command",
+        "description": "The ultimate exam: be so frightening that an actual weather system bursts into a brief, dramatic rainstorm. Possibly cruel. Definitely advanced.",
+        "statFocus": "intimidation",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The cloud has been practicing how to look brave."
+      }
+    ],
+    "templateId": "fallback:training-b:2"
+  },
+  {
+    "title": "Aim Training With a Pacifist Cannon",
+    "description": "The marksmanship annex is dominated by an antique brass cannon that has sworn off violence and now only fires gentle compliments and the occasional confetti. It mentors students on precision while flatly refusing to hit anything. 'Accuracy,' it muses, 'is intention, not impact.' A wall of distant tin cans waits, untouched and slightly bored, while the cannon practices missing them on purpose with breathtaking exactness.",
+    "encounterType": "training",
+    "allowGoHome": false,
+    "minRating": "family",
+    "styleAffinities": [
+      "more_comedy",
+      "less_combat"
+    ],
+    "choices": [
+      {
+        "id": "thread_needle",
+        "label": "Thread a shot between the cannon's confetti",
+        "description": "Time your throw to slip a marble dead-center through the gap in the cannon's gentle confetti burst and clip the farthest tin can clean.",
+        "statFocus": "accuracy",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "deflect_drill",
+        "label": "Volunteer to be the cannon's gentle target",
+        "description": "Stand at the line and learn to read a shot's arc by catching, dodging, or absorbing every soft compliment-round it lobs your way.",
+        "statFocus": "defense",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "debate_pacifism",
+        "label": "Persuade the cannon to aim for real, just once",
+        "description": "Argue, kindly but firmly, that hitting a humble tin can is not violence but completion, and coax a single true shot out of the old artillery.",
+        "statFocus": "negotiation",
+        "riskLevel": "low",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "trick_volley",
+        "label": "Set up an absurd trick shot using the confetti",
+        "description": "Choreograph a ricochet off the brass barrel, a falling streamer, and a dozing tin can so the whole annex erupts in a single perfect cascade.",
+        "statFocus": "weirdness",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The tin cans have quietly placed bets among themselves."
+      }
+    ],
+    "templateId": "fallback:training-b:3"
+  },
+  {
+    "title": "The Brave Booth Charges by the Goosebump",
+    "description": "A small carnival booth on the cliff path advertises COURAGE LESSONS — FIRST FRIGHT FREE. Inside sits a kindly old ghost who confesses he is, embarrassingly, terrified of absolutely everything, including himself in mirrors. He teaches bravery the only way he knows: by being scared alongside you, very supportively, while a meter on the wall measures your composure in flickers. 'We rise together,' he whispers, already hiding behind his own clipboard.",
+    "encounterType": "training",
+    "allowGoHome": true,
+    "goHomeLabel": "Decide bravery can wait until it's lighter out",
+    "minRating": "pg13",
+    "styleAffinities": [
+      "more_mystery",
+      "more_social"
+    ],
+    "choices": [
+      {
+        "id": "face_dark",
+        "label": "Sit calmly through the booth's worst scare",
+        "description": "Let the old ghost trigger his entire frightening repertoire at once and simply breathe through it, holding the composure meter steady while he hides behind you.",
+        "statFocus": "bravery",
+        "riskLevel": "medium",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "comfort_ghost",
+        "label": "Reassure the terrified instructor first",
+        "description": "He can't teach courage while quaking. Talk the poor ghost down, remind him he is the scary one here, and steady his clipboard hand before the lesson begins.",
+        "statFocus": "empathy",
+        "riskLevel": "low",
+        "rewardProfile": "safe",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "stand_ground",
+        "label": "Plant yourself and refuse to flinch at anything",
+        "description": "Turn the booth into an endurance test of nerve. Whatever leaps, moans, or looms out of the dark, hold your stance like a statue with a strong opinion.",
+        "statFocus": "defense",
+        "riskLevel": "low",
+        "rewardProfile": "balanced",
+        "mayStartCombat": false,
+        "isHiddenConsequence": false
+      },
+      {
+        "id": "open_door",
+        "label": "Ask to see what scares the ghost the most",
+        "description": "Request the back room he keeps locked, the one frightening even to the dead. Curiosity over caution; whatever's in there is the real final exam.",
+        "statFocus": "curiosity",
+        "riskLevel": "high",
+        "rewardProfile": "strange",
+        "mayStartCombat": false,
+        "isHiddenConsequence": true,
+        "visibleHint": "The composure meter dips just from looking at the door."
+      }
+    ],
+    "templateId": "fallback:training-b:4"
+  }
+]
