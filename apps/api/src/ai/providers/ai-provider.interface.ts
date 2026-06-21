@@ -24,3 +24,6 @@ export interface AiProvider {
    */
   generateJson(prompt: AiPrompt, settings: AiProviderSettings): Promise<unknown>;
 }
+
+/** DI token for the active provider, chosen at startup from AI_PROVIDER. */
+export const AI_PROVIDER = Symbol('AI_PROVIDER');

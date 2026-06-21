@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
   safeParseEncounter,
   type AiSettingsView,
@@ -9,7 +9,7 @@ import {
 import { AppConfig } from '../common/config';
 import { PrismaService } from '../common/prisma.service';
 import { FallbackService } from './fallback.service';
-import { OllamaProvider } from './providers/ollama.provider';
+import { AI_PROVIDER, type AiProvider, type AiProviderSettings } from './providers/ai-provider.interface';
 import { buildEncounterPrompt, type GenerationContext } from './prompt';
 import { moderateEncounter } from './moderation';
 
@@ -38,9 +38,24 @@ export class AiGatewayService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly config: AppConfig,
-    private readonly provider: OllamaProvider,
+    @Inject(AI_PROVIDER) private readonly provider: AiProvider,
     private readonly fallback: FallbackService,
   ) {}
+
+  /**
+   * The baseUrl/model the active provider should use. OpenAI uses its own
+   * env-configured endpoint + model; Ollama uses the runtime AiSettings values.
+   */
+  private providerSettings(settings: { baseUrl: string; model: string; timeoutMs: number }): AiProviderSettings {
+    if (this.config.ai.provider === 'openai') {
+      return {
+        baseUrl: this.config.ai.openai.baseUrl,
+        model: this.config.ai.openai.model,
+        timeoutMs: settings.timeoutMs,
+      };
+    }
+    return { baseUrl: settings.baseUrl, model: settings.model, timeoutMs: settings.timeoutMs };
+  }
 
   /** Lazily create the singleton settings row from env defaults. */
   private async ensureSettings() {
@@ -60,11 +75,14 @@ export class AiGatewayService {
 
   async getSettingsView(): Promise<AiSettingsView> {
     const s = await this.ensureSettings();
+    // Surface the EFFECTIVE endpoint/model so the admin panel reflects reality when
+    // AI_PROVIDER=openai (the stored AiSettings baseUrl/model are Ollama-oriented).
+    const openai = this.config.ai.provider === 'openai';
     return {
       enabled: s.enabled,
       forceFallback: s.forceFallback,
-      baseUrl: s.baseUrl,
-      model: s.model,
+      baseUrl: openai ? this.config.ai.openai.baseUrl : s.baseUrl,
+      model: openai ? this.config.ai.openai.model : s.model,
       timeoutMs: s.timeoutMs,
       effectivelyOn: s.enabled && !s.forceFallback,
     };
@@ -112,33 +130,34 @@ export class AiGatewayService {
     settings: { baseUrl: string; model: string; timeoutMs: number },
   ): Promise<Encounter | null> {
     const prompt = buildEncounterPrompt(ctx);
+    const ps = this.providerSettings(settings);
 
     for (let attempt = 1; attempt <= MAX_AI_ATTEMPTS; attempt++) {
       const started = Date.now();
       try {
-        const raw = await this.provider.generateJson(prompt, settings);
+        const raw = await this.provider.generateJson(prompt, ps);
         const latency = Date.now() - started;
 
         const parsed = safeParseEncounter(raw);
         if (!parsed.success) {
-          await this.log(ctx.characterId, settings, 'invalid_schema', latency, parsed.error.message, raw);
+          await this.log(ctx.characterId, ps, 'invalid_schema', latency, parsed.error.message, raw);
           continue;
         }
 
         const moderation = moderateEncounter(parsed.data, ctx.contentRating as ContentRating);
         if (!moderation.safe) {
-          await this.log(ctx.characterId, settings, 'unsafe', latency, moderation.reason ?? 'unsafe', raw);
+          await this.log(ctx.characterId, ps, 'unsafe', latency, moderation.reason ?? 'unsafe', raw);
           continue;
         }
 
-        await this.log(ctx.characterId, settings, 'ok', latency, null, raw);
+        await this.log(ctx.characterId, ps, 'ok', latency, null, raw);
         return parsed.data;
       } catch (err) {
         const latency = Date.now() - started;
         const isTimeout = err instanceof Error && err.name === 'AbortError';
         await this.log(
           ctx.characterId,
-          settings,
+          ps,
           isTimeout ? 'timeout' : 'error',
           latency,
           err instanceof Error ? err.message : 'unknown error',

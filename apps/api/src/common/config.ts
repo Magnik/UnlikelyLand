@@ -25,9 +25,18 @@ export class AppConfig {
 
   readonly ai = {
     enabled: (process.env.AI_ENABLED ?? 'true') !== 'false',
+    // Which backend the gateway talks to: 'ollama' (local) or 'openai' (hosted).
+    provider: (process.env.AI_PROVIDER ?? 'ollama').toLowerCase(),
     baseUrl: process.env.OLLAMA_BASE_URL ?? 'http://localhost:11434',
     model: process.env.OLLAMA_MODEL ?? 'llama3.1:8b',
     timeoutMs: Number(process.env.AI_TIMEOUT_MS ?? 25000),
+    // OpenAI-compatible Chat Completions. The key is a secret (env only, never
+    // committed). baseUrl works for OpenAI or any compatible endpoint.
+    openai: {
+      apiKey: process.env.OPENAI_API_KEY ?? '',
+      baseUrl: process.env.OPENAI_BASE_URL ?? 'https://api.openai.com/v1',
+      model: process.env.OPENAI_MODEL ?? 'gpt-4o-mini',
+    },
   };
 
   readonly admin = {

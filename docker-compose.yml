@@ -49,6 +49,11 @@ services:
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-30d}
       CORS_ORIGINS: ${CORS_ORIGINS:-}
       AI_ENABLED: ${AI_ENABLED:-true}
+      # Provider: 'ollama' (local) or 'openai' (hosted). For OpenAI set OPENAI_API_KEY.
+      AI_PROVIDER: ${AI_PROVIDER:-ollama}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://api.openai.com/v1}
       OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
       OLLAMA_MODEL: ${OLLAMA_MODEL:-llama3.1:8b}
       AI_TIMEOUT_MS: ${AI_TIMEOUT_MS:-25000}
