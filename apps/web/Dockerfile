@@ -9,6 +9,11 @@ COPY apps/web/package.json apps/web/package.json
 RUN npm ci
 
 COPY . .
+# Next.js bakes rewrites() into the build manifest at `next build` time and does NOT
+# re-read next.config at runtime — so the /api/* proxy target must be set HERE, not
+# just in the runtime env. In every Docker deployment the API service is named `api`.
+ARG API_INTERNAL_URL=http://api:4000
+ENV API_INTERNAL_URL=${API_INTERNAL_URL}
 RUN npm run build -w @unlikelyland/contracts \
  && npm run build -w @unlikelyland/web
 

@@ -1,7 +1,9 @@
 // The browser only ever talks to same-origin /api/*; Next proxies those calls to
 // the backend so there's no CORS and no API URL baked into client bundles.
-// API_INTERNAL_URL is read at server start: localhost in dev, `http://api:4000`
-// inside Docker Compose.
+// NOTE: rewrites() are frozen into the build manifest at `next build` time (next
+// start does NOT re-evaluate this config), so API_INTERNAL_URL must be set at BUILD
+// time — the Docker image bakes `http://api:4000` (see apps/web/Dockerfile). For
+// local `next dev` it's read live from .env.
 const API = process.env.API_INTERNAL_URL || 'http://localhost:4000';
 
 // Security headers applied to every response by the Next.js server itself, so they
