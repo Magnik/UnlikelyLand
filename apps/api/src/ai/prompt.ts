@@ -13,6 +13,20 @@ export interface GenerationContext {
   storyStyleTags: StoryStyleTag[];
   step: number;
   maxSteps: number;
+  /** The character's display name, so the protagonist isn't anonymous. */
+  characterName?: string;
+  /** This expedition's fixed premise + objective (the through-line for every step). */
+  premise?: string | null;
+  goal?: string | null;
+  /**
+   * What happened on the previous step of THIS expedition, so encounters connect
+   * instead of reading as unrelated vignettes. Absent on the opening encounter.
+   */
+  previously?: {
+    title: string;
+    choiceLabel?: string | null;
+    outcome?: string | null;
+  } | null;
 }
 
 /**
@@ -94,10 +108,28 @@ export function buildEncounterPrompt(ctx: GenerationContext): { system: string; 
       ? `Player style preferences (honour these where you can, but never break the content rating): ${styleHints.join('; ')}.`
       : '';
 
+  // The protagonist's name + this expedition's fixed premise/goal anchor every step
+  // to one story; the "previously" recap makes consecutive encounters connect.
+  const who = ctx.characterName ? ctx.characterName : 'the player';
+  const protagonistBlock = ctx.characterName
+    ? `The protagonist is named ${ctx.characterName}; you may name them in the prose.`
+    : '';
+  const premiseBlock = ctx.premise
+    ? `This expedition's premise: ${ctx.premise}${ctx.goal ? ` Their goal: ${ctx.goal}` : ''} Keep this encounter consistent with that premise and goal.`
+    : '';
+  const previouslyBlock = ctx.previously
+    ? `Previously this expedition — at "${ctx.previously.title}", ${who} chose to ${ctx.previously.choiceLabel ?? 'act'}.${
+        ctx.previously.outcome ? ` ${ctx.previously.outcome}` : ''
+      } This new encounter should follow on from that, as the next beat — not a disconnected scene.`
+    : '';
+
   const user = [
     `Region set: ${ctx.regionSetName} — ${ctx.regionSetBlurb}`,
+    protagonistBlock,
+    premiseBlock,
     `Activity: ${ctx.expeditionType} (aim for a ${ctx.desiredEncounterType} encounter).`,
     `This is step ${ctx.step} of ${ctx.maxSteps} in the current expedition.`,
+    previouslyBlock,
     `Player personality so far: ${ctx.personalitySummary}.`,
     memoryBlock,
     styleBlock,

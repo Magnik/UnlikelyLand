@@ -2,6 +2,7 @@ import type {
   AchievementView,
   ActivityEventView,
   AdminInventoryView,
+  AdvanceExpeditionView,
   AiSettingsView,
   AuthResponse,
   ChatMessageView,
@@ -130,6 +131,11 @@ async function req<T>(path: string, opts: RequestInit = {}, retried = false): Pr
 export interface ExpeditionTypeInfo {
   type: ExpeditionView['type'];
   label: string;
+  description: string;
+  icon: string;
+  specialty: string;
+  rewardHint: string;
+  accent: string;
   staminaPerStep: number;
   steps: number;
 }
@@ -236,6 +242,8 @@ export const api = {
   expeditionTypes: () => req<ExpeditionTypeInfo[]>('/expeditions/types'),
   activeExpedition: () => req<ActiveExpedition>('/expeditions/active'),
   startExpedition: (type: string) => req<StartExpeditionResponse>('/expeditions/start', { method: 'POST', body: JSON.stringify({ type }) }),
+  advanceExpedition: (expeditionId: string) =>
+    req<AdvanceExpeditionView>('/expeditions/advance', { method: 'POST', body: JSON.stringify({ expeditionId }) }),
   goHome: (expeditionId: string) => req<{ expedition: ExpeditionView }>('/expeditions/go-home', { method: 'POST', body: JSON.stringify({ expeditionId }) }),
 
   currentEncounter: () => req<EncounterView | null>('/encounters/current'),

@@ -27,15 +27,86 @@ export const LEVELING = {
  */
 export const EXPEDITIONS: Record<
   ExpeditionType,
-  { encounterType: EncounterType; fallbackPool: EncounterType; staminaPerStep: number; steps: number; label: string }
+  {
+    encounterType: EncounterType;
+    fallbackPool: EncounterType;
+    staminaPerStep: number;
+    steps: number;
+    label: string;
+    /**
+     * Whether this type is offered in the picker. Non-selectable types stay VALID
+     * (back-compat for in-flight expeditions + the loot/reward tables keyed by type)
+     * but can no longer be started — their flavour is folded into a selectable pillar.
+     */
+    selectable: boolean;
+    /** Picker identity, so each option reads as its own thing. */
+    icon: string;
+    specialty: string;
+    rewardHint: string;
+    /** Accent colour used for the picker card's edge + specialty chip. */
+    accent: string;
+    /** One-line picker hint: what this activity is. */
+    description: string;
+    /**
+     * Scene-set + objective templates resolved once at expedition start. `{region}`
+     * is replaced with the locked region name. premise sets the stage; goal states
+     * the through-line. Both are shown to the player and injected into every prompt.
+     */
+    premise: string;
+    goal: string;
+  }
 > = {
-  explore: { encounterType: 'exploration', fallbackPool: 'exploration', staminaPerStep: 12, steps: 3, label: 'Explore' },
-  fight: { encounterType: 'combat', fallbackPool: 'combat', staminaPerStep: 14, steps: 3, label: 'Pick a Fight' },
-  scavenge: { encounterType: 'scavenging', fallbackPool: 'scavenging', staminaPerStep: 8, steps: 3, label: 'Scavenge' },
-  socialize: { encounterType: 'social', fallbackPool: 'social', staminaPerStep: 10, steps: 3, label: 'Socialize' },
-  investigate: { encounterType: 'mystery', fallbackPool: 'exploration', staminaPerStep: 12, steps: 3, label: 'Investigate' },
-  train: { encounterType: 'training', fallbackPool: 'training', staminaPerStep: 10, steps: 3, label: 'Train' },
-  work: { encounterType: 'work', fallbackPool: 'scavenging', staminaPerStep: 10, steps: 3, label: 'Work a Shift' },
+  // ── The four selectable pillars (each a distinct fantasy) ──
+  explore: {
+    encounterType: 'exploration', fallbackPool: 'exploration', staminaPerStep: 12, steps: 3, label: 'Explore',
+    selectable: true, icon: '🧭', specialty: 'Discovery', rewardHint: 'Maps, oddities, the occasional mystery.', accent: '#36c5b0',
+    description: "Strike out into the unknown — and pull at whatever doesn't add up.",
+    premise: "You set out to explore {region}, chasing the parts of it that don't quite make sense.",
+    goal: 'Map {region} and get to the bottom of at least one of its mysteries.',
+  },
+  fight: {
+    encounterType: 'combat', fallbackPool: 'combat', staminaPerStep: 14, steps: 3, label: 'Pick a Fight',
+    selectable: true, icon: '⚔️', specialty: 'Combat', rewardHint: 'XP and gear — if you win.', accent: '#e0524f',
+    description: 'Go looking for a fight. The island is happy to provide one.',
+    premise: "Something in {region} has been asking for it, and today you've decided to oblige.",
+    goal: 'Win your fights across {region} and walk away (mostly) intact.',
+  },
+  scavenge: {
+    encounterType: 'scavenging', fallbackPool: 'scavenging', staminaPerStep: 8, steps: 4, label: 'Scavenge',
+    selectable: true, icon: '🪣', specialty: 'Loot', rewardHint: 'Materials, clams, and useful junk.', accent: '#d8a23a',
+    description: "Scrounge the area for loot, scrap, and an honest-ish day's pay.",
+    premise: '{region} is full of things people dropped, abandoned, or are technically still using. You are collecting.',
+    goal: 'Haul as much out of {region} as you can carry.',
+  },
+  socialize: {
+    encounterType: 'social', fallbackPool: 'social', staminaPerStep: 9, steps: 3, label: 'Socialize',
+    selectable: true, icon: '💬', specialty: 'People', rewardHint: 'Notoriety, allies, and gossip.', accent: '#9b6cd6',
+    description: 'Work the locals — for friends, favours, or at least fewer enemies.',
+    premise: 'You head into {region} to charm, bargain, and gossip your way through its residents.',
+    goal: 'Leave {region} with more allies than grudges.',
+  },
+  // ── Folded-in types: kept valid for old expeditions, no longer offered ──
+  investigate: {
+    encounterType: 'mystery', fallbackPool: 'exploration', staminaPerStep: 12, steps: 3, label: 'Investigate',
+    selectable: false, icon: '🔍', specialty: 'Mystery', rewardHint: 'Answers, mostly.', accent: '#6c8fd6',
+    description: 'Chase a mystery to its strange conclusion.',
+    premise: "Something about {region} doesn't add up, and the not-adding-up is keeping you awake.",
+    goal: 'Get to the bottom of whatever {region} is hiding.',
+  },
+  train: {
+    encounterType: 'training', fallbackPool: 'training', staminaPerStep: 10, steps: 3, label: 'Train',
+    selectable: false, icon: '💪', specialty: 'Training', rewardHint: 'A sharper you.', accent: '#7aa86f',
+    description: 'Push yourself; nudge your stats.',
+    premise: 'You retreat into {region} to train, sweat, and become a marginally more dangerous person.',
+    goal: 'Train hard in {region} and come back sharper.',
+  },
+  work: {
+    encounterType: 'work', fallbackPool: 'scavenging', staminaPerStep: 10, steps: 3, label: 'Work a Shift',
+    selectable: false, icon: '🧾', specialty: 'Wages', rewardHint: 'Steady pay.', accent: '#b9883f',
+    description: 'Do a shift for steady pay.',
+    premise: "There's an honest day's work to be had in {region}, allegedly, for honest pay, allegedly.",
+    goal: 'Clock in around {region} and clock out richer.',
+  },
 };
 
 /** Stat-check difficulty by risk level (roll d20 + stat + level/2 + luck vs this). */

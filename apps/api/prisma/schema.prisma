@@ -186,6 +186,11 @@ model Expedition {
   maxSteps       Int
   staminaPerStep Int
   summary        String?
+  // Narrative framing chosen once at start (templated per type + locked region) so
+  // every step of the expedition shares one premise/goal/place instead of drifting.
+  premise        String?
+  goal           String?
+  regionName     String?
   startedAt      DateTime  @default(now())
   endedAt        DateTime?
 

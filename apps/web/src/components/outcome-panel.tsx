@@ -46,16 +46,21 @@ function CombatLog({ combat }: { combat: NonNullable<ResolutionView['combat']> }
 
 export function OutcomePanel({
   result,
+  chosenLabel,
   previousLevel,
   onContinue,
 }: {
   result: ResolutionView;
+  /** The action the player picked, echoed so the outcome reads as cause→effect. */
+  chosenLabel?: string | null;
   previousLevel?: number;
   onContinue: () => void;
 }) {
   const { check } = result;
   const newLevel = result.character.level;
   const leveledUp = previousLevel != null && newLevel > previousLevel;
+  // The expedition continues if there's already a next encounter or one is pending.
+  const hasNext = result.nextStepPending || !!result.nextEncounter;
   return (
     <div className="card">
       <div className="row between mb">
@@ -64,6 +69,8 @@ export function OutcomePanel({
           {check.success ? 'success' : 'setback'}
         </span>
       </div>
+
+      {chosenLabel ? <div className="tiny muted mb">You tried: {chosenLabel}</div> : null}
 
       {leveledUp ? <div className="levelup">⭐ Level up! You&apos;re now level {newLevel}.</div> : null}
 
@@ -89,10 +96,14 @@ export function OutcomePanel({
         <RewardChips rewards={result.rewards} />
       </div>
 
-      {result.expeditionCompleted && result.completionBonus ? (
+      {result.expeditionCompleted ? (
         <div className="notice">
-          Expedition complete! Bonus: +{result.completionBonus.xp} XP
-          {result.completionBonus.currencies.normal ? `, +${result.completionBonus.currencies.normal} Clams` : ''}.
+          {result.expedition?.summary ? `${result.expedition.summary} ` : 'Expedition complete! '}
+          {result.completionBonus
+            ? `Bonus: +${result.completionBonus.xp} XP${
+                result.completionBonus.currencies.normal ? `, +${result.completionBonus.currencies.normal} Clams` : ''
+              }.`
+            : ''}
         </div>
       ) : null}
 
@@ -102,7 +113,7 @@ export function OutcomePanel({
         </button>
       ) : (
         <button className="btn btn-primary" onClick={onContinue}>
-          {result.nextEncounter ? 'Onward →' : 'Continue'}
+          {hasNext ? 'Onward →' : 'Continue'}
         </button>
       )}
     </div>

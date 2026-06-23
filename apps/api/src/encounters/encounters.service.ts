@@ -38,10 +38,37 @@ export class EncountersService {
   ) {}
 
   /**
-   * Generate the encounter for a given step of an expedition and persist it.
-   * Stamina must already have been charged by the caller.
+   * Deterministic idempotency key for a generated step encounter. Reusing the
+   * existing `@@unique([characterId, clientRequestId])` constraint makes a second
+   * concurrent generation of the SAME step collide (P2002) instead of inserting a
+   * duplicate row — the cheap serializer that lets advance charge+create atomically.
+   */
+  static stepKey(expeditionId: string, stepIndex: number): string {
+    return `step:${expeditionId}:${stepIndex}`;
+  }
+
+  /**
+   * Generate + persist the encounter for a step (used to open an expedition, where
+   * stamina was already charged in the start transaction). For the in-flight
+   * "advance" path, callers use generateStepContent + createStepEncounter so the
+   * charge and the create commit (or roll back) together.
    */
   async generateForStep(characterId: string, expeditionId: string, stepIndex: number): Promise<EncounterView> {
+    const content = await this.generateStepContent(characterId, expeditionId, stepIndex);
+    const view = await this.createStepEncounter(this.prisma, characterId, expeditionId, stepIndex, content);
+    await this.ingestItemConcepts(characterId, content.encounter.itemConceptSuggestions);
+    return view;
+  }
+
+  /**
+   * Build the validated encounter for a step. Pure generation — NO database writes,
+   * so the (slow, AI-backed) call happens outside any transaction.
+   */
+  async generateStepContent(
+    characterId: string,
+    expeditionId: string,
+    stepIndex: number,
+  ): Promise<{ encounter: Encounter; source: 'ai' | 'fallback'; regionSetId: string }> {
     const character = await this.prisma.character.findUniqueOrThrow({
       where: { id: characterId },
       include: { stats: true, regionSet: true },
@@ -51,14 +78,28 @@ export class EncountersService {
     const stats = this.characters.statBlockFromRow(character.stats as never);
     const storyStyleTags = await this.characters.getStoryStyleTags(characterId);
     const memories = await this.memory.recentForPrompt(characterId);
-    const regions = await this.prisma.region.findMany({
-      where: { regionSetId: character.regionSetId },
-      select: { name: true },
-    });
-    const regionName = regions.length ? regions[stepIndex % regions.length].name : '';
+
+    // Region is locked for the whole expedition (set at start). Fall back to the
+    // old per-step rotation only for expeditions created before that field existed.
+    let regionName = expedition.regionName ?? '';
+    if (!regionName) {
+      const regions = await this.prisma.region.findMany({
+        where: { regionSetId: character.regionSetId },
+        select: { name: true },
+      });
+      regionName = regions.length ? regions[stepIndex % regions.length].name : '';
+    }
+
+    // "Previously" — the prior resolved encounter of THIS expedition, so the next
+    // step reads as a continuation rather than an unrelated scene.
+    const previously = await this.priorStepRecap(expeditionId);
 
     const { encounter, source } = await this.ai.generateEncounter({
       characterId,
+      characterName: character.displayName,
+      premise: expedition.premise,
+      goal: expedition.goal,
+      previously,
       regionSetName: character.regionSet.name,
       regionSetBlurb: regionName
         ? `${character.regionSet.blurb} You're somewhere around ${regionName}.`
@@ -75,20 +116,40 @@ export class EncountersService {
       seedParts: [characterId, expeditionId, stepIndex],
     });
 
-    const row = await this.prisma.encounter.create({
+    return { encounter, source, regionSetId: character.regionSetId };
+  }
+
+  /**
+   * Persist a generated step encounter via the given client (the caller's tx, so it
+   * commits/rolls back together with the stamina charge). The deterministic
+   * clientRequestId makes a concurrent duplicate insert throw P2002 — the caller
+   * treats that as "another advance already claimed this step".
+   */
+  async createStepEncounter(
+    client: Prisma.TransactionClient,
+    characterId: string,
+    expeditionId: string,
+    stepIndex: number,
+    content: { encounter: Encounter; source: 'ai' | 'fallback'; regionSetId: string },
+  ): Promise<EncounterView> {
+    const row = await client.encounter.create({
       data: {
         characterId,
         expeditionId,
-        regionSetId: character.regionSetId,
-        source,
-        encounterType: encounter.encounterType,
-        payload: encounter as unknown as object,
+        regionSetId: content.regionSetId,
+        source: content.source,
+        encounterType: content.encounter.encounterType,
+        payload: content.encounter as unknown as object,
+        clientRequestId: EncountersService.stepKey(expeditionId, stepIndex),
       },
       select: { id: true, source: true, resolved: true, payload: true },
     });
-
-    await this.ingestItemConcepts(characterId, encounter.itemConceptSuggestions);
     return this.toView(row);
+  }
+
+  /** Ingest the AI item-concept proposals from a generated encounter (best-effort). */
+  async ingestStepConcepts(characterId: string, suggestions: ItemConceptSuggestion[]): Promise<void> {
+    await this.ingestItemConcepts(characterId, suggestions);
   }
 
   /**
@@ -163,6 +224,40 @@ export class EncountersService {
       select: { id: true, source: true, resolved: true, payload: true },
     });
     return row ? this.toView(row) : null;
+  }
+
+  /**
+   * The current unresolved encounter for a SPECIFIC expedition. Used by advance so a
+   * dangling encounter from a different (e.g. abandoned) expedition can never be
+   * mistaken for this expedition's pending step.
+   */
+  async currentEncounterForExpedition(characterId: string, expeditionId: string): Promise<EncounterView | null> {
+    const row = await this.prisma.encounter.findFirst({
+      where: { characterId, expeditionId, resolved: false },
+      orderBy: { createdAt: 'desc' },
+      select: { id: true, source: true, resolved: true, payload: true },
+    });
+    return row ? this.toView(row) : null;
+  }
+
+  /**
+   * The previous resolved encounter of an expedition, distilled to a one-line
+   * recap (title, chosen action, outcome) for the next encounter's prompt so the
+   * story connects step to step. Null on the opening step.
+   */
+  private async priorStepRecap(
+    expeditionId: string,
+  ): Promise<{ title: string; choiceLabel: string | null; outcome: string | null } | null> {
+    const prior = await this.prisma.encounter.findFirst({
+      where: { expeditionId, resolved: true },
+      orderBy: { resolvedAt: 'desc' },
+      select: { payload: true, resolvedChoiceId: true, resolution: true },
+    });
+    if (!prior) return null;
+    const payload = prior.payload as Encounter;
+    const choice = payload.choices.find((c) => c.id === prior.resolvedChoiceId);
+    const outcome = (prior.resolution as { narrative?: string } | null)?.narrative ?? null;
+    return { title: payload.title, choiceLabel: choice?.label ?? null, outcome };
   }
 
   toView(row: EncounterRow): EncounterView {

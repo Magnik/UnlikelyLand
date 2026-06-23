@@ -12,10 +12,11 @@ const snapshot = {
   deathReason: null,
 };
 
-function makeSvc(over: { encounter?: any; character?: any } = {}) {
+function makeSvc(over: { encounter?: any; character?: any; expedition?: any } = {}) {
   const prisma = {
     encounter: { findUnique: vi.fn().mockResolvedValue(over.encounter ?? null) },
     character: { findUniqueOrThrow: vi.fn().mockResolvedValue(over.character ?? { id: 'c1', isDead: false, xp: 0, stats: {} }) },
+    expedition: { findUnique: vi.fn().mockResolvedValue(over.expedition ?? null) },
     $transaction: vi.fn(),
   } as any;
   const characters = {
@@ -55,6 +56,15 @@ describe('ResolutionService.resolve guards + idempotency', () => {
     const { svc, prisma } = makeSvc({
       encounter: { id: 'e1', characterId: 'c1', resolved: false, payload: { choices: [] } },
       character: { id: 'c1', isDead: true, xp: 0, stats: {} },
+    });
+    await expect(svc.resolve('c1', { encounterId: 'e1', choiceId: 'go' } as any)).rejects.toBeInstanceOf(BadRequestException);
+    expect(prisma.$transaction).not.toHaveBeenCalled();
+  });
+
+  it('rejects resolving a dangling encounter whose expedition is no longer active', async () => {
+    const { svc, prisma } = makeSvc({
+      encounter: { id: 'e1', characterId: 'c1', resolved: false, expeditionId: 'exp1', payload: { choices: [] } },
+      expedition: { status: 'abandoned' },
     });
     await expect(svc.resolve('c1', { encounterId: 'e1', choiceId: 'go' } as any)).rejects.toBeInstanceOf(BadRequestException);
     expect(prisma.$transaction).not.toHaveBeenCalled();

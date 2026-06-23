@@ -1,5 +1,12 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-import { GoHomeSchema, StartExpeditionSchema, type GoHomeInput, type StartExpeditionInput } from '@unlikelyland/contracts';
+import {
+  AdvanceExpeditionSchema,
+  GoHomeSchema,
+  StartExpeditionSchema,
+  type AdvanceExpeditionInput,
+  type GoHomeInput,
+  type StartExpeditionInput,
+} from '@unlikelyland/contracts';
 import { CurrentUser, type AuthUser } from '../common/current-user.decorator';
 import { ZodBody } from '../common/zod-validation.pipe';
 import { RateLimit, RateLimitGuard } from '../common/rate-limit.guard';
@@ -27,6 +34,18 @@ export class ExpeditionsController {
     @Body(new ZodBody(StartExpeditionSchema)) dto: StartExpeditionInput,
   ) {
     return this.expeditions.start(user.characterId, dto.type);
+  }
+
+  // Generating the next encounter (the slow, potentially AI-backed step) now lives
+  // here instead of inside resolve, so it is throttled per character.
+  @UseGuards(RateLimitGuard)
+  @RateLimit({ limit: 40, windowMs: 60 * 1000, key: 'expedition:advance' })
+  @Post('advance')
+  advance(
+    @CurrentUser() user: AuthUser,
+    @Body(new ZodBody(AdvanceExpeditionSchema)) dto: AdvanceExpeditionInput,
+  ) {
+    return this.expeditions.advanceStep(user.characterId, dto.expeditionId);
   }
 
   @Post('go-home')

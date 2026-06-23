@@ -2,8 +2,16 @@
 
 import type { ChoiceView, EncounterView } from '@unlikelyland/contracts';
 
+/** Player-facing labels for the internal risk enum (no raw 'ridiculous' etc.). */
+const RISK_LABEL: Record<ChoiceView['riskLevel'], string> = {
+  low: 'low risk',
+  medium: 'medium risk',
+  high: 'high risk',
+  ridiculous: 'reckless',
+};
+
 function RiskBadge({ risk }: { risk: ChoiceView['riskLevel'] }) {
-  return <span className={`badge risk-${risk}`}>{risk}</span>;
+  return <span className={`badge risk-${risk}`}>{RISK_LABEL[risk]}</span>;
 }
 
 function ChoiceButton({ choice, disabled, onPick }: { choice: ChoiceView; disabled: boolean; onPick: () => void }) {
@@ -28,11 +36,14 @@ function ChoiceButton({ choice, disabled, onPick }: { choice: ChoiceView; disabl
 
 export function EncounterCard({
   encounter,
+  previously,
   busy,
   onPick,
   onGoHome,
 }: {
   encounter: EncounterView;
+  /** One-line recap of what just happened, shown above the new scene. */
+  previously?: string | null;
   busy: boolean;
   onPick: (choiceId: string) => void;
   onGoHome: () => void;
@@ -40,11 +51,15 @@ export function EncounterCard({
   return (
     <div className="card">
       <div className="row between mb">
-        <span className={`badge source cat-${encounter.encounterType === 'combat' ? 'combat' : 'social'}`}>
+        <span className={`badge cat-${encounter.encounterType === 'combat' ? 'combat' : 'social'}`}>
           {encounter.encounterType}
         </span>
-        <span className="badge source">{encounter.source === 'ai' ? 'AI' : 'fallback'}</span>
       </div>
+      {previously ? (
+        <p className="tiny muted" style={{ marginTop: 0 }}>
+          <em>Previously: {previously}</em>
+        </p>
+      ) : null}
       <h2>{encounter.title}</h2>
       <p className="muted" style={{ marginTop: 0 }}>
         {encounter.description}

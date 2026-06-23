@@ -136,6 +136,10 @@ export interface ExpeditionView {
   step: number;
   maxSteps: number;
   staminaPerStep: number;
+  /** One-time scene-set + objective + locked region for this run (quest header). */
+  premise: string | null;
+  goal: string | null;
+  regionName: string | null;
   startedAt: string;
   endedAt: string | null;
   summary: string | null;
@@ -182,6 +186,23 @@ export const GoHomeSchema = z.object({
   expeditionId: z.string().uuid(),
 });
 export type GoHomeInput = z.infer<typeof GoHomeSchema>;
+
+/**
+ * Advance to the next step of an active expedition: charges stamina and generates
+ * the next encounter. Split out of `resolve` so the player sees their outcome
+ * immediately while this (potentially slow AI) call runs in the background.
+ * Idempotent: returns the already-generated encounter if one exists for the step.
+ */
+export const AdvanceExpeditionSchema = z.object({
+  expeditionId: z.string().uuid(),
+});
+export type AdvanceExpeditionInput = z.infer<typeof AdvanceExpeditionSchema>;
+
+export interface AdvanceExpeditionView {
+  expedition: ExpeditionView;
+  /** The next encounter, or null if the expedition ended (e.g. out of stamina). */
+  encounter: EncounterView | null;
+}
 
 export interface CombatRoundView {
   round: number;
@@ -237,7 +258,14 @@ export interface ResolutionView {
   completionBonus: RewardView | null;
   character: CharacterView;
   expedition: ExpeditionView | null;
+  /**
+   * The next encounter, when it is already available (e.g. an idempotent replay).
+   * On a fresh resolve this is null and `nextStepPending` is true — the client
+   * calls POST /expeditions/advance to generate it while showing this outcome.
+   */
   nextEncounter: EncounterView | null;
+  /** True when the expedition continues and the next encounter must still be fetched. */
+  nextStepPending: boolean;
 }
 
 // ── Death ────────────────────────────────────────────────────────────────────

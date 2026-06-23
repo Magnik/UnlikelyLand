@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import type { EncounterView, ExpeditionType, ExpeditionView } from '@unlikelyland/contracts';
+import { Prisma } from '@prisma/client';
+import type { AdvanceExpeditionView, EncounterView, ExpeditionType, ExpeditionView } from '@unlikelyland/contracts';
 import { PrismaService } from '../common/prisma.service';
 import { CharactersService } from '../characters/characters.service';
 import { EncountersService } from '../encounters/encounters.service';
@@ -25,12 +26,22 @@ export class ExpeditionsService {
 
   /** The available expedition types with labels and costs (for the picker UI). */
   listTypes() {
-    return (Object.keys(EXPEDITIONS) as ExpeditionType[]).map((type) => ({
-      type,
-      label: EXPEDITIONS[type].label,
-      staminaPerStep: EXPEDITIONS[type].staminaPerStep,
-      steps: EXPEDITIONS[type].steps,
-    }));
+    return (Object.keys(EXPEDITIONS) as ExpeditionType[])
+      .filter((type) => EXPEDITIONS[type].selectable)
+      .map((type) => {
+        const e = EXPEDITIONS[type];
+        return {
+          type,
+          label: e.label,
+          description: e.description,
+          icon: e.icon,
+          specialty: e.specialty,
+          rewardHint: e.rewardHint,
+          accent: e.accent,
+          staminaPerStep: e.staminaPerStep,
+          steps: e.steps,
+        };
+      });
   }
 
   async start(characterId: string, type: ExpeditionType): Promise<StartExpeditionResult> {
@@ -41,6 +52,18 @@ export class ExpeditionsService {
     if (active) throw new BadRequestException('Finish or go home from your current expedition first');
 
     const cfg = EXPEDITIONS[type];
+    if (!cfg?.selectable) throw new BadRequestException('That expedition is not available.');
+
+    // Lock one region for the whole expedition and resolve its premise/goal once,
+    // so every step shares a single place and through-line (set here, not per step).
+    const regions = await this.prisma.region.findMany({
+      where: { regionSetId: character.regionSetId },
+      select: { name: true },
+    });
+    const regionName = regions.length ? regions[Math.floor(Math.random() * regions.length)].name : '';
+    const place = regionName || 'the island';
+    const premise = cfg.premise.replace(/\{region\}/g, place);
+    const goal = cfg.goal.replace(/\{region\}/g, place);
 
     // Charge stamina for step 1 and create the expedition atomically.
     const expedition = await this.prisma.$transaction(async (tx) => {
@@ -53,6 +76,9 @@ export class ExpeditionsService {
           step: 0,
           maxSteps: cfg.steps,
           staminaPerStep: cfg.staminaPerStep,
+          premise,
+          goal,
+          regionName: regionName || null,
         },
       });
     });
@@ -74,6 +100,63 @@ export class ExpeditionsService {
   }
 
   /**
+   * Advance to the next step: charge stamina and generate the next encounter.
+   * Split out of `resolve` so the player sees their outcome immediately while this
+   * (potentially slow AI) call runs in the background.
+   *
+   * Idempotent: if an unresolved encounter already exists (prefetch + reload, a
+   * double-tap), it is returned as-is without charging stamina or regenerating —
+   * so calling this more than once per step is safe.
+   */
+  async advanceStep(characterId: string, expeditionId: string): Promise<AdvanceExpeditionView> {
+    const expedition = await this.prisma.expedition.findUnique({ where: { id: expeditionId } });
+    if (!expedition || expedition.characterId !== characterId) throw new NotFoundException('Expedition not found');
+
+    // Idempotent fast path, scoped to THIS expedition so a dangling encounter from a
+    // different (e.g. abandoned) run can never be served as this expedition's step.
+    const existing = await this.encounters.currentEncounterForExpedition(characterId, expeditionId);
+    if (existing) return { expedition: this.toView(expedition), encounter: existing };
+
+    if (expedition.status !== 'active') return { expedition: this.toView(expedition), encounter: null };
+
+    const stepIndex = expedition.step + 1;
+
+    // Generate the (slow) content with NO DB writes, then charge stamina AND persist
+    // the encounter in ONE transaction. The encounter's deterministic clientRequestId
+    // means a concurrent advance for the same step hits the unique constraint and the
+    // whole tx — the stamina charge included — rolls back. So two overlapping advances
+    // can never double-charge or create two encounters for one step.
+    const content = await this.encounters.generateStepContent(characterId, expeditionId, stepIndex);
+
+    let encounter: EncounterView;
+    try {
+      encounter = await this.prisma.$transaction(async (tx) => {
+        await this.characters.consumeStamina(tx, characterId, expedition.staminaPerStep);
+        return this.encounters.createStepEncounter(tx, characterId, expeditionId, stepIndex, content);
+      });
+    } catch (err) {
+      // Lost the race to a concurrent advance: return the encounter it committed.
+      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
+        const winner = await this.encounters.currentEncounterForExpedition(characterId, expeditionId);
+        return { expedition: this.toView(expedition), encounter: winner };
+      }
+      // Not enough stamina: the expedition ends early, without the completion bonus.
+      if (err instanceof BadRequestException) {
+        const ended = await this.prisma.expedition.update({
+          where: { id: expeditionId },
+          data: { status: 'completed', endedAt: new Date(), summary: 'Ran out of steam and headed back.' },
+        });
+        return { expedition: this.toView(ended), encounter: null };
+      }
+      throw err;
+    }
+
+    // Item-concept ingestion is best-effort and runs after the encounter is committed.
+    await this.encounters.ingestStepConcepts(characterId, content.encounter.itemConceptSuggestions);
+    return { expedition: this.toView(expedition), encounter };
+  }
+
+  /**
    * Go home — allowed only when the server agrees it makes narrative sense: the
    * current unresolved encounter must offer it (or there is none). Ends the
    * expedition as abandoned with partial progress preserved.
@@ -88,9 +171,18 @@ export class ExpeditionsService {
       throw new BadRequestException('You cannot simply leave right now');
     }
 
-    const updated = await this.prisma.expedition.update({
-      where: { id: expeditionId },
-      data: { status: 'abandoned', endedAt: new Date(), summary: 'Decided home was the better option.' },
+    // Abandon the expedition AND resolve any leftover unresolved encounter in one
+    // transaction, so it can't linger and leak into a later run (mirrors prestige).
+    const updated = await this.prisma.$transaction(async (tx) => {
+      const exp = await tx.expedition.update({
+        where: { id: expeditionId },
+        data: { status: 'abandoned', endedAt: new Date(), summary: 'Decided home was the better option.' },
+      });
+      await tx.encounter.updateMany({
+        where: { characterId, resolved: false },
+        data: { resolved: true, resolvedAt: new Date() },
+      });
+      return exp;
     });
     return { expedition: this.toView(updated) };
   }
@@ -102,6 +194,9 @@ export class ExpeditionsService {
     step: number;
     maxSteps: number;
     staminaPerStep: number;
+    premise?: string | null;
+    goal?: string | null;
+    regionName?: string | null;
     startedAt: Date;
     endedAt: Date | null;
     summary: string | null;
@@ -113,6 +208,9 @@ export class ExpeditionsService {
       step: e.step,
       maxSteps: e.maxSteps,
       staminaPerStep: e.staminaPerStep,
+      premise: e.premise ?? null,
+      goal: e.goal ?? null,
+      regionName: e.regionName ?? null,
       startedAt: e.startedAt.toISOString(),
       endedAt: e.endedAt ? e.endedAt.toISOString() : null,
       summary: e.summary,
