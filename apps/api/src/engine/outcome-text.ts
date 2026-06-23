@@ -52,8 +52,10 @@ export function buildOutcomeNarrative(ctx: OutcomeContext, rng: Rng): string {
   if (combat) {
     if (combat.playerWon) {
       parts.push(`After a scuffle, ${combat.enemyName} concedes the point and the path is yours again.`);
-    } else {
+    } else if (died) {
       parts.push(`${combat.enemyName} proves more than you bargained for, and you go down hard.`);
+    } else {
+      parts.push(`${combat.enemyName} gets the better of you, but you scrape clear — bruised, broke, and wiser.`);
     }
   }
 

@@ -303,3 +303,25 @@ th { color: var(--muted); font-weight: 600; }
 /* Item row in the inventory / catalog. */
 .item-row { flex-direction: column; align-items: stretch; gap: 6px; }
 .slot-head { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 14px 0 6px; }
+
+/* ── Play layout: left player sidebar + main column ──────────────────────────── */
+.play-shell {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 16px 16px 96px;
+}
+.play-main { flex: 1; min-width: 0; }
+.sidebar { flex: 0 0 232px; width: 232px; position: sticky; top: 72px; }
+.sidebar .sidebar-toggle { display: none; justify-content: space-between; }
+.sidebar .sidebar-body { margin-bottom: 0; }
+
+/* On narrow screens the sidebar stacks on top and collapses behind a toggle. */
+@media (max-width: 820px) {
+  .play-shell { flex-direction: column; gap: 0; }
+  .sidebar { position: static; width: 100%; flex: none; margin-bottom: 14px; }
+  .sidebar .sidebar-toggle { display: flex; margin-bottom: 8px; }
+  .sidebar.collapsed .sidebar-body { display: none; }
+}

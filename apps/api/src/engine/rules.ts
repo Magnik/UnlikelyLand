@@ -146,6 +146,32 @@ export const COMBAT = {
   MAX_ROUNDS: 24,
   /** Risk → enemy power tier added on top of player level. */
   RISK_TIER: { low: 0, medium: 1, high: 3, ridiculous: 5 } as Record<RiskLevel, number>,
+  /**
+   * Early-game mercy: at or below this level, enemy attack is scaled down so new
+   * players can actually win fights. Higher levels fight enemies at full strength
+   * (difficulty escalates with progression).
+   */
+  EARLY_GAME_MAX_LEVEL: 4,
+  EARLY_GAME_ENEMY_ATK_DAMP: 0.65,
+} as const;
+
+/**
+ * How likely LOSING a fight is to kill you, rather than just leave you beaten up.
+ * Forgiving at low levels, escalating with level and risk — by RAMP_TO_LEVEL a lost
+ * medium/high/ridiculous fight is almost certainly fatal. Tuned so that, with a
+ * roughly even win rate, a medium-risk fight past ~level 10 carries about 50/50
+ * odds of death overall. P(die|lose) = lerp(start, end, min(1, level/RAMP_TO_LEVEL)).
+ */
+export const COMBAT_DEATH = {
+  RAMP_TO_LEVEL: 12,
+  BY_RISK: {
+    low: { start: 0.0, end: 0.4 },
+    medium: { start: 0.05, end: 1.0 },
+    high: { start: 0.15, end: 1.0 },
+    ridiculous: { start: 0.3, end: 1.0 },
+  } as Record<RiskLevel, { start: number; end: number }>,
+  /** Chance a ridiculous, fumbled NON-combat choice ends fatally. */
+  RIDICULOUS_FUMBLE_DEATH: 0.15,
 } as const;
 
 export const REWARDS = {

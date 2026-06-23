@@ -54,7 +54,9 @@ export function OutcomePanel({
   /** The action the player picked, echoed so the outcome reads as cause→effect. */
   chosenLabel?: string | null;
   previousLevel?: number;
-  onContinue: () => void;
+  /** Optional: when omitted, the panel is a pure read-out (shown above the next
+   *  encounter) with no continue button — the next choice advances the story. */
+  onContinue?: () => void;
 }) {
   const { check } = result;
   const newLevel = result.character.level;
@@ -107,15 +109,17 @@ export function OutcomePanel({
         </div>
       ) : null}
 
-      {result.died ? (
-        <button className="btn btn-danger" onClick={onContinue}>
-          See the damage
-        </button>
-      ) : (
-        <button className="btn btn-primary" onClick={onContinue}>
-          {hasNext ? 'Onward →' : 'Continue'}
-        </button>
-      )}
+      {onContinue ? (
+        result.died ? (
+          <button className="btn btn-danger" onClick={onContinue}>
+            See the damage
+          </button>
+        ) : (
+          <button className="btn btn-primary" onClick={onContinue}>
+            {hasNext ? 'Onward →' : 'Continue'}
+          </button>
+        )
+      ) : null}
     </div>
   );
 }

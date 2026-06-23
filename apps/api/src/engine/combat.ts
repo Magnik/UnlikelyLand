@@ -1,6 +1,6 @@
 import type { StatBlock } from '@unlikelyland/contracts';
 import type { RiskLevel } from '@unlikelyland/contracts';
-import { COMBAT } from './rules';
+import { COMBAT, COMBAT_DEATH } from './rules';
 import type { Rng } from './rng';
 
 export interface Combatant {
@@ -55,17 +55,30 @@ export function makePlayerCombatant(stats: StatBlock, level: number): Combatant 
 /** Build a scaled enemy. `power` = player level + risk tier. */
 export function makeEnemy(name: string, level: number, risk: RiskLevel): Combatant {
   const power = Math.max(1, level + COMBAT.RISK_TIER[risk]);
+  // Early-game mercy: low-level enemies hit softer so new players can win.
+  const atkDamp = level <= COMBAT.EARLY_GAME_MAX_LEVEL ? COMBAT.EARLY_GAME_ENEMY_ATK_DAMP : 1;
   const maxHp = Math.round(COMBAT.ENEMY_BASE_HP + power * COMBAT.ENEMY_HP_PER_POWER);
   return {
     name,
     hp: maxHp,
     maxHp,
-    attack: Math.round(COMBAT.ENEMY_BASE_ATK + power * COMBAT.ENEMY_ATK_PER_POWER),
+    attack: Math.max(1, Math.round((COMBAT.ENEMY_BASE_ATK + power * COMBAT.ENEMY_ATK_PER_POWER) * atkDamp)),
     defense: Math.round(COMBAT.ENEMY_BASE_DEF + power * COMBAT.ENEMY_DEF_PER_POWER),
     accuracy: Math.round(COMBAT.ENEMY_BASE_ACC + power * COMBAT.ENEMY_ACC_PER_POWER),
     agility: Math.round(COMBAT.ENEMY_BASE_AGI + power * COMBAT.ENEMY_AGI_PER_POWER),
     crit: COMBAT.ENEMY_CRIT,
   };
+}
+
+/**
+ * Probability that LOSING a fight is fatal (vs. just being beaten up), scaled by
+ * level and risk. Forgiving early, escalating to near-certain death by
+ * COMBAT_DEATH.RAMP_TO_LEVEL. The caller rolls this only when the player loses.
+ */
+export function combatDeathChance(level: number, risk: RiskLevel): number {
+  const band = COMBAT_DEATH.BY_RISK[risk];
+  const t = Math.min(1, Math.max(0, level / COMBAT_DEATH.RAMP_TO_LEVEL));
+  return band.start + (band.end - band.start) * t;
 }
 
 interface Swing {

@@ -25,11 +25,11 @@ import { EncountersService } from './encounters.service';
 import { AchievementsService } from '../achievements/achievements.service';
 import { rngFor } from '../engine/rng';
 import { resolveCheck } from '../engine/checks';
-import { makeEnemy, makePlayerCombatant, resolveCombat, type CombatResult } from '../engine/combat';
+import { combatDeathChance, makeEnemy, makePlayerCombatant, resolveCombat, type CombatResult } from '../engine/combat';
 import { computeReward, expeditionCompletionReward } from '../engine/rewards';
 import { buildOutcomeNarrative, buildOutcomeSummary } from '../engine/outcome-text';
 import { levelFromXp } from '../engine/leveling';
-import { DEATH, PERSONALITY, PERSONALITY_FOCUS } from '../engine/rules';
+import { COMBAT_DEATH, DEATH, PERSONALITY, PERSONALITY_FOCUS } from '../engine/rules';
 import type { ExpeditionType } from '@unlikelyland/contracts';
 
 /** Static outcome portion stored on the encounter for idempotent replay. */
@@ -122,13 +122,23 @@ export class ResolutionService {
       combat = resolveCombat(player, enemy, rng);
     }
 
-    // 3. Death — losing a fight downs you; a ridiculous fumble can also be fatal.
+    // 3. Death — losing a fight MIGHT down you, with a chance that scales by level
+    //    and risk (forgiving early, near-certain past the ramp level); otherwise you
+    //    are merely beaten up (a setback, with failure-tier rewards). A ridiculous
+    //    fumble on a non-combat choice can also, rarely, be fatal.
     let died = false;
     let deathReason: string | null = null;
     if (combat && !combat.playerWon) {
-      died = true;
-      deathReason = `Bested by ${combat.enemyName}`;
-    } else if (!combat && check.fumble && choice.riskLevel === 'ridiculous' && rng.chance(0.25)) {
+      if (rng.chance(combatDeathChance(level, choice.riskLevel))) {
+        died = true;
+        deathReason = `Bested by ${combat.enemyName}`;
+      }
+    } else if (
+      !combat &&
+      check.fumble &&
+      choice.riskLevel === 'ridiculous' &&
+      rng.chance(COMBAT_DEATH.RIDICULOUS_FUMBLE_DEATH)
+    ) {
       died = true;
       deathReason = 'A ridiculous idea, pursued to its natural conclusion';
     }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { makeEnemy, makePlayerCombatant, resolveCombat } from './combat';
+import { combatDeathChance, makeEnemy, makePlayerCombatant, resolveCombat } from './combat';
 import { Rng } from './rng';
 import { defaultStatBlock, type StatBlock } from '@unlikelyland/contracts';
 
@@ -46,5 +46,37 @@ describe('resolveCombat', () => {
       expect(r.playerHpAfter).toBeGreaterThanOrEqual(0);
       expect(typeof r.text).toBe('string');
     }
+  });
+
+  it('early-game enemies hit softer than full-strength ones of the same power', () => {
+    // Level 4 is damped (<= EARLY_GAME_MAX_LEVEL); level 5 is not. Compare equal
+    // total power: level 4 + medium(tier 1) = 5  vs  level 5 + low(tier 0) = 5.
+    const damped = makeEnemy('Soft Crab', 4, 'medium');
+    const full = makeEnemy('Hard Crab', 5, 'low');
+    expect(damped.attack).toBeLessThan(full.attack);
+  });
+});
+
+describe('combatDeathChance (losing a fight)', () => {
+  it('is forgiving in the early game', () => {
+    expect(combatDeathChance(1, 'medium')).toBeLessThan(0.2);
+    expect(combatDeathChance(1, 'low')).toBeLessThan(0.1);
+  });
+
+  it('escalates with level and is near-certain past the ramp level', () => {
+    expect(combatDeathChance(6, 'medium')).toBeGreaterThan(combatDeathChance(1, 'medium'));
+    expect(combatDeathChance(12, 'medium')).toBeCloseTo(1.0);
+    expect(combatDeathChance(50, 'medium')).toBeCloseTo(1.0); // clamps, never exceeds 1
+  });
+
+  it('orders by risk at a fixed level', () => {
+    const lvl = 5;
+    expect(combatDeathChance(lvl, 'low')).toBeLessThan(combatDeathChance(lvl, 'medium'));
+    expect(combatDeathChance(lvl, 'medium')).toBeLessThan(combatDeathChance(lvl, 'high'));
+    expect(combatDeathChance(lvl, 'high')).toBeLessThanOrEqual(combatDeathChance(lvl, 'ridiculous'));
+  });
+
+  it('caps low-risk lethality below certain death even at high level', () => {
+    expect(combatDeathChance(50, 'low')).toBeCloseTo(0.4);
   });
 });
