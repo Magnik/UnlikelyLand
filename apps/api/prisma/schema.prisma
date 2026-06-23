@@ -266,7 +266,7 @@ model ItemDefinition {
   key           String   @unique
   name          String
   description   String   @default("")
-  slot          String // weapon | armor | tool | trinket | consumable | companion
+  slot          String // see ItemSlotSchema: weapon | head | shoulders | neck | cloak | chest | wrist | waist | legs | feet | ring | trinket | companion | consumable
   rarity        String // common | uncommon | rare | epic | legendary | absurd
   statModifiers Json     @default("{}")
   powerBudget   Int      @default(0)

@@ -39,6 +39,25 @@ import { CONSUMABLE, DEATH } from '../engine/rules';
 /** Items granted to a new or freshly-wiped character (see gear migration 0009). */
 const STARTER_KIT_ITEM_KEYS = ['rusty-island-sword', 'cardboard-aegis'];
 
+/**
+ * Pure target-position chooser for equip(). Returns which paperdoll position to
+ * equip the item into, or null when it is ALREADY equipped in one of its eligible
+ * positions (a no-op — so re-tapping an equipped ring never evicts its sibling).
+ * Otherwise prefers an explicit valid position, then the first empty eligible
+ * position, then replaces the first.
+ */
+export function chooseEquipPosition(
+  positions: EquipmentSlot[],
+  occupied: { id: string; equippedSlot: string | null }[],
+  itemId: string,
+  explicit?: EquipmentSlot,
+): EquipmentSlot | null {
+  if (occupied.some((o) => o.id === itemId)) return null;
+  if (explicit && positions.includes(explicit)) return explicit;
+  const used = new Set(occupied.map((o) => o.equippedSlot));
+  return positions.find((p) => !used.has(p)) ?? positions[0];
+}
+
 /** Parse the JSON-encoded storyStyleTags column into a validated, deduped list. */
 function parseStoryStyleTags(raw: string): StoryStyleTag[] {
   try {
@@ -451,17 +470,17 @@ export class CharactersService {
     if (positions.length === 0) throw new BadRequestException('That item cannot be equipped');
 
     await this.prisma.$transaction(async (tx) => {
-      // Choose the target position: an explicit (valid) one, else the first empty
-      // eligible position, else the first (replacing what's there).
-      let target: EquipmentSlot = position && positions.includes(position) ? position : positions[0];
-      if (!(position && positions.includes(position)) && positions.length > 1) {
-        const occupied = await tx.inventoryItem.findMany({
-          where: { characterId, equipped: true, equippedSlot: { in: positions } },
-          select: { equippedSlot: true },
-        });
-        const used = new Set(occupied.map((o) => o.equippedSlot));
-        target = positions.find((p) => !used.has(p)) ?? positions[0];
-      }
+      // Current occupants of this item's eligible positions.
+      const occupied = await tx.inventoryItem.findMany({
+        where: { characterId, equipped: true, equippedSlot: { in: positions } },
+        select: { id: true, equippedSlot: true },
+      });
+      // Choose the target position (null = already equipped here, so do nothing).
+      // NOTE: this read-then-write isn't a conditional claim, so two truly-concurrent
+      // equips into the same group could drop one (a benign, recoverable lost-equip).
+      // Acceptable: equip is a single-user action and the UI disables buttons in flight.
+      const target = chooseEquipPosition(positions, occupied, inventoryItemId, position);
+      if (target === null) return;
 
       // Vacate the target position (one item per position).
       await tx.inventoryItem.updateMany({
