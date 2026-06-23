@@ -116,13 +116,98 @@ export const RARITIES = RaritySchema.options;
 
 export const ItemSlotSchema = z.enum([
   'weapon',
-  'armor',
-  'tool',
+  'head',
+  'shoulders',
+  'neck',
+  'cloak',
+  'chest',
+  'wrist',
+  'waist',
+  'legs',
+  'feet',
+  'ring',
   'trinket',
-  'consumable',
   'companion',
+  'consumable',
 ]);
 export type ItemSlot = z.infer<typeof ItemSlotSchema>;
+
+/** Player-facing label per item slot (used for inventory grouping). */
+export const ITEM_SLOT_LABEL: Record<ItemSlot, string> = {
+  weapon: 'Weapon',
+  head: 'Head',
+  shoulders: 'Shoulders',
+  neck: 'Neck',
+  cloak: 'Cloak',
+  chest: 'Chest',
+  wrist: 'Wrist',
+  waist: 'Waist',
+  legs: 'Legs',
+  feet: 'Feet',
+  ring: 'Ring',
+  trinket: 'Trinket',
+  companion: 'Companion',
+  consumable: 'Consumable',
+};
+
+/**
+ * Equipment positions on the paperdoll — what an item can be equipped INTO. Rings
+ * and trinkets each have two positions; consumables are used, never equipped.
+ */
+export const EQUIPMENT_SLOTS = [
+  'head',
+  'shoulders',
+  'neck',
+  'cloak',
+  'chest',
+  'wrist',
+  'waist',
+  'legs',
+  'feet',
+  'weapon',
+  'ring1',
+  'ring2',
+  'trinket1',
+  'trinket2',
+  'companion',
+] as const;
+export type EquipmentSlot = (typeof EQUIPMENT_SLOTS)[number];
+
+export const EQUIPMENT_SLOT_LABEL: Record<EquipmentSlot, string> = {
+  head: 'Head',
+  shoulders: 'Shoulders',
+  neck: 'Neck',
+  cloak: 'Cloak',
+  chest: 'Chest',
+  wrist: 'Wrist',
+  waist: 'Waist',
+  legs: 'Legs',
+  feet: 'Feet',
+  weapon: 'Weapon',
+  ring1: 'Ring I',
+  ring2: 'Ring II',
+  trinket1: 'Trinket I',
+  trinket2: 'Trinket II',
+  companion: 'Companion',
+};
+
+/** Eligible equipment positions for an item slot ([] = not equippable, e.g. consumables). */
+export const SLOT_POSITIONS: Record<ItemSlot, EquipmentSlot[]> = {
+  weapon: ['weapon'],
+  head: ['head'],
+  shoulders: ['shoulders'],
+  neck: ['neck'],
+  cloak: ['cloak'],
+  chest: ['chest'],
+  wrist: ['wrist'],
+  waist: ['waist'],
+  legs: ['legs'],
+  feet: ['feet'],
+  ring: ['ring1', 'ring2'],
+  trinket: ['trinket1', 'trinket2'],
+  companion: ['companion'],
+  consumable: [],
+};
 
 /**
  * Currency categories. The DB stores them on the character as four integer

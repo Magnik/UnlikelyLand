@@ -42,26 +42,26 @@ const ITEMS: SeedItem[] = [
   { key: 'apologetic-greatsword', name: 'Apologetic Greatsword', description: 'Enormous, devastating, and deeply sorry about all of it.', slot: 'weapon', rarity: 'legendary', statModifiers: { strength: 3, toughness: 2 }, powerBudget: 32 },
 
   // ── armor ──────────────────────────────────────────────────────────────────
-  { key: 'cardboard-aegis', name: 'Cardboard Aegis', description: 'Surprisingly protective until it rains. Then very much not.', slot: 'armor', rarity: 'common', statModifiers: { defense: 1 }, powerBudget: 3 },
-  { key: 'slightly-defensive-jacket', name: 'Slightly Defensive Jacket', description: 'Wards off about a third of any given insult.', slot: 'armor', rarity: 'common', statModifiers: { defense: 1 }, powerBudget: 3 },
-  { key: 'soupproof-boots', name: 'Soupproof Boots', description: 'Rated for broth up to the ankle. Beyond that, you are on your own.', slot: 'armor', rarity: 'uncommon', statModifiers: { toughness: 1, agility: 1 }, powerBudget: 6 },
-  { key: 'suspiciously-clean-boots', name: 'Suspiciously Clean Boots', description: 'Nobody on this island has clean boots. Nobody.', slot: 'armor', rarity: 'uncommon', statModifiers: { agility: 2 }, powerBudget: 6 },
-  { key: 'helmet-that-claims-it-is-temporary', name: 'A Helmet That Claims It Is Temporary', description: 'Insists it is just helping out until the real helmet arrives.', slot: 'armor', rarity: 'uncommon', statModifiers: { defense: 1, toughness: 1 }, powerBudget: 6 },
-  { key: 'emergency-formalwear', name: 'Emergency Formalwear', description: 'For when a situation escalates to "black tie" without warning.', slot: 'armor', rarity: 'rare', statModifiers: { defense: 1, charisma: 2 }, powerBudget: 12 },
-  { key: 'overcoat-of-many-pockets', name: 'The Overcoat of Many Pockets', description: 'You have never reached the bottom of any of them.', slot: 'armor', rarity: 'epic', statModifiers: { defense: 2, toughness: 2, curiosity: 1 }, powerBudget: 20 },
-  { key: 'impenetrable-bathrobe', name: 'Impenetrable Bathrobe', description: 'Maximum comfort, alarming durability. Smells faintly of victory.', slot: 'armor', rarity: 'legendary', statModifiers: { defense: 3, toughness: 2 }, powerBudget: 32 },
+  { key: 'cardboard-aegis', name: 'Cardboard Aegis', description: 'Surprisingly protective until it rains. Then very much not.', slot: 'chest', rarity: 'common', statModifiers: { defense: 1 }, powerBudget: 3 },
+  { key: 'slightly-defensive-jacket', name: 'Slightly Defensive Jacket', description: 'Wards off about a third of any given insult.', slot: 'chest', rarity: 'common', statModifiers: { defense: 1 }, powerBudget: 3 },
+  { key: 'soupproof-boots', name: 'Soupproof Boots', description: 'Rated for broth up to the ankle. Beyond that, you are on your own.', slot: 'feet', rarity: 'uncommon', statModifiers: { toughness: 1, agility: 1 }, powerBudget: 6 },
+  { key: 'suspiciously-clean-boots', name: 'Suspiciously Clean Boots', description: 'Nobody on this island has clean boots. Nobody.', slot: 'chest', rarity: 'uncommon', statModifiers: { agility: 2 }, powerBudget: 6 },
+  { key: 'helmet-that-claims-it-is-temporary', name: 'A Helmet That Claims It Is Temporary', description: 'Insists it is just helping out until the real helmet arrives.', slot: 'head', rarity: 'uncommon', statModifiers: { defense: 1, toughness: 1 }, powerBudget: 6 },
+  { key: 'emergency-formalwear', name: 'Emergency Formalwear', description: 'For when a situation escalates to "black tie" without warning.', slot: 'chest', rarity: 'rare', statModifiers: { defense: 1, charisma: 2 }, powerBudget: 12 },
+  { key: 'overcoat-of-many-pockets', name: 'The Overcoat of Many Pockets', description: 'You have never reached the bottom of any of them.', slot: 'chest', rarity: 'epic', statModifiers: { defense: 2, toughness: 2, curiosity: 1 }, powerBudget: 20 },
+  { key: 'impenetrable-bathrobe', name: 'Impenetrable Bathrobe', description: 'Maximum comfort, alarming durability. Smells faintly of victory.', slot: 'chest', rarity: 'legendary', statModifiers: { defense: 3, toughness: 2 }, powerBudget: 32 },
 
   // ── tools ──────────────────────────────────────────────────────────────────
-  { key: 'half-charged-lantern', name: 'Half-Charged Lantern', description: 'Provides exactly enough light to see what is about to go wrong.', slot: 'tool', rarity: 'common', statModifiers: { curiosity: 1 }, powerBudget: 3 },
-  { key: 'bureaucratic-compass', name: 'Bureaucratic Compass', description: 'Always points toward the nearest unfinished form.', slot: 'tool', rarity: 'uncommon', statModifiers: { accuracy: 1, curiosity: 1 }, powerBudget: 6 },
-  { key: 'goblin-approved-work-gloves', name: 'Goblin-Approved Work Gloves', description: 'Bears a small union stamp of grudging approval.', slot: 'tool', rarity: 'uncommon', statModifiers: { strength: 1, negotiation: 1 }, powerBudget: 6 },
-  { key: 'self-important-multitool', name: 'Self-Important Multitool', description: 'Has a tool for everything and a strong opinion about each.', slot: 'tool', rarity: 'uncommon', statModifiers: { accuracy: 1, curiosity: 1 }, powerBudget: 6 },
-  { key: 'divining-spork', name: 'Divining Spork', description: 'Points unerringly toward the nearest buffet, and occasionally treasure.', slot: 'tool', rarity: 'rare', statModifiers: { curiosity: 2, accuracy: 1 }, powerBudget: 12 },
-  { key: 'instruction-manual-for-everything', name: 'The Instruction Manual For Everything', description: 'Chapter One is forty thousand pages. It is, however, correct.', slot: 'tool', rarity: 'epic', statModifiers: { curiosity: 3, negotiation: 1 }, powerBudget: 20 },
+  { key: 'half-charged-lantern', name: 'Half-Charged Lantern', description: 'Provides exactly enough light to see what is about to go wrong.', slot: 'trinket', rarity: 'common', statModifiers: { curiosity: 1 }, powerBudget: 3 },
+  { key: 'bureaucratic-compass', name: 'Bureaucratic Compass', description: 'Always points toward the nearest unfinished form.', slot: 'trinket', rarity: 'uncommon', statModifiers: { accuracy: 1, curiosity: 1 }, powerBudget: 6 },
+  { key: 'goblin-approved-work-gloves', name: 'Goblin-Approved Work Gloves', description: 'Bears a small union stamp of grudging approval.', slot: 'trinket', rarity: 'uncommon', statModifiers: { strength: 1, negotiation: 1 }, powerBudget: 6 },
+  { key: 'self-important-multitool', name: 'Self-Important Multitool', description: 'Has a tool for everything and a strong opinion about each.', slot: 'trinket', rarity: 'uncommon', statModifiers: { accuracy: 1, curiosity: 1 }, powerBudget: 6 },
+  { key: 'divining-spork', name: 'Divining Spork', description: 'Points unerringly toward the nearest buffet, and occasionally treasure.', slot: 'trinket', rarity: 'rare', statModifiers: { curiosity: 2, accuracy: 1 }, powerBudget: 12 },
+  { key: 'instruction-manual-for-everything', name: 'The Instruction Manual For Everything', description: 'Chapter One is forty thousand pages. It is, however, correct.', slot: 'trinket', rarity: 'epic', statModifiers: { curiosity: 3, negotiation: 1 }, powerBudget: 20 },
 
   // ── trinkets ─────────────────────────────────────────────────────────────────
   { key: 'medal-for-trying', name: 'The Medal For Trying', description: 'Awarded for effort, regardless of outcome. Especially regardless of outcome.', slot: 'trinket', rarity: 'common', statModifiers: { bravery: 1 }, powerBudget: 3 },
-  { key: 'lucky-button', name: 'Lucky Button', description: 'Statistically no luckier than any other button. Statistically.', slot: 'trinket', rarity: 'uncommon', statModifiers: { weirdness: 2 }, powerBudget: 6 },
+  { key: 'lucky-button', name: 'Lucky Button', description: 'Statistically no luckier than any other button. Statistically.', slot: 'ring', rarity: 'uncommon', statModifiers: { weirdness: 2 }, powerBudget: 6 },
   { key: 'coin-that-lands-on-edge', name: 'Coin That Always Lands On Edge', description: 'Refuses to make decisions for you. Admirable, infuriating.', slot: 'trinket', rarity: 'uncommon', statModifiers: { weirdness: 2 }, powerBudget: 6 },
   { key: 'crab-lawyer-business-card', name: 'Crab-Lawyer Business Card', description: 'Slightly damp. Implies representation you may not actually have.', slot: 'trinket', rarity: 'rare', statModifiers: { negotiation: 2, deception: 1 }, powerBudget: 12 },
   { key: 'semi-legal-moonlight', name: 'Semi-Legal Moonlight', description: 'Bottled under a permit that is being contested in three jurisdictions.', slot: 'trinket', rarity: 'rare', statModifiers: { deception: 2, mischief: 1 }, powerBudget: 12 },
@@ -192,6 +192,20 @@ async function main(): Promise<void> {
     console.log(`Created admin user "${adminUsername}"`);
   } else {
     console.log(`Admin user "${adminUsername}" already exists — skipping`);
+  }
+
+  // Re-grant: hand a small starter kit to any character with an empty bag. Covers the
+  // gear-migration inventory wipe and is idempotent (skips characters that have items).
+  const STARTER_KIT = ['rusty-island-sword', 'cardboard-aegis'];
+  const kitDefs = await prisma.itemDefinition.findMany({ where: { key: { in: STARTER_KIT } }, select: { id: true } });
+  if (kitDefs.length > 0) {
+    const empties = await prisma.character.findMany({ where: { inventory: { none: {} } }, select: { id: true } });
+    for (const ch of empties) {
+      await prisma.inventoryItem.createMany({
+        data: kitDefs.map((d) => ({ characterId: ch.id, itemDefinitionId: d.id, quantity: 1 })),
+      });
+    }
+    if (empties.length > 0) console.log(`Granted starter kit to ${empties.length} empty-inventory character(s)`);
   }
 }
 

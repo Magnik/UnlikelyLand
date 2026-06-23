@@ -1,4 +1,4 @@
-import type { ExpeditionType, ItemSlot, Rarity, StatKey } from '@unlikelyland/contracts';
+import { ItemSlotSchema, type ExpeditionType, type ItemSlot, type Rarity, type StatKey } from '@unlikelyland/contracts';
 import { ITEM, LOOT, REWARDS } from './rules';
 import { Rng } from './rng';
 
@@ -10,7 +10,7 @@ import { Rng } from './rng';
  * math here makes it unit-testable without a database.
  */
 
-const ALL_SLOTS: ItemSlot[] = ['weapon', 'armor', 'tool', 'trinket', 'consumable', 'companion'];
+const ALL_SLOTS: ItemSlot[] = [...ItemSlotSchema.options];
 
 /**
  * Rarity weights for a character level. Starts from the reward table and nudges

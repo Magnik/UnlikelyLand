@@ -286,6 +286,10 @@ model InventoryItem {
   itemDefinitionId String
   quantity         Int      @default(1)
   equipped         Boolean  @default(false)
+  // Which paperdoll POSITION this item occupies when equipped (e.g. ring1/ring2),
+  // distinct from the item's slot type so rings/trinkets can fill two slots. Null
+  // when not equipped.
+  equippedSlot     String?
   acquiredAt       DateTime @default(now())
 
   character      Character      @relation(fields: [characterId], references: [id], onDelete: Cascade)

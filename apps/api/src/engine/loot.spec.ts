@@ -47,15 +47,15 @@ describe('rollRarity', () => {
 });
 
 describe('pickSlotForExpedition', () => {
-  it('biases toward weapons/armor for a fight', () => {
-    const slots: ItemSlot[] = ['weapon', 'armor', 'tool', 'trinket', 'companion', 'consumable'];
+  it('biases toward weapons/armour pieces for a fight', () => {
+    const slots: ItemSlot[] = ['weapon', 'chest', 'trinket', 'companion', 'consumable'];
     const counts: Record<string, number> = {};
     for (let s = 1; s <= 600; s++) {
       const picked = pickSlotForExpedition(new Rng(s), 'fight', slots)!;
       counts[picked] = (counts[picked] ?? 0) + 1;
     }
-    // fight weights weapon/armor at 3 vs others at 1 — they should dominate.
-    expect((counts.weapon ?? 0) + (counts.armor ?? 0)).toBeGreaterThan((counts.trinket ?? 0) + (counts.companion ?? 0));
+    // fight weights weapon/chest at 3 vs others at 1 — they should dominate.
+    expect((counts.weapon ?? 0) + (counts.chest ?? 0)).toBeGreaterThan((counts.trinket ?? 0) + (counts.companion ?? 0));
   });
 
   it('returns null when there are no candidate slots', () => {
@@ -64,7 +64,7 @@ describe('pickSlotForExpedition', () => {
 });
 
 describe('generateBalancedModifiers', () => {
-  const SLOTS: ItemSlot[] = ['weapon', 'armor', 'tool', 'trinket', 'companion'];
+  const SLOTS: ItemSlot[] = ['weapon', 'chest', 'ring', 'trinket', 'companion'];
   const RARITIES: Rarity[] = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'absurd'];
 
   it('never exceeds the rarity power budget or the per-stat cap', () => {
@@ -84,9 +84,9 @@ describe('generateBalancedModifiers', () => {
   });
 
   it('only assigns stats appropriate to the slot', () => {
-    const { statModifiers } = generateBalancedModifiers('armor', 'epic', 123);
+    const { statModifiers } = generateBalancedModifiers('chest', 'epic', 123);
     for (const k of Object.keys(statModifiers)) {
-      expect(ITEM.SLOT_STAT_AFFINITY.armor).toContain(k as StatKey);
+      expect(ITEM.SLOT_STAT_AFFINITY.chest).toContain(k as StatKey);
     }
   });
 

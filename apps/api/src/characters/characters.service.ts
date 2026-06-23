@@ -6,6 +6,7 @@ import {
   SOCIAL_STATS,
   PERSONALITY_STATS,
   STAT_LABEL,
+  SLOT_POSITIONS,
   StoryStyleTagSchema,
   categoryForStat,
   defaultStatBlock,
@@ -15,6 +16,7 @@ import {
   type ConsumableEffectView,
   type ContentRating,
   type EffectiveStatsView,
+  type EquipmentSlot,
   type GuildRole,
   type InventoryItemView,
   type InventoryView,
@@ -33,6 +35,9 @@ import { combineEffectiveStats } from '../engine/effective-stats';
 import { computeStamina, regenPerHour } from '../engine/stamina';
 import { levelFromXp } from '../engine/leveling';
 import { CONSUMABLE, DEATH } from '../engine/rules';
+
+/** Items granted to a new or freshly-wiped character (see gear migration 0009). */
+const STARTER_KIT_ITEM_KEYS = ['rusty-island-sword', 'cardboard-aegis'];
 
 /** Parse the JSON-encoded storyStyleTags column into a validated, deduped list. */
 function parseStoryStyleTags(raw: string): StoryStyleTag[] {
@@ -97,7 +102,24 @@ export class CharactersService {
       },
       select: { id: true },
     });
+    await this.grantStarterKit(character.id);
     return character.id;
+  }
+
+  /**
+   * Hand a fresh (or freshly-wiped) character a tiny starter kit so the bag isn't
+   * empty and equipping is immediately discoverable. Best-effort: silently does
+   * nothing if the catalog hasn't been seeded yet.
+   */
+  async grantStarterKit(characterId: string): Promise<void> {
+    const defs = await this.prisma.itemDefinition.findMany({
+      where: { key: { in: STARTER_KIT_ITEM_KEYS } },
+      select: { id: true },
+    });
+    if (defs.length === 0) return;
+    await this.prisma.inventoryItem.createMany({
+      data: defs.map((d) => ({ characterId, itemDefinitionId: d.id, quantity: 1 })),
+    });
   }
 
   statBlockFromRow(stats: StatsRow): StatBlock {
@@ -224,7 +246,7 @@ export class CharactersService {
   }
 
   private toInventoryItemView(
-    row: { id: string; quantity: number; equipped: boolean },
+    row: { id: string; quantity: number; equipped: boolean; equippedSlot?: string | null },
     def: {
       key: string;
       name: string;
@@ -245,6 +267,7 @@ export class CharactersService {
       rarity: def.rarity as InventoryItemView['rarity'],
       quantity: row.quantity,
       equipped: row.equipped,
+      equippedSlot: (row.equippedSlot ?? null) as EquipmentSlot | null,
       statModifiers: (def.statModifiers ?? {}) as StatModifier,
       consumableEffect: consumableEffectViewFor(def.slot, def.consumableEffectType, def.consumableEffectPower),
     };
@@ -286,9 +309,9 @@ export class CharactersService {
   async getInventoryView(characterId: string): Promise<InventoryView> {
     const items = await this.getInventory(characterId);
     const stats = await this.getEffectiveStatsView(characterId);
-    const equippedBySlot: Partial<Record<ItemSlot, string>> = {};
+    const equippedBySlot: Partial<Record<EquipmentSlot, string>> = {};
     for (const it of items) {
-      if (it.equipped && it.slot !== 'consumable') equippedBySlot[it.slot] = it.id;
+      if (it.equipped && it.equippedSlot) equippedBySlot[it.equippedSlot] = it.id;
     }
     return { items, equippedBySlot, stats };
   }
@@ -412,28 +435,44 @@ export class CharactersService {
     };
   }
 
-  /** Equip an item, unequipping anything else already in that slot. */
-  async equip(characterId: string, inventoryItemId: string): Promise<CharacterView> {
+  /**
+   * Equip an item into a paperdoll POSITION, unequipping whatever was there. An
+   * item's slot maps to one or more positions (rings/trinkets have two); without an
+   * explicit target we fill the first empty eligible position, else replace the first.
+   */
+  async equip(characterId: string, inventoryItemId: string, position?: EquipmentSlot): Promise<CharacterView> {
     const item = await this.prisma.inventoryItem.findUnique({
       where: { id: inventoryItemId },
       include: { itemDefinition: true },
     });
     if (!item || item.characterId !== characterId) throw new NotFoundException('Item not found');
-    if (item.itemDefinition.slot === 'consumable') throw new BadRequestException('Consumables are used, not equipped');
+
+    const positions = SLOT_POSITIONS[item.itemDefinition.slot as ItemSlot] ?? [];
+    if (positions.length === 0) throw new BadRequestException('That item cannot be equipped');
 
     await this.prisma.$transaction(async (tx) => {
-      const sameSlot = await tx.inventoryItem.findMany({
-        where: { characterId, equipped: true, itemDefinition: { slot: item.itemDefinition.slot } },
-        select: { id: true },
-      });
-      for (const s of sameSlot) {
-        await tx.inventoryItem.update({ where: { id: s.id }, data: { equipped: false } });
+      // Choose the target position: an explicit (valid) one, else the first empty
+      // eligible position, else the first (replacing what's there).
+      let target: EquipmentSlot = position && positions.includes(position) ? position : positions[0];
+      if (!(position && positions.includes(position)) && positions.length > 1) {
+        const occupied = await tx.inventoryItem.findMany({
+          where: { characterId, equipped: true, equippedSlot: { in: positions } },
+          select: { equippedSlot: true },
+        });
+        const used = new Set(occupied.map((o) => o.equippedSlot));
+        target = positions.find((p) => !used.has(p)) ?? positions[0];
       }
-      // Conditional on ownership so equipping an item that was concurrently sold/listed
-      // (its row deleted/escrowed) fails cleanly instead of throwing a raw P2025.
+
+      // Vacate the target position (one item per position).
+      await tx.inventoryItem.updateMany({
+        where: { characterId, equipped: true, equippedSlot: target },
+        data: { equipped: false, equippedSlot: null },
+      });
+      // Equip this item there. Conditional on ownership so a concurrently sold/listed
+      // item fails cleanly instead of throwing a raw P2025.
       const equipped = await tx.inventoryItem.updateMany({
         where: { id: inventoryItemId, characterId },
-        data: { equipped: true },
+        data: { equipped: true, equippedSlot: target },
       });
       if (equipped.count === 0) throw new NotFoundException('Item not found');
     });
@@ -444,7 +483,10 @@ export class CharactersService {
     const item = await this.prisma.inventoryItem.findUnique({ where: { id: inventoryItemId } });
     if (!item || item.characterId !== characterId) throw new NotFoundException('Item not found');
     // updateMany (not update-by-id) so a concurrent delete is a harmless no-op, not a P2025.
-    await this.prisma.inventoryItem.updateMany({ where: { id: inventoryItemId, characterId }, data: { equipped: false } });
+    await this.prisma.inventoryItem.updateMany({
+      where: { id: inventoryItemId, characterId },
+      data: { equipped: false, equippedSlot: null },
+    });
     return this.buildView(characterId);
   }
 

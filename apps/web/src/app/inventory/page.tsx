@@ -2,19 +2,33 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { InventoryView, ItemSlot } from '@unlikelyland/contracts';
+import {
+  EQUIPMENT_SLOTS,
+  EQUIPMENT_SLOT_LABEL,
+  ITEM_SLOT_LABEL,
+  type InventoryView,
+  type ItemSlot,
+} from '@unlikelyland/contracts';
 import { api, ApiError, getToken } from '@/lib/api';
 import { TopNav } from '@/components/top-nav';
 
-const SLOT_ORDER: ItemSlot[] = ['weapon', 'armor', 'tool', 'trinket', 'companion', 'consumable'];
-const SLOT_LABEL: Record<ItemSlot, string> = {
-  weapon: 'Weapons',
-  armor: 'Armor',
-  tool: 'Tools',
-  trinket: 'Trinkets',
-  companion: 'Companions',
-  consumable: 'Consumables',
-};
+/** Inventory grouping order (paperdoll order lives in EQUIPMENT_SLOTS). */
+const SLOT_ORDER: ItemSlot[] = [
+  'weapon',
+  'head',
+  'shoulders',
+  'neck',
+  'cloak',
+  'chest',
+  'wrist',
+  'waist',
+  'legs',
+  'feet',
+  'ring',
+  'trinket',
+  'companion',
+  'consumable',
+];
 
 export default function InventoryPage() {
   const router = useRouter();
@@ -61,8 +75,8 @@ export default function InventoryPage() {
     );
   }
 
-  // Stats that gear actually changes — the visible proof equipment matters.
   const buffed = inv.stats.entries.filter((e) => e.modifier !== 0);
+  const itemById = (id?: string) => inv.items.find((i) => i.id === id) ?? null;
   const bySlot = (slot: ItemSlot) => inv.items.filter((i) => i.slot === slot);
 
   return (
@@ -72,6 +86,38 @@ export default function InventoryPage() {
         <h1>Inventory</h1>
         {error ? <div className="error">{error}</div> : null}
         {notice ? <div className="notice">{notice}</div> : null}
+
+        <div className="card">
+          <h2>Equipped</h2>
+          <p className="tiny muted" style={{ marginTop: 0 }}>
+            One item per slot. Rings and trinkets each take two.
+          </p>
+          <div className="stat-grid">
+            {EQUIPMENT_SLOTS.map((pos) => {
+              const it = itemById(inv.equippedBySlot[pos]);
+              return (
+                <div className="stat" key={pos}>
+                  <span className="tiny muted">{EQUIPMENT_SLOT_LABEL[pos]}</span>
+                  {it ? (
+                    <span className="row" style={{ gap: 6 }}>
+                      <b className={`rar-${it.rarity}`}>{it.name}</b>
+                      <button
+                        className="btn inline"
+                        disabled={busy}
+                        aria-label={`Unequip ${it.name}`}
+                        onClick={() => act(`Unequipped ${it.name}.`, () => api.unequip(it.id))}
+                      >
+                        ✕
+                      </button>
+                    </span>
+                  ) : (
+                    <span className="tiny muted">— empty —</span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
 
         <div className="card">
           <h2>Effective stats</h2>
@@ -109,7 +155,7 @@ export default function InventoryPage() {
               if (items.length === 0) return null;
               return (
                 <div key={slot}>
-                  <div className="slot-head">{SLOT_LABEL[slot]}</div>
+                  <div className="slot-head">{ITEM_SLOT_LABEL[slot]}</div>
                   <div className="col">
                     {items.map((i) => {
                       const mods = Object.entries(i.statModifiers)

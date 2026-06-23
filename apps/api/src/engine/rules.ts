@@ -237,8 +237,16 @@ export const ITEM = {
    */
   SLOT_STAT_AFFINITY: {
     weapon: ['strength', 'agility', 'accuracy'],
-    armor: ['defense', 'toughness'],
-    tool: ['accuracy', 'curiosity', 'negotiation'],
+    head: ['defense', 'curiosity', 'accuracy'],
+    shoulders: ['defense', 'toughness'],
+    neck: ['charisma', 'empathy', 'negotiation'],
+    cloak: ['agility', 'defense', 'weirdness'],
+    chest: ['defense', 'toughness'],
+    wrist: ['accuracy', 'agility'],
+    waist: ['toughness', 'strength'],
+    legs: ['defense', 'agility'],
+    feet: ['agility', 'toughness'],
+    ring: ['weirdness', 'mischief', 'deception', 'charisma'],
     trinket: ['charisma', 'deception', 'weirdness', 'mischief', 'empathy'],
     companion: ['empathy', 'bravery', 'weirdness'],
     consumable: [],
@@ -257,16 +265,20 @@ export const LOOT = {
   /** Caps so high level can't flood the economy with rares. */
   MAX_RARE_WEIGHT: 22,
   MAX_EPIC_WEIGHT: 6,
-  /** Per-expedition relative slot weighting for which kind of item tends to drop. */
+  /**
+   * Per-expedition relative slot weighting for which kind of item tends to drop.
+   * Partial — any slot not listed defaults to weight 1 (see loot.slotWeight), so we
+   * only call out the emphasis/de-emphasis for each activity.
+   */
   SLOT_BIAS_BY_EXPEDITION: {
-    explore: { weapon: 1, armor: 1, tool: 2, trinket: 2, companion: 2, consumable: 1 },
-    fight: { weapon: 3, armor: 3, tool: 1, trinket: 1, companion: 1, consumable: 1 },
-    scavenge: { weapon: 1, armor: 1, tool: 3, trinket: 1, companion: 1, consumable: 3 },
-    socialize: { weapon: 0, armor: 0, tool: 1, trinket: 3, companion: 2, consumable: 1 },
-    investigate: { weapon: 0, armor: 1, tool: 2, trinket: 3, companion: 1, consumable: 1 },
-    train: { weapon: 2, armor: 2, tool: 2, trinket: 1, companion: 1, consumable: 1 },
-    work: { weapon: 1, armor: 1, tool: 3, trinket: 1, companion: 1, consumable: 2 },
-  } as Record<ExpeditionType, Record<ItemSlot, number>>,
+    explore: { trinket: 2, ring: 2, neck: 2, companion: 2, cloak: 2 },
+    fight: { weapon: 3, chest: 3, shoulders: 2, head: 2, legs: 2 },
+    scavenge: { consumable: 3, ring: 2, trinket: 2, waist: 2, wrist: 2 },
+    socialize: { neck: 3, trinket: 3, ring: 2, companion: 2, weapon: 0, chest: 0 },
+    investigate: { trinket: 3, ring: 2, head: 2, neck: 2 },
+    train: { weapon: 2, chest: 2, legs: 2, feet: 2, waist: 2 },
+    work: { consumable: 2, ring: 2, waist: 2, wrist: 2 },
+  } as Record<ExpeditionType, Partial<Record<ItemSlot, number>>>,
 } as const;
 
 export const DEATH = {

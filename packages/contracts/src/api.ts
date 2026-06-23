@@ -5,6 +5,7 @@ import {
   ContentRatingSchema,
   type CurrencyType,
   type EncounterType,
+  type EquipmentSlot,
   ExpeditionTypeSchema,
   type GuildRole,
   type ItemSlot,
@@ -408,6 +409,8 @@ export interface InventoryItemView {
   rarity: Rarity;
   quantity: number;
   equipped: boolean;
+  /** The paperdoll position this item occupies when equipped (e.g. ring1), or null. */
+  equippedSlot: EquipmentSlot | null;
   statModifiers: StatModifier;
   /** Present only for consumable items. */
   consumableEffect: ConsumableEffectView | null;
@@ -433,8 +436,8 @@ export interface EffectiveStatsView {
 /** What a player sees on their own inventory screen. */
 export interface InventoryView {
   items: InventoryItemView[];
-  /** inventoryItemId currently equipped per slot (consumables never appear here). */
-  equippedBySlot: Partial<Record<ItemSlot, string>>;
+  /** inventoryItemId currently equipped in each paperdoll position (if any). */
+  equippedBySlot: Partial<Record<EquipmentSlot, string>>;
   stats: EffectiveStatsView;
 }
 
