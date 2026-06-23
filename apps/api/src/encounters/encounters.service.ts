@@ -12,6 +12,7 @@ import { AiGatewayService } from '../ai/ai-gateway.service';
 import { validateItemConcept } from '../ai/item-validator';
 import { StoryMemoryService } from '../story-memory/story-memory.service';
 import { CharactersService } from '../characters/characters.service';
+import { findLocation } from '../content/locations';
 import { EXPEDITIONS } from '../engine/rules';
 import type { ExpeditionType } from '@unlikelyland/contracts';
 
@@ -90,6 +91,10 @@ export class EncountersService {
       regionName = regions.length ? regions[stepIndex % regions.length].name : '';
     }
 
+    // Re-derive the locked location's vibe from the hardcoded catalog so it can be
+    // pinned in the prompt (no need to persist the blurb on the expedition row).
+    const location = findLocation(character.regionSet.key, regionName);
+
     // "Previously" — the prior resolved encounter of THIS expedition, so the next
     // step reads as a continuation rather than an unrelated scene.
     const previously = await this.priorStepRecap(expeditionId);
@@ -101,9 +106,9 @@ export class EncountersService {
       goal: expedition.goal,
       previously,
       regionSetName: character.regionSet.name,
-      regionSetBlurb: regionName
-        ? `${character.regionSet.blurb} You're somewhere around ${regionName}.`
-        : character.regionSet.blurb,
+      regionSetBlurb: character.regionSet.blurb,
+      location: regionName || null,
+      locationBlurb: location?.blurb ?? null,
       expeditionType: expedition.type as ExpeditionType,
       desiredEncounterType: cfg.encounterType,
       fallbackPool: cfg.fallbackPool,

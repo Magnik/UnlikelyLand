@@ -4,6 +4,7 @@ import type { AdvanceExpeditionView, EncounterView, ExpeditionType, ExpeditionVi
 import { PrismaService } from '../common/prisma.service';
 import { CharactersService } from '../characters/characters.service';
 import { EncountersService } from '../encounters/encounters.service';
+import { pickLocation } from '../content/locations';
 import { EXPEDITIONS } from '../engine/rules';
 
 export interface StartExpeditionResult {
@@ -45,7 +46,10 @@ export class ExpeditionsService {
   }
 
   async start(characterId: string, type: ExpeditionType): Promise<StartExpeditionResult> {
-    const character = await this.prisma.character.findUniqueOrThrow({ where: { id: characterId } });
+    const character = await this.prisma.character.findUniqueOrThrow({
+      where: { id: characterId },
+      include: { regionSet: true },
+    });
     if (character.isDead) throw new BadRequestException('You are downed — revive first');
 
     const active = await this.prisma.expedition.findFirst({ where: { characterId, status: 'active' } });
@@ -54,13 +58,19 @@ export class ExpeditionsService {
     const cfg = EXPEDITIONS[type];
     if (!cfg?.selectable) throw new BadRequestException('That expedition is not available.');
 
-    // Lock one region for the whole expedition and resolve its premise/goal once,
-    // so every step shares a single place and through-line (set here, not per step).
-    const regions = await this.prisma.region.findMany({
-      where: { regionSetId: character.regionSetId },
-      select: { name: true },
-    });
-    const regionName = regions.length ? regions[Math.floor(Math.random() * regions.length)].name : '';
+    // Lock ONE named location for the whole expedition (from the hardcoded catalog,
+    // biased toward the chosen activity) and resolve its premise/goal once, so every
+    // step shares a single place and through-line. Fall back to a seeded region only
+    // if this region set has no catalog entry.
+    const picked = pickLocation(character.regionSet?.key, type);
+    let regionName = picked?.name ?? '';
+    if (!regionName) {
+      const regions = await this.prisma.region.findMany({
+        where: { regionSetId: character.regionSetId },
+        select: { name: true },
+      });
+      regionName = regions.length ? regions[Math.floor(Math.random() * regions.length)].name : '';
+    }
     const place = regionName || 'the island';
     const premise = cfg.premise.replace(/\{region\}/g, place);
     const goal = cfg.goal.replace(/\{region\}/g, place);

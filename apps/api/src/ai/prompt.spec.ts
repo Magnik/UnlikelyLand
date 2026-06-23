@@ -31,9 +31,21 @@ describe('buildEncounterPrompt continuity', () => {
     expect(user).toContain('It accepted, grudgingly.');
   });
 
-  it('omits the premise and previously blocks on the opening encounter (no prior context)', () => {
+  it('omits the premise/previously/setting blocks on the opening encounter (no prior context)', () => {
     const { user } = buildEncounterPrompt(base);
     expect(user).not.toContain('Previously this expedition');
     expect(user).not.toContain("expedition's premise");
+    expect(user).not.toContain('SETTING');
+  });
+
+  it('pins the whole expedition to one location and forbids relocating', () => {
+    const { user } = buildEncounterPrompt({
+      ...base,
+      location: 'The Weeping Pier',
+      locationBlurb: 'A long pier that weeps.',
+    });
+    expect(user).toContain('The Weeping Pier');
+    expect(user).toContain('A long pier that weeps.');
+    expect(user).toMatch(/SETTING|stay here|do NOT move/i);
   });
 });

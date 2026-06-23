@@ -27,6 +27,12 @@ export interface GenerationContext {
     choiceLabel?: string | null;
     outcome?: string | null;
   } | null;
+  /**
+   * The single fixed location this whole expedition takes place at, with its vibe.
+   * Every step must stay here so a run reads as one continuous place.
+   */
+  location?: string | null;
+  locationBlurb?: string | null;
 }
 
 /**
@@ -123,8 +129,17 @@ export function buildEncounterPrompt(ctx: GenerationContext): { system: string; 
       } This new encounter should follow on from that, as the next beat — not a disconnected scene.`
     : '';
 
+  // The whole expedition is pinned to ONE place. This is the strongest lever for
+  // step-to-step coherence: without it the model invents a fresh setting each call.
+  const locationBlock = ctx.location
+    ? `SETTING (stay here): this entire expedition happens at one place — ${ctx.location}${
+        ctx.locationBlurb ? ` — ${ctx.locationBlurb}` : ''
+      }. Every encounter is another moment at ${ctx.location} or its immediate surroundings. Do NOT move the player to a different, unrelated place; keep the setting consistent from step to step.`
+    : '';
+
   const user = [
-    `Region set: ${ctx.regionSetName} — ${ctx.regionSetBlurb}`,
+    `The island: ${ctx.regionSetName} — ${ctx.regionSetBlurb}`,
+    locationBlock,
     protagonistBlock,
     premiseBlock,
     `Activity: ${ctx.expeditionType} (aim for a ${ctx.desiredEncounterType} encounter).`,

@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { ExpeditionsService } from './expeditions.service';
+import { LOCATIONS } from '../content/locations';
 
 function expeditionRow(over: Record<string, unknown> = {}) {
   return {
@@ -152,6 +153,38 @@ describe('ExpeditionsService.start (narrative framing)', () => {
     expect(createArgs.data.premise).toContain('The Foo');
     expect(createArgs.data.goal).toContain('The Foo');
     expect(res.encounter).toEqual({ id: 'enc' });
+  });
+
+  it('locks ONE hardcoded catalog location for the region set (no DB region fallback)', async () => {
+    let createArgs: any;
+    const prisma = {
+      character: {
+        findUniqueOrThrow: vi
+          .fn()
+          .mockResolvedValue({ id: 'c1', isDead: false, regionSetId: 'rs1', regionSet: { key: 'damply-heroic-coast' } }),
+      },
+      expedition: { findFirst: vi.fn().mockResolvedValue(null) },
+      region: { findMany: vi.fn() },
+      $transaction: vi.fn(async (cb: any) =>
+        cb({
+          expedition: {
+            create: vi.fn(async (a: any) => {
+              createArgs = a;
+              return expeditionRow();
+            }),
+          },
+        }),
+      ),
+    } as any;
+    const characters = { consumeStamina: vi.fn() } as any;
+    const encounters = { generateForStep: vi.fn().mockResolvedValue({ id: 'enc' }) } as any;
+    const svc = new ExpeditionsService(prisma, characters, encounters);
+
+    await svc.start('c1', 'explore');
+    const validNames = LOCATIONS['damply-heroic-coast'].map((l) => l.name);
+    expect(validNames).toContain(createArgs.data.regionName);
+    // The catalog had an entry, so the seeded-region DB fallback must not be used.
+    expect(prisma.region.findMany).not.toHaveBeenCalled();
   });
 
   it('refuses to start a non-selectable (folded) expedition type', async () => {
